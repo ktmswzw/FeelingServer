@@ -1,8 +1,8 @@
 package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.xecoder.common.AESEncrypter;
-import com.xecoder.common.RadomUtils;
+import com.xecoder.common.util.AESEncrypter;
+import com.xecoder.common.util.RadomUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;

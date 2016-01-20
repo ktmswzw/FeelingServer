@@ -1,7 +1,7 @@
 package com.xecoder.service.dao;
 
-import com.xecoder.service.core.RedisService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.xecoder.model.business.Auth;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
  * Feeling.com.xecoder.service.dao
  */
 @Service
-public class AuthRepository  {
-
-    @Autowired
-    private RedisService redisService;
+public interface AuthRepository  extends MongoRepository<Auth, String> {
 
 }

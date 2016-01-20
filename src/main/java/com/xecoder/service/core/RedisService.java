@@ -33,7 +33,9 @@ public class RedisService {
 
     public void setValue(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
-        int timeout = random.nextInt(86400);
-        redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
+    }
+
+    public void expire(String key, int second) {
+        redisTemplate.expire(key, second, TimeUnit.SECONDS);
     }
 }

@@ -1,27 +1,30 @@
 package com.xecoder.service.impl;
 
-import com.xecoder.common.CryptoUtils;
-import com.xecoder.common.RadomUtils;
+import com.xecoder.common.exception.CustomException;
+import com.xecoder.common.util.CryptoUtils;
+import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
 import com.xecoder.model.business.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.service.core.AbstractService;
-import com.xecoder.service.core.RedisService;
+import com.xecoder.service.dao.AuthRepository;
 import com.xecoder.service.dao.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -42,7 +45,12 @@ public class UserServerImpl extends AbstractService<User> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RedisService redisService;
+    private AuthRepository authRepository;
+    @Autowired
+    private AuthServerImpl authServer;
+
+    @Inject
+    private MessageSource messageSource;
 
     @Override
     protected MongoRepository<User, String> getRepository() {
@@ -113,7 +121,7 @@ public class UserServerImpl extends AbstractService<User> {
 
         User user = userRepository.findByPhone(telephone);
         if (user != null) {
-            //throw new HabitException(UserExcepFactor.USER_EXIST, "user already existing");
+            throw new CustomException(messageSource.getMessage("first.name",null, Locale.getDefault()));
         }
 
         String salt = RadomUtils.getRadomStr();
@@ -128,9 +136,9 @@ public class UserServerImpl extends AbstractService<User> {
         Auth auth = new Auth(userId, salt);
         auth.setPassword(CryptoUtils.cryptoPassword(password, salt));
         AuthToken token = new AuthToken(user, device);
-        tokenStorage.add(token);
+        authServer.storeToken(token);
         auth.addToken(token);
-        authDao.save(auth);
+        authRepository.save(auth);
 
        // imService.register(userId, user.getNickname(), user.getAvatar());
         return token.getToken();

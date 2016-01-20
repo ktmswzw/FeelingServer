@@ -1,4 +1,4 @@
-package com.xecoder.common;
+package com.xecoder.common.util;
 
 import java.security.SecureRandom;
 
