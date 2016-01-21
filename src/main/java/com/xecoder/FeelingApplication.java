@@ -54,6 +54,35 @@ public class FeelingApplication extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");//日志
 		registry.addInterceptor(localeChangeInterceptor());
 	}
+//	@Override
+//	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+//		resolvers.add( exceptionHandlerExceptionResolver() ); // resolves @ExceptionHandler
+//		resolvers.add( restExceptionResolver() );
+//	}
+//
+//	@Bean
+//	public RestHandlerExceptionResolver restExceptionResolver() {
+//		return RestHandlerExceptionResolver.builder()
+//				.messageSource( httpErrorMessageSource() )
+//				.defaultContentType(MediaType.APPLICATION_JSON)
+//				.addErrorMessageHandler(EmptyResultDataAccessException.class, HttpStatus.NOT_FOUND)
+//				.build();
+//	}
+//
+//	@Bean
+//	public MessageSource httpErrorMessageSource() {
+//		ReloadableResourceBundleMessageSource m = new ReloadableResourceBundleMessageSource();
+//		m.setBasename("classpath:i18n/messages");
+//		m.setDefaultEncoding("UTF-8");
+//		return m;
+//	}
+//
+//	@Bean
+//	public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver() {
+//		ExceptionHandlerExceptionResolver resolver = new ExceptionHandlerExceptionResolver();
+//		resolver.setMessageConverters(HttpMessageConverterUtils.getDefaultHttpMessageConverters());
+//		return resolver;
+//	}
 
 	@Bean
 	public CORSFilter simpleCORSFilter(){

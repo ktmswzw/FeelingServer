@@ -1,5 +1,6 @@
 package com.xecoder.common.exception;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,8 +9,9 @@ import java.util.Map;
  * Author: zhangxin
  * Date:   15-9-17
  */
-public class ErrorDetail {
+public class ErrorDetail  implements Serializable {
 
+    private static final long serialVersionUID = 2803327363412578379L;
     private String title;
     private int status;
     private String detail;

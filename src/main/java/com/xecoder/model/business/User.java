@@ -2,11 +2,14 @@ package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -46,6 +49,7 @@ public class User {
     /**
      * 手机号
      */
+    @NotEmpty
     private String phone;
 
     /**
@@ -74,6 +78,14 @@ public class User {
     private String birthday;
 
     private String region;
+
+
+    @NotEmpty  @Transient
+    private String password;
+
+    @NotNull
+    @Transient
+    private DeviceEnum device;
 
     public User() {
 
@@ -194,5 +206,21 @@ public class User {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public DeviceEnum getDevice() {
+        return device;
+    }
+
+    public void setDevice(DeviceEnum device) {
+        this.device = device;
     }
 }
