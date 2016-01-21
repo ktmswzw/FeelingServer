@@ -1,5 +1,6 @@
 package com.xecoder.common.exception;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: zhangxin
@@ -22,17 +23,17 @@ import java.util.List;
 @ControllerAdvice
 public class ExampleExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Inject
+    @Autowired
     private MessageSource messageSource;
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleExampleException(CustomException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setTitle("Feeling Service Exception");
+        errorDetail.setTitle(messageSource.getMessage("error.info.system",null,Locale.getDefault()));
         errorDetail.setStatus(HttpStatus.NOT_FOUND.value());
         errorDetail.setDetail(ce.getMessage());
         errorDetail.setTimestamp(System.currentTimeMillis());
-        errorDetail.setDeveloperMessage(ce.getClass().getName());
+        errorDetail.setDeveloperMessage("com.xecoder");
 
         return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
     }
@@ -44,9 +45,9 @@ public class ExampleExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorDetail.setTitle("Validation Failed");
-        errorDetail.setDetail("Input validation failed");
-        errorDetail.setDeveloperMessage(manve.getClass().getName());
+        errorDetail.setTitle(messageSource.getMessage("error.validation.failed",null,Locale.getDefault()));
+        errorDetail.setDetail(messageSource.getMessage("error.input.validation.failed",null,Locale.getDefault()));
+        errorDetail.setDeveloperMessage("com.xecoder");
 
         List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
         for(FieldError fe: fieldErrors) {
@@ -57,7 +58,7 @@ public class ExampleExceptionHandler extends ResponseEntityExceptionHandler {
             }
             ValidationError validationError = new ValidationError();
             validationError.setCode(fe.getCode());
-            validationError.setMessage(messageSource.getMessage(fe, null));
+           validationError.setMessage(messageSource.getMessage(fe, null));
             validationErrorList.add(validationError);
         }
 

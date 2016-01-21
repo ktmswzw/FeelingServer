@@ -22,7 +22,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,7 +48,7 @@ public class UserServerImpl extends AbstractService<User> {
     @Autowired
     private AuthServerImpl authServer;
 
-    @Inject
+    @Autowired
     private MessageSource messageSource;
 
     @Override
@@ -121,7 +120,7 @@ public class UserServerImpl extends AbstractService<User> {
 
         User user = userRepository.findByPhone(telephone);
         if (user != null) {
-            throw new CustomException(messageSource.getMessage("first.name",null, Locale.getDefault()));
+            throw new CustomException(messageSource.getMessage("error.user.is.exist",null, Locale.getDefault()));
         }
 
         String salt = RadomUtils.getRadomStr();

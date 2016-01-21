@@ -5,7 +5,7 @@
  */
 package com.xecoder.common.qcloud;
 
-import com.imakehabits.qcloud.sign.FileCloudSign;
+import com.xecoder.common.qcloud.sign.FileCloudSign;
 import org.json.JSONException;
 import org.json.JSONObject;
 

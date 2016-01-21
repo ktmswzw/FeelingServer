@@ -1,5 +1,6 @@
-package com.xecoder.controller.user;
+package com.xecoder.controller.business;
 
+import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NoAuth;
@@ -8,14 +9,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController {
 
     @Autowired
     UserServerImpl userServer;
@@ -47,11 +51,11 @@ public class UserController {
      * @param device     设备，APP ,WEB
      * @return
      */
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     @NoAuth
-    public String register(@RequestParam String telephone, @RequestParam String password,  @RequestParam DeviceEnum device) {
-        return userServer.register(telephone, password, device);
+    public ResponseEntity<String> register(@Valid @RequestParam String telephone,@Valid  @RequestParam String password, @RequestParam DeviceEnum device) {
+        return new ResponseEntity<>(userServer.register(telephone, password, device), HttpStatus.OK);
     }
 
     @SuppressWarnings("unused")
@@ -62,4 +66,14 @@ public class UserController {
             this.token = token;
         }
     }
+
+/*
+    @RequestMapping(value = "exceptions/validate", method = RequestMethod.POST)
+    public ResponseEntity<?> addValidObject(@Valid @RequestBody ValidateObject validateObject) {
+        HttpHeaders headers = new HttpHeaders();
+        URI newUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(validateObject.getId()).toUri();
+        headers.setLocation(newUri);
+
+        return new ResponseEntity<>(null, headers, HttpStatus.CREATED);
+    }*/
 }

@@ -88,6 +88,11 @@ public class AuthServerImpl extends AbstractService<Auth> {
         redisService.expire(getKey(key), EXPIRED_SECOND);
     }
 
+    public String getUserIdByToken(String token)
+    {
+        return redisService.getValue(getKey(token));
+    }
+
     private String getKey(String key) {
         return PREFIX_KEY + key;
     }
