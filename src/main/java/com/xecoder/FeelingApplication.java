@@ -44,6 +44,9 @@ public class FeelingApplication extends WebMvcConfigurerAdapter {
 		return localeResolver;
 	}
 
+
+
+
 	/**
 	 * 添加过滤
 	 * @param registry

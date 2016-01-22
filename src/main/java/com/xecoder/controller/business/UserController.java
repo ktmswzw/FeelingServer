@@ -43,18 +43,24 @@ public class UserController extends BaseController {
     }
 
 
+
+     // @param telephone  手机号 password   密码  device     设备，APP ,WEB
+    /*
+   public ResponseEntity<String> register(@Valid @RequestBody User user) {
+        return new ResponseEntity<>(userServer.register(user.getPhone(), user.getPassword(), user.getDevice()), HttpStatus.OK);
+    }*/
+
     /**
      * APP注册接口
      *
-     * @param user telephone  手机号 password   密码  device     设备，APP ,WEB
+     * @param telephone  手机号
+     * @param password   密码
+     * @param device     设备，APP ,WEB
      * @return
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     @NoAuth
-/*    public ResponseEntity<String> register(@Valid @RequestBody User user) {
-        return new ResponseEntity<>(userServer.register(user.getPhone(), user.getPassword(), user.getDevice()), HttpStatus.OK);
-    }*/
     public ResponseEntity<String> register(@Valid @RequestParam String telephone,@Valid  @RequestParam String password, @RequestParam DeviceEnum device) {
         return new ResponseEntity<>(userServer.register(telephone, password, device), HttpStatus.OK);
     }
