@@ -1,7 +1,7 @@
 package com.xecoder.service.impl;
 
 import com.xecoder.common.exception.CustomException;
-import com.xecoder.common.util.CryptoUtils;
+import com.xecoder.common.util.HashPassword;
 import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
@@ -123,7 +123,7 @@ public class UserServerImpl extends AbstractService<User> {
             throw new CustomException(messageSource.getMessage("error.user.is.exist",null, Locale.getDefault()));
         }
 
-        String salt = RadomUtils.getRadomStr();
+        byte[] salt = RadomUtils.getRadomByte();
 
         user = new User();
         user.setPhone(telephone);
@@ -132,8 +132,8 @@ public class UserServerImpl extends AbstractService<User> {
         this.save(user);
 
         String userId = user.getId();
-        Auth auth = new Auth(userId, salt);
-        auth.setPassword(CryptoUtils.cryptoPassword(password, salt));
+        Auth auth = new Auth(userId, salt.toString());
+        auth.setPassword(HashPassword.encryptPassword(password, salt).getPassword());
         AuthToken token = new AuthToken(user, device);
         authServer.storeToken(token);
         auth.addToken(token);

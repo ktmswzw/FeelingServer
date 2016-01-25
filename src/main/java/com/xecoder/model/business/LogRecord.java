@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -13,10 +14,11 @@ import java.util.Map;
  * 2016/1/22-14:01
  * Feeling.com.xecoder.common.util
  */
-
+@SuppressWarnings("unchecked")
 @Document(collection = "log_record")
-public class LogRecord {
+public class LogRecord implements Serializable {
 
+    private static final long serialVersionUID = 4135902734480106473L;
     private Date time = new Date();
     /**
      * 操作者

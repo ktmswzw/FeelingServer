@@ -1,5 +1,7 @@
 package com.xecoder.common.util;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
 /**
@@ -10,7 +12,7 @@ import java.security.SecureRandom;
  */
 public class RadomUtils {
 
-    private static int DEFAULT_KEY_LENGTH = 16;
+    private static int DEFAULT_KEY_LENGTH = 32;
     private static SecureRandom random = null;
 
     /**
@@ -20,12 +22,36 @@ public class RadomUtils {
      * @return 随机字符串
      */
     public static String getRadomStr(int keyLength) {
-        if (random == null) {
-            random = new SecureRandom();
-        }
+        random = RadomUtils(random);
         byte[] buffer = new byte[keyLength];
         random.nextBytes(buffer);
-        return buffer.toString();
+        String str = new String(buffer);
+        return str;
+    }
+
+    private static SecureRandom RadomUtils(SecureRandom random){
+        if (random == null) {
+            try {
+                random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (NoSuchProviderException e) {
+                e.printStackTrace();
+            }
+        }
+        return random;
+    }
+
+    public static byte[] getRadomByte(int keyLength) {
+        random = RadomUtils(random);
+        byte[] buffer = new byte[keyLength];
+        random.nextBytes(buffer);
+        return buffer;
+    }
+
+
+    public static  byte[] getRadomByte() {
+        return getRadomByte(DEFAULT_KEY_LENGTH);
     }
 
     public static String getRadomStr() {

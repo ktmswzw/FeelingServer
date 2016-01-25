@@ -207,14 +207,14 @@ public class ImageMerge {
         return qyId;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        String[] images = new String[9];
-        for(int i=0;i<9;i++)
-        {
-            images[i] = "98ac7f85-1d56-4d8c-83d3-fc2e8d65afb0";
-        }
-        //System.out.println(createImage(images));
-    }
+//    public static void main(String[] args) throws Exception {
+//
+//        String[] images = new String[9];
+//        for(int i=0;i<9;i++)
+//        {
+//            images[i] = "98ac7f85-1d56-4d8c-83d3-fc2e8d65afb0";
+//        }
+//        //System.out.println(createImage(images));
+//    }
 
 }

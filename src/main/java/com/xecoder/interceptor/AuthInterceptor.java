@@ -10,7 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,7 +27,7 @@ import java.util.Locale;
  * 2016/1/11-13:21
  * Feeling.com.xecoder.model
  */
-@ControllerAdvice
+@Component
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Autowired

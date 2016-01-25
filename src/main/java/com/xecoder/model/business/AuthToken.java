@@ -1,7 +1,8 @@
 package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.xecoder.common.util.AESEncrypter;
+import com.xecoder.common.util.Digests;
+import com.xecoder.common.util.Encodes;
 import com.xecoder.common.util.RadomUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -39,7 +40,7 @@ public class AuthToken {
     private User user;
 
     public AuthToken(User user, DeviceEnum device) {
-        this.token = AESEncrypter.getInstance().encryptAsString(RadomUtils.getRadomStr(4) + "_" + System.currentTimeMillis());
+        this.token =Encodes.encodeHex(Digests.sha1((RadomUtils.getRadomByte().toString()+"_"+System.currentTimeMillis()).getBytes()));
         this.timestamp = new Date();
         this.user = user;
         this.device = device;

@@ -23,10 +23,10 @@ public class CORSFilter  implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
-        response.setHeader("Access-Control-Allow-Origin", "http://www.xecoder.com");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+//        response.setHeader("Access-Control-Allow-Origin", "http://www.xecoder.com");
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
         chain.doFilter(req, res);
     }
 

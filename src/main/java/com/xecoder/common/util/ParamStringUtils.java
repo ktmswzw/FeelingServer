@@ -10,10 +10,10 @@ public class ParamStringUtils {
         return str.matches(regex);
     }
 
-    public static void main(String[] args) {
-        boolean result = isAvailable("=-");
-        System.out.println(result);
-    }
+//    public static void main(String[] args) {
+//        boolean result = isAvailable("=-");
+//        System.out.println(result);
+//    }
 
 
 }
