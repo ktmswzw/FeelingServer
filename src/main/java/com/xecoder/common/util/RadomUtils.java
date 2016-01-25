@@ -23,11 +23,9 @@ public class RadomUtils {
         if (random == null) {
             random = new SecureRandom();
         }
-
         byte[] buffer = new byte[keyLength];
         random.nextBytes(buffer);
-        String str = new String(buffer);
-        return str;
+        return buffer.toString();
     }
 
     public static String getRadomStr() {

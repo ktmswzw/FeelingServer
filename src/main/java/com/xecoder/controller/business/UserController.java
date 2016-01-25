@@ -2,20 +2,14 @@ package com.xecoder.controller.business;
 
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.DeviceEnum;
-import com.xecoder.model.business.User;
 import com.xecoder.model.core.NoAuth;
 import com.xecoder.service.impl.UserServerImpl;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
 import javax.validation.Valid;
-import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -23,24 +17,6 @@ public class UserController extends BaseController {
 
     @Autowired
     UserServerImpl userServer;
-
-    private final Map<String, List<String>> userDb = new HashMap<>();
-
-    public UserController() {
-        userDb.put("ktm", Arrays.asList("user"));
-        userDb.put("test", Arrays.asList("user", "admin"));
-    }
-
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public LoginResponse login(@Valid @RequestBody final User user)
-        throws ServletException {
-        if (user.getPhone() == null || !userDb.containsKey(user.getPhone())) {
-            throw new ServletException("Invalid login");
-        }
-        return new LoginResponse(Jwts.builder().setSubject(user.getPhone())
-            .claim("body", userDb.get(user.getPhone())).setExpiration(new Date()).setIssuedAt(DateUtils.addMinutes(new Date(),1))
-            .signWith(SignatureAlgorithm.HS256, "FEELING").compact());
-    }
 
 
 
