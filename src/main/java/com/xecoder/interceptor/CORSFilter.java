@@ -12,22 +12,55 @@ import java.io.IOException;
  * 2016/1/21-14:12
  * Feeling.com.xecoder.interceptor
  */
+//@Component
+//public class CORSFilter  extends GenericFilterBean {
+//
+//    @Autowired
+//    public MessageSource messageSource;
+//
+//    //跨域
+//    @Override
+//    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+//        HttpServletResponse response = (HttpServletResponse) res;
+//        response.setHeader("Access-Control-Allow-Origin", "http://www.xecoder.com");
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT, PATCH");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+//        try {
+//            chain.doFilter(req, res);
+//        }
+//        catch (Exception e)
+//        {
+//            throw new FeelingException(messageSource.getMessage("org.springframework.web.HttpRequestMethodNotSupportedException.error",null, Locale.getDefault()));
+//        }
+//    }
+//
+//}
+
 @Component
 public class CORSFilter  implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
+//    @Autowired
+//    public MessageSource messageSource;
 
     //跨域
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
-//        response.setHeader("Access-Control-Allow-Origin", "http://www.xecoder.com");
-//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT");
-//        response.setHeader("Access-Control-Max-Age", "3600");
-//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
-        chain.doFilter(req, res);
+        response.setHeader("Access-Control-Allow-Origin", "http://www.xecoder.com");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+        try {
+            chain.doFilter(req, res);
+        }
+        catch (Exception e)
+        {
+            //throw new FeelingException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
+        }
     }
 
     @Override

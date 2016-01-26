@@ -12,5 +12,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface AuthRepository  extends MongoRepository<Auth, String> {
-
+    Auth findByOwner(String phone);
 }

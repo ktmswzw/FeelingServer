@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
 
-@Document(collection = "auth_db")
+@Document(collection = "auth")
 public class Auth {
     /**
      * id

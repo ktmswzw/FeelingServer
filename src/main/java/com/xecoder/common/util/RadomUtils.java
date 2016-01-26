@@ -1,5 +1,6 @@
 package com.xecoder.common.util;
 
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
@@ -25,7 +26,12 @@ public class RadomUtils {
         random = RadomUtils(random);
         byte[] buffer = new byte[keyLength];
         random.nextBytes(buffer);
-        String str = new String(buffer);
+        String str = null;
+        try {
+            str = new String(buffer,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return str;
     }
 

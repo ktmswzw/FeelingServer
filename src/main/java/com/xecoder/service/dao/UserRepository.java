@@ -24,6 +24,7 @@ public interface UserRepository extends MongoRepository<User, String> {
                     "]}";
 
     User findByPhone(String phone);
+
     @Query(value = FIND, count = true)
     Long searchCount(String keyword);
 }

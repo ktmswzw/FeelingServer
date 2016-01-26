@@ -1,6 +1,7 @@
 package com.xecoder.service.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -23,6 +25,10 @@ public abstract class AbstractService<T> implements IService<T> {
 
     @Autowired
     private MongoTemplate template;
+
+
+    @Autowired
+    public MessageSource messageSource;
 
     @Override
     public long count() {
@@ -124,10 +130,15 @@ public abstract class AbstractService<T> implements IService<T> {
         return (page - 1) * size;
     }
 
+    protected String getLocalException(String errorKey)
+    {
+        return this.messageSource.getMessage(errorKey,null, Locale.getDefault());
+    }
 
     abstract protected long count(T searchCondition);
     abstract protected List<T> search(int page, int size, Sort sort, T searchCondition);
     abstract protected Criteria makeCriteriaByPk(T model);
     abstract protected Criteria makeCriteria(T model);
     abstract protected Update makeAllUpdate(T model);
+
 }

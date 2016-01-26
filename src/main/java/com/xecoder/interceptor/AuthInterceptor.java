@@ -1,6 +1,6 @@
 package com.xecoder.interceptor;
 
-import com.xecoder.common.exception.CustomException;
+import com.xecoder.common.exception.FeelingException;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NoAuth;
@@ -15,7 +15,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -65,29 +64,27 @@ public class AuthInterceptor implements HandlerInterceptor {
             token = request.getParameter(BaseController.TOKEN_STR);
         }
         else {
-
-            throw new CustomException(messageSource.getMessage("error.user.not.register",null, Locale.getDefault()));
+            throw new FeelingException(messageSource.getMessage("error.user.not.register",null, Locale.getDefault()));
         }
-        String userId = authServer.getUserIdByToken(token);
-        if (userId == null) {
-            throw new CustomException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
-        }
-
-
         try {
-            final Claims claims = Jwts.parser().setSigningKey("secretkey")
+            final Claims claims = Jwts.parser().setSigningKey("FEELING_ME007")
                     .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
         }
         catch (final SignatureException e) {
-            throw new ServletException("Invalid token.");
+            throw new FeelingException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
+        }
+
+        String userId = authServer.getUserIdByToken(token);
+        if (userId == null) {
+            throw new FeelingException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
         }
 
         BaseController base = (BaseController)((HandlerMethod) handler).getBean();
         //base.setUserId(userId);
         BaseBean baseBean = new BaseBean();
         baseBean.setCreator("系统用户");
-        baseBean.setLastModifier("最后修 改者人klp");
+        baseBean.setLastModifier("最后修");
         base.setBaseBean(baseBean);
         base.setDeviceVersion(request.getHeader(BaseController.VERSION_STR));
         return true;

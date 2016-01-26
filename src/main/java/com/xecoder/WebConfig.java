@@ -70,8 +70,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(localeChangeInterceptor());
     }
 
+//    @Bean
+//    public FilterRegistrationBean simpleCORSFilter() {
+//        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+//        registrationBean.setFilter(new CORSFilter());
+//        registrationBean.addUrlPatterns("/*");
+//        return registrationBean;
+//    }
+
+
     @Bean
     public CORSFilter simpleCORSFilter(){
         return new CORSFilter();
     }
+
 }

@@ -1,6 +1,6 @@
 package com.xecoder.service.impl;
 
-import com.xecoder.common.exception.CustomException;
+import com.xecoder.common.exception.FeelingException;
 import com.xecoder.common.util.HashPassword;
 import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,7 +22,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -48,9 +46,6 @@ public class UserServerImpl extends AbstractService<User> {
     @Autowired
     private AuthServerImpl authServer;
 
-    @Autowired
-    private MessageSource messageSource;
-
     @Override
     protected MongoRepository<User, String> getRepository() {
         return userRepository;
@@ -64,7 +59,7 @@ public class UserServerImpl extends AbstractService<User> {
     }
 
     @Override
-    protected List<User> search(int page, int size, Sort sort, User searchCondition) {
+    public List<User> search(int page, int size, Sort sort, User searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
         Query query= makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
@@ -116,14 +111,17 @@ public class UserServerImpl extends AbstractService<User> {
         return null;
     }
 
+    public User findByPhone(String phone)
+    {
+        return userRepository.findByPhone(phone);
+    }
+
     public String register(String telephone, String password, DeviceEnum device) {
 
         User user = userRepository.findByPhone(telephone);
         if (user != null) {
-            throw new CustomException(messageSource.getMessage("error.user.is.exist",null, Locale.getDefault()));
+            throw new FeelingException(getLocalException("error.user.is.exist"));
         }
-
-        byte[] salt = RadomUtils.getRadomByte();
 
         user = new User();
         user.setPhone(telephone);
@@ -132,14 +130,51 @@ public class UserServerImpl extends AbstractService<User> {
         this.save(user);
 
         String userId = user.getId();
-        Auth auth = new Auth(userId, salt.toString());
-        auth.setPassword(HashPassword.encryptPassword(password, salt).getPassword());
+        byte[] salt = RadomUtils.getRadomByte();
+        HashPassword hashPassword = HashPassword.encryptPassword(password, salt);
+        Auth auth =new Auth(userId, hashPassword.getSalt());
+        auth.setPassword(hashPassword.getPassword());
         AuthToken token = new AuthToken(user, device);
         authServer.storeToken(token);
         auth.addToken(token);
         authRepository.save(auth);
 
-       // imService.register(userId, user.getNickname(), user.getAvatar());
+       // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
         return token.getToken();
     }
+
+    public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {
+        User user = userRepository.findByPhone(telephone);
+
+        if (user == null) {
+            throw new FeelingException(getLocalException("error.user.not.register"));
+        }
+
+        Auth auth = authRepository.findByOwner(user.getId());
+        if (auth == null) {
+                throw new FeelingException(getLocalException("error.user.out.time"));
+        }
+        boolean flag = HashPassword.validatePassword(password,auth.getPassword(),auth.getSalt());
+        if (!flag) {
+            if (!device.equals(DeviceEnum.WEB))
+                throw new FeelingException(getLocalException("error.user.login.failed"));
+            else {
+                return null;
+            }
+        }
+
+        List<AuthToken> tokens = auth.getEffectiveTokens();
+        for (AuthToken token : tokens) {
+            if (token.getDevice().equals(device)) {
+                return token;
+            }
+        }
+        AuthToken loginToken = new AuthToken(user, device);
+        authServer.storeToken(loginToken);
+        auth.addToken(loginToken);
+        authRepository.save(auth);
+
+        return loginToken;
+    }
+
 }

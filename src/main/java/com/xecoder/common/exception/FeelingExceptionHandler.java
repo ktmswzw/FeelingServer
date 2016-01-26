@@ -22,13 +22,13 @@ import java.util.Locale;
  * Date:   15-9-17
  */
 @ControllerAdvice
-public class ExampleExceptionHandler extends ResponseEntityExceptionHandler {
+public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private MessageSource messageSource;
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> handleExampleException(CustomException ce) {
+    @ExceptionHandler(FeelingException.class)
+    public ResponseEntity<?> FeelingExceptionHandler(FeelingException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTitle(messageSource.getMessage("error.info.system", null, Locale.getDefault()));
         errorDetail.setStatus(HttpStatus.NOT_FOUND.value());

@@ -2,14 +2,17 @@ package com.xecoder.controller.business;
 
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.DeviceEnum;
+import com.xecoder.model.business.User;
 import com.xecoder.model.core.NoAuth;
 import com.xecoder.service.impl.UserServerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -41,22 +44,19 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(userServer.register(telephone, password, device), HttpStatus.OK);
     }
 
-    @SuppressWarnings("unused")
-    private static class LoginResponse {
-        public String token;
 
-        public LoginResponse(final String token) {
-            this.token = token;
-        }
+    /**
+     * 获取用户列表
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "/lists/{name}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> getAllUserList(@Valid @PathVariable String name) {
+        User user = new User();
+        user.setNickname(name);
+        List<User> userList  = userServer.search(0,20, new Sort("OrderByCreateTimeAsc"),user);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-/*
-    @RequestMapping(value = "exceptions/validate", method = RequestMethod.POST)
-    public ResponseEntity<?> addValidObject(@Valid @RequestBody ValidateObject validateObject) {
-        HttpHeaders headers = new HttpHeaders();
-        URI newUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(validateObject.getId()).toUri();
-        headers.setLocation(newUri);
-
-        return new ResponseEntity<>(null, headers, HttpStatus.CREATED);
-    }*/
 }

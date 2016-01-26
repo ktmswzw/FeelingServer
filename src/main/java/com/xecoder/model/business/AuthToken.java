@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xecoder.common.util.Digests;
 import com.xecoder.common.util.Encodes;
 import com.xecoder.common.util.RadomUtils;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -40,10 +42,22 @@ public class AuthToken {
     private User user;
 
     public AuthToken(User user, DeviceEnum device) {
-        this.token =Encodes.encodeHex(Digests.sha1((RadomUtils.getRadomByte().toString()+"_"+System.currentTimeMillis()).getBytes()));
+
+        this.token = getJWT(user.getNickname());
         this.timestamp = new Date();
         this.user = user;
         this.device = device;
+    }
+
+
+    private String getJWT(String username)
+    {
+
+        //JWT http://blog.leapoahead.com/2015/09/06/understanding-jwt/
+        String temp =Encodes.encodeHex(Digests.sha1((RadomUtils.getRadomByte().toString()+"_"+System.currentTimeMillis()).getBytes()));
+        return Jwts.builder().setSubject(username)
+                .claim("token", temp).setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS256, "FEELING_ME007").compact();
     }
 
     public AuthToken(){}
