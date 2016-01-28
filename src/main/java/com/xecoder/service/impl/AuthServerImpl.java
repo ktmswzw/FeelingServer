@@ -4,6 +4,7 @@ import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.service.core.RedisService;
+import com.xecoder.service.dao.AuthDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,6 +24,8 @@ import java.util.List;
 @Service
 public class AuthServerImpl extends AbstractService<Auth> {
 
+    @Autowired
+    private AuthDao authDao;
 
     @Autowired
     private RedisService redisService;
@@ -34,7 +37,7 @@ public class AuthServerImpl extends AbstractService<Auth> {
 
     @Override
     protected MongoRepository<Auth, String> getRepository() {
-        return null;
+        return authDao;
     }
 
     @Override

@@ -5,11 +5,11 @@ import com.xecoder.common.util.HashPassword;
 import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
-import com.xecoder.model.business.DeviceEnum;
+import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.service.core.AbstractService;
-import com.xecoder.service.dao.AuthRepository;
-import com.xecoder.service.dao.UserRepository;
+import com.xecoder.service.dao.AuthDao;
+import com.xecoder.service.dao.UserDao;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,15 +40,15 @@ public class UserServerImpl extends AbstractService<User> {
     */
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userDao;
     @Autowired
-    private AuthRepository authRepository;
+    private AuthDao authDao;
     @Autowired
     private AuthServerImpl authServer;
 
     @Override
     protected MongoRepository<User, String> getRepository() {
-        return userRepository;
+        return userDao;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class UserServerImpl extends AbstractService<User> {
 
     @Override
     public User findByPk(Object... keys) {
-        return userRepository.findByPhone((String) keys[0]);
+        return userDao.findByPhone((String) keys[0]);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class UserServerImpl extends AbstractService<User> {
 
     @Override
     public long searchCount(String keyword) {
-        return userRepository.searchCount(keyword);
+        return userDao.searchCount(keyword);
     }
 
     @Override
@@ -113,12 +113,12 @@ public class UserServerImpl extends AbstractService<User> {
 
     public User findByPhone(String phone)
     {
-        return userRepository.findByPhone(phone);
+        return userDao.findByPhone(phone);
     }
 
     public String register(String telephone, String password, DeviceEnum device) {
 
-        User user = userRepository.findByPhone(telephone);
+        User user = userDao.findByPhone(telephone);
         if (user != null) {
             throw new FeelingException(getLocalException("error.user.is.exist"));
         }
@@ -137,20 +137,20 @@ public class UserServerImpl extends AbstractService<User> {
         AuthToken token = new AuthToken(user, device);
         authServer.storeToken(token);
         auth.addToken(token);
-        authRepository.save(auth);
+        authDao.save(auth);
 
        // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
         return token.getToken();
     }
 
     public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {
-        User user = userRepository.findByPhone(telephone);
+        User user = userDao.findByPhone(telephone);
 
         if (user == null) {
             throw new FeelingException(getLocalException("error.user.not.register"));
         }
 
-        Auth auth = authRepository.findByOwner(user.getId());
+        Auth auth = authDao.findByOwner(user.getId());
         if (auth == null) {
                 throw new FeelingException(getLocalException("error.user.out.time"));
         }
@@ -172,7 +172,7 @@ public class UserServerImpl extends AbstractService<User> {
         AuthToken loginToken = new AuthToken(user, device);
         authServer.storeToken(loginToken);
         auth.addToken(loginToken);
-        authRepository.save(auth);
+        authDao.save(auth);
 
         return loginToken;
     }

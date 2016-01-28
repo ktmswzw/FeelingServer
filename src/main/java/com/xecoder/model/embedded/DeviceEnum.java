@@ -1,4 +1,4 @@
-package com.xecoder.model.business;
+package com.xecoder.model.embedded;
 
 /**
  * Created by  moxz

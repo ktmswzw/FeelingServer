@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xecoder.common.util.Digests;
 import com.xecoder.common.util.Encodes;
 import com.xecoder.common.util.RadomUtils;
+import com.xecoder.model.embedded.DeviceEnum;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.data.mongodb.core.mapping.Document;

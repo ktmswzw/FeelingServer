@@ -2,6 +2,8 @@ package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xecoder.model.embedded.DeviceEnum;
+import com.xecoder.model.embedded.Sex;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;

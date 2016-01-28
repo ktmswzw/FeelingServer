@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 //@Qualifier("primary")
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserDao extends MongoRepository<User, String> {
 
     String FIND =
             "{$or:[" +

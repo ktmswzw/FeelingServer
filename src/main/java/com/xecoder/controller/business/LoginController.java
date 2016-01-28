@@ -2,7 +2,7 @@ package com.xecoder.controller.business;
 
 import com.xecoder.common.json.JsonMap;
 import com.xecoder.controller.core.BaseController;
-import com.xecoder.model.business.DeviceEnum;
+import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NoAuth;
 import com.xecoder.service.impl.UserServerImpl;
