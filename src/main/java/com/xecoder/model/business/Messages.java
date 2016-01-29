@@ -3,7 +3,7 @@ package com.xecoder.model.business;
 import com.xecoder.model.embedded.MessagesPhoto;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.geo.Point;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -27,21 +27,21 @@ public class Messages implements Serializable {
     private static final long serialVersionUID = 3937826603798306562L;
 
     public static int CLOSE = 1; //未拆封  默认
+    public static int LOCKED = 0; //答案正确 锁定，待经纬度差额为100米，解锁
     public static int OPEN = 9;  // 已被拆开
 
     @Id
     private String id;
 
     /**
-     * 发送对象
+     * 发送对象名称
      */
     @NotEmpty
     private String from;
 
     /**
-     * 接受对象
+     * 接受对象名称
      */
-    @NotEmpty
     private String to;
 
     /**
@@ -65,17 +65,17 @@ public class Messages implements Serializable {
      */
     private String videoPath;
 
-    @NotEmpty
-    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
-    private GeoJsonPoint coordinate;
-
     /**
      * 经纬度坐标
      * http://docs.mongodb.org/manual/reference/command/geoNear
-     * db.geography.ensureIndex({point:"2dsphere"});
-     * db.collection.createIndex( { <location field> : "2dsphere" } )
+     * db.messages.ensureIndex({point:"2dsphere"});  2.6 old
+     * db.messages.createIndex( { point : "2dsphere" } )  3.0 new
      * { type: "Point", coordinates: [ 40, 5 ] }  https://docs.mongodb.org/v2.6/reference/geojson/
      */
+    @NotEmpty
+    @Field(value = "point")
+    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    private GeoJsonPoint coordinate;
 
     /**
      * 城市
@@ -121,6 +121,34 @@ public class Messages implements Serializable {
 
     private int state = CLOSE;
 
+    /**
+     * 发送人
+     */
+    private String fromId;
+    /**
+     * 查看人
+     */
+    private String toId;
+
+    /**
+     * 创建时间
+     */
+    @Field(value = "create_date")
+    private Date createDate;
+
+    /**
+     * 更新时间
+     */
+    @Field(value = "update_date")
+    private Date updateDate;
+
+
+    /**
+     * 临时距离，默认为空，查询结果时赋值
+     */
+    @Transient
+    private double distance;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -161,7 +189,7 @@ public class Messages implements Serializable {
         this.videoPath = videoPath;
     }
 
-    public Point getCoordinate() {
+    public GeoJsonPoint getCoordinate() {
         return coordinate;
     }
 
@@ -251,5 +279,45 @@ public class Messages implements Serializable {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getFromId() {
+        return fromId;
+    }
+
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }

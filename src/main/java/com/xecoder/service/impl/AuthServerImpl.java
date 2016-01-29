@@ -8,7 +8,6 @@ import com.xecoder.service.dao.AuthDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,7 @@ public class AuthServerImpl extends AbstractService<Auth> {
     }
 
     @Override
-    protected List<Auth> search(int page, int size, Sort sort, Auth searchCondition) {
+    public List<Auth> search(int page, int size, Sort sort, Auth searchCondition) {
         return null;
     }
 
@@ -61,11 +60,6 @@ public class AuthServerImpl extends AbstractService<Auth> {
     }
 
     @Override
-    protected Update makeAllUpdate(Auth model) {
-        return null;
-    }
-
-    @Override
     public Auth findByPk(Object... keys) {
         return null;
     }
@@ -73,11 +67,6 @@ public class AuthServerImpl extends AbstractService<Auth> {
     @Override
     public Iterable<Auth> findByNameLike(String name, String sortColumn) {
         return null;
-    }
-
-    @Override
-    public long searchCount(String keyword) {
-        return 0;
     }
 
     @Override

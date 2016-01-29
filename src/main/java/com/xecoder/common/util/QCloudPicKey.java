@@ -6,7 +6,7 @@ package com.xecoder.common.util;
  * 2015/9/11-9:16
  * HabitServer.com.qcloud
  */
-public  interface HabitPicKey {
+public  interface QCloudPicKey {
     public static final String M_SECRET_ID = "AKIDSWWEVHp02vgtpFtSa4oFalHKm4V4P5Ia";
     public static final String M_SECRET_KEY = "tAj32v6ZQC385aP1oUeFCqljjUpJD4iC";
 

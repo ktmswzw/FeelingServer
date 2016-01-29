@@ -5,8 +5,8 @@ import com.xecoder.common.util.HashPassword;
 import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
-import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
+import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.service.dao.AuthDao;
 import com.xecoder.service.dao.UserDao;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
@@ -84,14 +83,6 @@ public class UserServerImpl extends AbstractService<User> {
     }
 
     @Override
-    protected Update makeAllUpdate(User model) {
-        Update update = new Update();
-        update.set("nickname", model.getNickname());
-        update.set("avatar", model.getAvatar());
-        return update;
-    }
-
-    @Override
     public User findByPk(Object... keys) {
         return userDao.findByPhone((String) keys[0]);
     }
@@ -100,11 +91,11 @@ public class UserServerImpl extends AbstractService<User> {
     public Iterable<User> findByNameLike(String name, String sortColumn) {
         return null;
     }
-
-    @Override
-    public long searchCount(String keyword) {
-        return userDao.searchCount(keyword);
-    }
+//
+//    @Override
+//    public long searchCount(String keyword) {
+//        return userDao.searchCount(keyword);
+//    }
 
     @Override
     public Iterable<User> search(String keyword, int page, int size, String sortColumn) {

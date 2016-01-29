@@ -2,7 +2,6 @@ package com.xecoder.service.dao;
 
 import com.xecoder.model.business.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -24,7 +23,7 @@ public interface UserDao extends MongoRepository<User, String> {
                     "]}";
 
     User findByPhone(String phone);
-
-    @Query(value = FIND, count = true)
-    Long searchCount(String keyword);
+//
+//    @Query(value = FIND, count = true)
+//    Long searchCount(String keyword);
 }

@@ -2,6 +2,9 @@ package com.xecoder.controller.core;
 
 import com.xecoder.model.core.BaseBean;
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.ServletRequest;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -18,6 +22,7 @@ import java.util.TreeMap;
  * 2016/1/11-10:26
  * Feeling.com.xecoder.controller
  */
+@ControllerAdvice
 public class BaseController {
 
     public static String TOKEN_STR = "TOKEN";
@@ -29,6 +34,10 @@ public class BaseController {
     private String token;
     private String userId;
     public BaseBean baseBean;
+
+
+    @Autowired
+    public MessageSource messageSource;
 
     /**
      * 应用版本号
@@ -60,6 +69,13 @@ public class BaseController {
             }
         }
     }
+
+
+    protected String getLocalException(String errorKey)
+    {
+        return this.messageSource.getMessage(errorKey,null, Locale.getDefault());
+    }
+
 
 
     /**

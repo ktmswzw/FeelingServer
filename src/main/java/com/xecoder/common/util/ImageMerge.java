@@ -135,7 +135,7 @@ public class ImageMerge {
      * @throws IOException
      */
     public static BufferedImage zoom(String sourceUrl, int width, int height) throws IOException {
-        String urlString = "http://"+HabitPicKey.DOMAIN + "/" + sourceUrl+"/small";
+        String urlString = "http://"+ QCloudPicKey.DOMAIN + "/" + sourceUrl+"/small";
         URL url = new URL(urlString);
         int num = urlString.lastIndexOf('/');
         String u = urlString.substring(0,num);

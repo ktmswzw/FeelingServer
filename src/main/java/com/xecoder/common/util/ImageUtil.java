@@ -17,10 +17,10 @@ import java.util.Date;
  * 图片上传类
  */
 public class ImageUtil {
-    public static final int APP_ID_V2 = HabitPicKey.APP_ID;
-    public static final String SECRET_ID_V2 = HabitPicKey.M_SECRET_ID;
-    public static final String SECRET_KEY_V2 = HabitPicKey.M_SECRET_KEY;
-    public static final String BUCKET = HabitPicKey.BUCKET;        //空间名
+    public static final int APP_ID_V2 = QCloudPicKey.APP_ID;
+    public static final String SECRET_ID_V2 = QCloudPicKey.M_SECRET_ID;
+    public static final String SECRET_KEY_V2 = QCloudPicKey.M_SECRET_KEY;
+    public static final String BUCKET = QCloudPicKey.BUCKET;        //空间名
 
 
     /**
@@ -48,7 +48,7 @@ public class ImageUtil {
         int ret = pc.Upload(imageBackup.getPath(), result);
         if (ret == 0) {
             imageBackup.setPath(result.fileid);//替换为云路径
-            imageBackup.setDomain(HabitPicKey.DOMAIN);
+            imageBackup.setDomain(QCloudPicKey.DOMAIN);
             imageBackup.setDate(new Timestamp((new Date()).getTime()));
         } else {
             path = "404";
@@ -63,7 +63,7 @@ public class ImageUtil {
         int ret = pc.Upload(file, result);
         if (ret == 0) {
             imageBackup.setPath(result.fileid);//替换为云路径
-            imageBackup.setDomain(HabitPicKey.DOMAIN);
+            imageBackup.setDomain(QCloudPicKey.DOMAIN);
             imageBackup.setDate(new Timestamp((new Date()).getTime()));
         } else {
             path = "404";
@@ -79,7 +79,7 @@ public class ImageUtil {
         int ret = pc.UploadGroup(file, result);
         if (ret == 0) {
             imageBackup.setPath(result.fileid);//替换为云路径
-            imageBackup.setDomain(HabitPicKey.DOMAIN);
+            imageBackup.setDomain(QCloudPicKey.DOMAIN);
             imageBackup.setDate(new Timestamp((new Date()).getTime()));
         } else {
             path = "404";
@@ -100,7 +100,7 @@ public class ImageUtil {
         ImageBackup imageBackup = new ImageBackup();
         if (ret == 0) {
             imageBackup.setPath(result.fileid);//替换为云路径
-            imageBackup.setDomain(HabitPicKey.DOMAIN);
+            imageBackup.setDomain(QCloudPicKey.DOMAIN);
             imageBackup.setDate(new Timestamp((new Date()).getTime()));
         }
         return imageBackup;

@@ -1,25 +1,25 @@
 package com.xecoder.service.impl;
 
-import com.mongodb.AggregationOptions;
-import com.mongodb.BasicDBObject;
-import com.mongodb.Cursor;
-import com.mongodb.DBObject;
+import com.xecoder.common.util.DateUtils;
+import com.xecoder.common.util.SurfaceDistanceUtils;
 import com.xecoder.model.business.Messages;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.service.dao.MessagesDao;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.geo.Point;
+import org.springframework.data.geo.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,15 +49,37 @@ public class MessagesServerImpl extends AbstractService<Messages> {
         return doCount(query, Messages.class);
     }
 
+    /**
+     * 默认搜索20千米范围内信息，按位置排序
+     *
+     * @param page
+     * @param size
+     * @param sort
+     * @param searchCondition
+     * @return
+     */
     @Override
-    protected List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
+    public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
-        Query query= makeQuery(criteria);
+        Query query = makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
-        if (sort != null) {
-            query.with(sort);
+        List<Messages> list = new ArrayList<>();
+        GeoJsonPoint point = searchCondition.getCoordinate();
+        if (point != null) {//按经纬度搜索
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(100)).query(query);//单位: 20千米
+            GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
+            if (empGeoResults != null) {
+                for (GeoResult<Messages> e : empGeoResults) {
+                    Messages messages = e.getContent();
+                    messages.setDistance(e.getDistance().getValue());
+                    list.add(messages);
+                }
+            }
+        } else {//按姓名搜索
+            if (StringUtils.isNotBlank(searchCondition.getTo()))
+                list = doFind(query, Messages.class);
         }
-        return doFind(query, Messages.class);
+        return list;
     }
 
     @Override
@@ -68,31 +90,30 @@ public class MessagesServerImpl extends AbstractService<Messages> {
     @Override
     protected Criteria makeCriteria(Messages model) {
         Criteria criteria = null;
+        if (StringUtils.isNotEmpty(model.getId())) {
+            criteria = makeCriteria(criteria, "_id", new ObjectId(model.getId()));
+        }
         if (StringUtils.isNotEmpty(model.getTo())) {
             criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
         }
-        criteria = makeCriteria(criteria,"state",Messages.CLOSE);
+        if (StringUtils.isNotEmpty(model.getFrom())) {
+            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getFrom() + ".*$");
+        }
+        criteria = makeCriteria(criteria, "state", Messages.CLOSE);//未被开启过
+        criteria.where("limit_date").lte(DateUtils.addDay(new Date(), 365)).gt(new Date());//一年有效期内
+
         return criteria;
     }
 
     @Override
-    protected Update makeAllUpdate(Messages model) {
-        return null;
-    }
-
-    @Override
     public Messages findByPk(Object... keys) {
-        return null;
+        return messagesDao.findOne(String.valueOf(keys));
+//        return messagesDao.findById(String.valueOf(keys));
     }
 
     @Override
     public Iterable<Messages> findByNameLike(String name, String sortColumn) {
-        return null;
-    }
-
-    @Override
-    public long searchCount(String keyword) {
-        return 0;
+        return messagesDao.findAll();
     }
 
     @Override
@@ -100,24 +121,59 @@ public class MessagesServerImpl extends AbstractService<Messages> {
         return null;
     }
 
-
-    public List<DBObject> geoNear(DBObject query, Point point, int limit, long maxDistance) {
-        if(query==null)
-            query = new BasicDBObject();
-
-        List<DBObject> pipeLine = new ArrayList<>();
-        BasicDBObject aggregate = new BasicDBObject("geoNear",
-                new BasicDBObject("near",new BasicDBObject("type","Point").append("coordinates",new double[]{point.getX(),point.getY()})))
-                .append("query",query)
-                .append("num",limit)
-                .append("maxDistance",maxDistance)
-                .append("spherical",true);
-        pipeLine.add(aggregate);
-        Cursor cursor=mongoTemplate.getCollection("messages").aggregate(pipeLine, AggregationOptions.builder().build());
-        List<DBObject> list = new LinkedList<>();
-        while (cursor.hasNext()) {
-            list.add(cursor.next());
+    /**
+     * '
+     * 验证答案，见逻辑
+     *
+     * @param id
+     * @param answer
+     * @return
+     */
+    public Messages validate(String id, String answer) {
+        if (StringUtils.isNotBlank(id)) {
+            Messages m = this.findByPk(id);
+            if (StringUtils.isBlank(m.getQuestion()))
+                return m;
+            else if (StringUtils.isBlank(m.getAnswer()))
+                return m;
+            else if (StringUtils.equals(m.getAnswer(), answer.trim())) {
+                m.setState(Messages.LOCKED);
+                this.save(m);//锁定，待距离小于0.1KM时发起解锁申请
+                return m;
+            }
+            else
+                return null;
+        } else {
+            return null;
         }
-        return list;
+    }
+
+    /**
+     * 是否到达，小于0.1千米 则由APP端解锁
+     *
+     * @param id
+     * @param point
+     * @return
+     */
+    public boolean isArrival(String id, Point point) {
+        Messages messages = new Messages();
+        messages.setId(id);
+        //java计算
+        messages = this.findByPk(id);
+        Point point1 = new Point(messages.getCoordinate().getX(),messages.getCoordinate().getY());
+        return SurfaceDistanceUtils.getShortestDistance(point,point1)>=0.1?true:false;
+
+        //mongodb计算
+//        Criteria criteria = makeCriteria(messages);
+//        Query query = makeQuery(criteria);
+//        query.skip(calcSkipNum(0, 1)).limit(1);
+//        NearQuery nq = NearQuery.near(x, y, Metrics.KILOMETERS).maxDistance(new Double(20038)).query(query);//地球赤道40076千米
+//        GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
+//        if (empGeoResults != null) {
+//            for (GeoResult<Messages> e : empGeoResults) {
+//                return e.getDistance().getValue()>=0.1?true:false;
+//            }
+//        }
+//        return false;
     }
 }

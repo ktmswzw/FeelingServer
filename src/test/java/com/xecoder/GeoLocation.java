@@ -36,4 +36,11 @@ public class GeoLocation {
         this.name = name;
     }
 
+    public GeoJsonPoint getGeoPoint() {
+        return geoPoint;
+    }
+
+    public void setGeoPoint(GeoJsonPoint geoPoint) {
+        this.geoPoint = geoPoint;
+    }
 }

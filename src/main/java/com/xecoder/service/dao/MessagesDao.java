@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessagesDao extends MongoRepository<Messages,String> {
 
+//    Messages findById(String id);
 //    GeoResults<Messages> findByPositionWithin(Circle c);
 //
 //    //  Point location = new Point(-73.99171, 40.738868);

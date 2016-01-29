@@ -1,6 +1,9 @@
 package com.xecoder;
 
 import com.mongodb.BasicDBObject;
+import com.xecoder.common.util.SurfaceDistanceUtils;
+import com.xecoder.service.impl.MessagesServerImpl;
+import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,8 @@ public class GeoJSONTests {
 
     @Autowired
     private GeoLocationDao geoLocationDao;
+    @Autowired
+    private MessagesServerImpl server;
 
     @Test
     public void contextLoads() {
@@ -56,14 +61,16 @@ public class GeoJSONTests {
         template.getCollection("geo_point").createIndex( new BasicDBObject( "point", "2dsphere"));
     }
 
-//    @Test
+    @Test
     public  void query()
     {
         Point point = new Point(110.295787, 25.288211);
-        Criteria criteria = new Criteria();// Criteria.where("name").is("皇冠小区");
+        Criteria criteria =  Criteria.where("_id").is(new ObjectId("56a9a7ad6aa4f9d7168ff143"));
+//        Criteria criteria =   new Criteria();
         Query query = new Query(criteria);
-        query.limit(20);
-        NearQuery nq = NearQuery.near(point.getX(),point.getY(), Metrics.KILOMETERS).maxDistance(new Double(490));
+        query.limit(3);
+        query.skip(0);
+        NearQuery nq = NearQuery.near(point.getX(),point.getY(), Metrics.KILOMETERS).maxDistance(new Double(490)).query(query);
         GeoResults<GeoLocation> empGeoResults = template.geoNear(nq, GeoLocation.class);
         if (empGeoResults != null) {
             List<GeoLocation> empList = new ArrayList<>();
@@ -72,5 +79,18 @@ public class GeoJSONTests {
             }
         }
 
+    }
+
+    @Test
+    public void distance()
+    {
+        Point point = new Point(110.295787, 25.288211);
+        GeoLocation geoLocation = template.findById(new  ObjectId("56a9a7ad6aa4f9d7168ff143"),GeoLocation.class);
+
+        Point point1 = new Point(geoLocation.getGeoPoint().getX(),geoLocation.getGeoPoint().getY());
+
+        boolean s = SurfaceDistanceUtils.getShortestDistance(point,point1)>=0.1?true:false;
+
+        System.out.println("s = " + s);
     }
 }
