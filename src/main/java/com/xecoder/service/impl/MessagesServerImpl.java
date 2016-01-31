@@ -61,12 +61,15 @@ public class MessagesServerImpl extends AbstractService<Messages> {
     @Override
     public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
+//        Criteria criteria =   new Criteria();
+
+//        Query query = new Query(criteria);
         Query query = makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
-        GeoJsonPoint point = searchCondition.getCoordinate();
+        GeoJsonPoint point = searchCondition.getPoint();
         if (point != null) {//按经纬度搜索
-            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(100)).query(query);//单位: 20千米
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(490)).query(query);//单位: 20千米
             GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {
@@ -160,7 +163,7 @@ public class MessagesServerImpl extends AbstractService<Messages> {
         messages.setId(id);
         //java计算
         messages = this.findByPk(id);
-        Point point1 = new Point(messages.getCoordinate().getX(),messages.getCoordinate().getY());
+        Point point1 = new Point(messages.getPoint().getX(),messages.getPoint().getY());
         return SurfaceDistanceUtils.getShortestDistance(point,point1)>=0.1?true:false;
 
         //mongodb计算

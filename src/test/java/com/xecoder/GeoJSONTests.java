@@ -2,6 +2,7 @@ package com.xecoder;
 
 import com.mongodb.BasicDBObject;
 import com.xecoder.common.util.SurfaceDistanceUtils;
+import com.xecoder.model.business.Messages;
 import com.xecoder.service.impl.MessagesServerImpl;
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -48,10 +49,10 @@ public class GeoJSONTests {
 
     }
 
-//    @Test
+    @Test
     public void init() {
         geoLocationDao.save(new GeoLocation("鹤山市",new Point(112.99206,22.740501)));
-        geoLocationDao.save(new GeoLocation("桂林市",new Point(110.295787,25.288211)));
+//        geoLocationDao.save(new GeoLocation("桂林市",new Point(110.295787,25.288211)));
     }
 
     /**
@@ -65,16 +66,16 @@ public class GeoJSONTests {
     public  void query()
     {
         Point point = new Point(110.295787, 25.288211);
-        Criteria criteria =  Criteria.where("_id").is(new ObjectId("56a9a7ad6aa4f9d7168ff143"));
-//        Criteria criteria =   new Criteria();
+//        Criteria criteria =  Criteria.where("_id").is(new ObjectId("56a9a7ad6aa4f9d7168ff143"));
+        Criteria criteria =   new Criteria();
         Query query = new Query(criteria);
         query.limit(3);
         query.skip(0);
         NearQuery nq = NearQuery.near(point.getX(),point.getY(), Metrics.KILOMETERS).maxDistance(new Double(490)).query(query);
-        GeoResults<GeoLocation> empGeoResults = template.geoNear(nq, GeoLocation.class);
+        GeoResults<Messages> empGeoResults = template.geoNear(nq, Messages.class);
         if (empGeoResults != null) {
-            List<GeoLocation> empList = new ArrayList<>();
-            for (GeoResult<GeoLocation> e : empGeoResults) {
+            List<Messages> empList = new ArrayList<>();
+            for (GeoResult<Messages> e : empGeoResults) {
                 empList.add(e.getContent());
             }
         }

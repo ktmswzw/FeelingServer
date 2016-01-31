@@ -1,8 +1,5 @@
 package com.xecoder.model.embedded;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
  * Created by  moxz
  * User: 224911261@qq.com
@@ -10,17 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Feeling.com.xecoder.model.business
  */
 
-@Document(collection = "message_photo")
 public class MessagesPhoto {
-
-    @Id
-    private String id;
-
-    /**
-     * 消息id
-     */
-    private String messageId;
-
     /**'
      * 名称
      */
@@ -35,22 +22,6 @@ public class MessagesPhoto {
      * 缩略图
      */
     private String thumbnails;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
 
     public String getName() {
         return name;

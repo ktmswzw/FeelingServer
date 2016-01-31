@@ -1,10 +1,14 @@
 package com.xecoder.interceptor;
 
+import com.xecoder.common.exception.FeelingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -43,8 +47,8 @@ public class CORSFilter  implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
-//    @Autowired
-//    public MessageSource messageSource;
+    @Autowired
+    public MessageSource messageSource;
 
     //跨域
     @Override
@@ -59,7 +63,7 @@ public class CORSFilter  implements Filter {
         }
         catch (Exception e)
         {
-            //throw new FeelingException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
+            throw new FeelingException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
         }
     }
 

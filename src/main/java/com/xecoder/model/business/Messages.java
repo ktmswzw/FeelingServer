@@ -1,5 +1,8 @@
 package com.xecoder.model.business;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xecoder.common.util.DateUtils;
 import com.xecoder.model.embedded.MessagesPhoto;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -9,6 +12,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -74,9 +78,8 @@ public class Messages implements Serializable {
      * { type: "Point", coordinates: [ 40, 5 ] }  https://docs.mongodb.org/v2.6/reference/geojson/
      */
     @NotEmpty
-    @Field(value = "point")
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
-    private GeoJsonPoint coordinate;
+    private GeoJsonPoint point;
 
     /**
      * 城市
@@ -109,7 +112,10 @@ public class Messages implements Serializable {
      * 限制时间
      */
     @Field(value = "limit_date")
-    private Date limitDate;
+    @JsonProperty(value = "limit_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date limitDate = DateUtils.addDay(new Date(),7);
 
     /**
      * 阅后即焚
@@ -132,12 +138,18 @@ public class Messages implements Serializable {
      * 创建时间
      */
     @Field(value = "create_date")
-    private Date createDate;
+    @JsonProperty(value = "create_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createDate = new Date();
 
     /**
      * 更新时间
      */
     @Field(value = "update_date")
+    @JsonProperty(value = "update_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateDate;
 
 
@@ -187,12 +199,12 @@ public class Messages implements Serializable {
         this.videoPath = videoPath;
     }
 
-    public GeoJsonPoint getCoordinate() {
-        return coordinate;
+    public GeoJsonPoint getPoint() {
+        return point;
     }
 
-    public void setCoordinate(GeoJsonPoint coordinate) {
-        this.coordinate = coordinate;
+    public void setPoint(GeoJsonPoint point) {
+        this.point = point;
     }
 
     public String getCity() {

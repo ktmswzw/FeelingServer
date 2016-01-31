@@ -54,7 +54,7 @@ public class MessagesController extends BaseController {
         Messages msg = new Messages();
         msg.setTo(to);
         GeoJsonPoint point = new GeoJsonPoint(x, y);
-        msg.setCoordinate(point);
+        msg.setPoint(point);
         return new ResponseEntity<>(server.search(page, size, new Sort("OrderByLimitDateAsc"), msg), HttpStatus.OK);
     }
 
@@ -65,7 +65,8 @@ public class MessagesController extends BaseController {
      * @param msg
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "send", method = RequestMethod.POST)
+    @ResponseBody
     private ResponseEntity<String> send(@Valid @RequestBody Messages msg) {
         msg.setState(Messages.CLOSE);
         msg.setFrom(this.getUserId());
@@ -91,7 +92,7 @@ public class MessagesController extends BaseController {
             Messages n = new Messages();
             n.setCity(m.getCity());
             n.setDistrict(m.getDistrict());
-            n.setCoordinate(m.getCoordinate());
+            n.setPoint(m.getPoint());
             n.setAddress(m.getAddress());
             return new ResponseEntity<>(n, HttpStatus.OK);
         }
