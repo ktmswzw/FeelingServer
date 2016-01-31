@@ -27,8 +27,9 @@ public class Messages implements Serializable {
     private static final long serialVersionUID = 3937826603798306562L;
 
     public static int CLOSE = 1; //未拆封  默认
-    public static int LOCKED = 0; //答案正确 锁定，待经纬度差额为100米，解锁
-    public static int OPEN = 9;  // 已被拆开
+    public static int LOCKED = 2; //答案正确 锁定，待经纬度差额为100米，解锁
+    public static int OPEN = 3;  // 已被拆开
+    public static int DELETED = 9;  // 已删除
 
     @Id
     private String id;
@@ -93,9 +94,6 @@ public class Messages implements Serializable {
      * 详细地址
      */
     private String address;
-
-    //TODO
-    //发送者 条件
 
     /**
      * 问题

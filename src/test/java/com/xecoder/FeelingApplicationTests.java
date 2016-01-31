@@ -1,5 +1,6 @@
 package com.xecoder;
 
+import com.xecoder.model.business.Messages;
 import com.xecoder.service.dao.MessagesDao;
 import com.xecoder.service.impl.MessagesServerImpl;
 import org.junit.Test;
@@ -25,15 +26,16 @@ public class FeelingApplicationTests {
 
 	@Test
 	public void contextLoads() {
-//		Messages msg = new Messages();
-//
-//		msg.setFrom("小红");
-//		msg.setTo("小明");
-//		msg.setContent("我在这里，你在哪里？");
-//		msg.setCity("宁波");
-//		msg.setDistrict("鄞州");
-//		msg.setAddress("学士路655号");
-//		msg.setBurnAfterReading(true);
+
+		Messages msg = new Messages();
+
+		msg.setFrom("小红");
+		msg.setTo("小明");
+		msg.setContent("我在这里，你在哪里？");
+		msg.setCity("宁波");
+		msg.setDistrict("鄞州");
+		msg.setAddress("学士路655号");
+		msg.setBurnAfterReading(true);
 
 		//double x = server.getDistance("1",0,0);
 

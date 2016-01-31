@@ -143,7 +143,7 @@ public class UserServerImpl extends AbstractService<User> {
 
         Auth auth = authDao.findByOwner(user.getId());
         if (auth == null) {
-                throw new FeelingException(getLocalException("error.user.out.time"));
+                throw new FeelingException(getLocalException("error.user.not.register"));
         }
         boolean flag = HashPassword.validatePassword(password,auth.getPassword(),auth.getSalt());
         if (!flag) {
@@ -157,6 +157,7 @@ public class UserServerImpl extends AbstractService<User> {
         List<AuthToken> tokens = auth.getEffectiveTokens();
         for (AuthToken token : tokens) {
             if (token.getDevice().equals(device)) {
+                authServer.storeToken(token);
                 return token;
             }
         }

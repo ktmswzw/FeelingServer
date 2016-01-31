@@ -72,7 +72,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute("claims", claims);
         }
         catch (final SignatureException e) {
-            throw new FeelingException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
+            throw new FeelingException(messageSource.getMessage("error.token.validation.failed",null, Locale.getDefault()));
         }
 
         String userId = authServer.getUserIdByToken(token);
