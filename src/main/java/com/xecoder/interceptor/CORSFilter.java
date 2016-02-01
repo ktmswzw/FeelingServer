@@ -1,6 +1,5 @@
 package com.xecoder.interceptor;
 
-import com.xecoder.common.exception.FeelingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -35,7 +33,7 @@ import java.util.Locale;
 //        }
 //        catch (Exception e)
 //        {
-//            throw new FeelingException(messageSource.getMessage("org.springframework.web.HttpRequestMethodNotSupportedException.error",null, Locale.getDefault()));
+//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.web.HttpRequestMethodNotSupportedException.error",null, Locale.getDefault()));
 //        }
 //    }
 //
@@ -58,13 +56,13 @@ public class CORSFilter  implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
-        try {
+//        try {
             chain.doFilter(req, res);
-        }
-        catch (Exception e)
-        {
-            throw new FeelingException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
-        }
+//        }
+//        catch (Exception e)
+//        {
+//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
+//        }
     }
 
     @Override

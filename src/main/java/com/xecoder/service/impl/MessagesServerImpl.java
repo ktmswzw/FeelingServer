@@ -1,6 +1,6 @@
 package com.xecoder.service.impl;
 
-import com.xecoder.common.util.DateUtils;
+import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.SurfaceDistanceUtils;
 import com.xecoder.model.business.Messages;
 import com.xecoder.service.core.AbstractService;
@@ -69,7 +69,7 @@ public class MessagesServerImpl extends AbstractService<Messages> {
         List<Messages> list = new ArrayList<>();
         GeoJsonPoint point = searchCondition.getPoint();
         if (point != null) {//按经纬度搜索
-            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(490)).query(query);//单位: 20千米
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(500)).query(query);//单位: 20千米
             GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {
@@ -103,7 +103,7 @@ public class MessagesServerImpl extends AbstractService<Messages> {
             criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getFrom() + ".*$");
         }
         criteria = makeCriteria(criteria, "state", Messages.CLOSE);//未被开启过
-        criteria.where("limit_date").lte(DateUtils.addDay(new Date(), 365)).gt(new Date());//一年有效期内
+        criteria.where("limit_date").lte(DateTools.addDay(new Date(), 365)).gt(new Date());//一年有效期内
 
         return criteria;
     }

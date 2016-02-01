@@ -1,6 +1,6 @@
 package com.xecoder;
 
-import com.xecoder.common.util.DateUtils;
+import com.xecoder.common.util.DateTools;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.service.dao.MessagesDao;
@@ -44,7 +44,7 @@ public class FeelingApplicationTests {
 		msg.setAddress("学士路655号");
 		msg.setAnswer("me is who");
 		msg.setQuestion("who is me");
-		msg.setLimitDate(DateUtils.addDay(new Date(),10));
+		msg.setLimitDate(DateTools.addDay(new Date(),10));
 		GeoJsonPoint point = new GeoJsonPoint(112.99206,22.740501);
 		msg.setPoint(point);
 

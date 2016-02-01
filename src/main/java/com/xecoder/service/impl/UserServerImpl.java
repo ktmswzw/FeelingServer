@@ -1,6 +1,6 @@
 package com.xecoder.service.impl;
 
-import com.xecoder.common.exception.FeelingException;
+import com.xecoder.common.exception.FeelingCommonException;
 import com.xecoder.common.util.HashPassword;
 import com.xecoder.common.util.RadomUtils;
 import com.xecoder.model.business.Auth;
@@ -111,7 +111,7 @@ public class UserServerImpl extends AbstractService<User> {
 
         User user = userDao.findByPhone(telephone);
         if (user != null) {
-            throw new FeelingException(getLocalException("error.user.is.exist"));
+            throw new FeelingCommonException(getLocalException("error.user.is.exist"));
         }
 
         user = new User();
@@ -138,17 +138,17 @@ public class UserServerImpl extends AbstractService<User> {
         User user = userDao.findByPhone(telephone);
 
         if (user == null) {
-            throw new FeelingException(getLocalException("error.user.not.register"));
+            throw new FeelingCommonException(getLocalException("error.user.not.register"));
         }
 
         Auth auth = authDao.findByOwner(user.getId());
         if (auth == null) {
-                throw new FeelingException(getLocalException("error.user.not.register"));
+                throw new FeelingCommonException(getLocalException("error.user.not.register"));
         }
         boolean flag = HashPassword.validatePassword(password,auth.getPassword(),auth.getSalt());
         if (!flag) {
             if (!device.equals(DeviceEnum.WEB))
-                throw new FeelingException(getLocalException("error.user.login.failed"));
+                throw new FeelingCommonException(getLocalException("error.user.login.failed"));
             else {
                 return null;
             }

@@ -27,8 +27,8 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource;
 
-    @ExceptionHandler(FeelingException.class)
-    public ResponseEntity<?> FeelingExceptionHandler(FeelingException ce) {
+    @ExceptionHandler(FeelingCommonException.class)
+    public ResponseEntity<?> FeelingExceptionHandler(FeelingCommonException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTitle(messageSource.getMessage("error.info.system", null, Locale.getDefault()));
         errorDetail.setStatus(HttpStatus.NOT_FOUND.value());

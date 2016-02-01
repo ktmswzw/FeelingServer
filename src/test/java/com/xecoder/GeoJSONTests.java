@@ -88,10 +88,12 @@ public class GeoJSONTests {
         Point point = new Point(110.295787, 25.288211);
         GeoLocation geoLocation = template.findById(new  ObjectId("56a9a7ad6aa4f9d7168ff143"),GeoLocation.class);
 
-        Point point1 = new Point(geoLocation.getGeoPoint().getX(),geoLocation.getGeoPoint().getY());
+        if(geoLocation!=null) {
+            Point point1 = new Point(geoLocation.getGeoPoint().getX(), geoLocation.getGeoPoint().getY());
 
-        boolean s = SurfaceDistanceUtils.getShortestDistance(point,point1)>=0.1?true:false;
+            boolean s = SurfaceDistanceUtils.getShortestDistance(point, point1) >= 0.1 ? true : false;
 
-        System.out.println("s = " + s);
+            System.out.println("s = " + s);
+        }
     }
 }

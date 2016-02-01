@@ -1,10 +1,12 @@
 package com.xecoder.controller.business;
 
-import com.xecoder.common.exception.FeelingException;
+import com.xecoder.common.exception.FeelingCommonException;
+import com.xecoder.common.util.DateTools;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NoAuth;
+import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.service.impl.MessagesServerImpl;
 import com.xecoder.service.impl.UserServerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by  moxz
@@ -42,14 +47,14 @@ public class MessagesController extends BaseController {
      * @param size
      * @return
      */
-    @RequestMapping(value = "/{to}/{x}/{y}/{page}/{size}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     @ResponseBody
     @NoAuth
-    private ResponseEntity<?> search(@PathVariable String to,
-                                     @Valid @PathVariable double x,
-                                     @Valid @PathVariable double y,
-                                     @Valid @PathVariable int page,
-                                     @Valid @PathVariable int size
+    private ResponseEntity<?> search(@RequestParam(required = false) String to,
+                                     @RequestParam(required = false) double x,
+                                     @RequestParam(required = false) double y,
+                                     @RequestParam int page,
+                                     @RequestParam int size
     ) {
         Messages msg = new Messages();
         msg.setTo(to);
@@ -62,18 +67,59 @@ public class MessagesController extends BaseController {
     /**
      * 发送消息
      *
-     * @param msg
+     * @param to
+     * @param limitDate
+     * @param content
+     * @param photos
+     * @param video
+     * @param sound
+     * @param burnAfterReading
+     * @param x
+     * @param y
      * @return
      */
-    @RequestMapping(value = "send", method = RequestMethod.POST)
+    @SuppressWarnings(value = "unchecked")
+    @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<String> send(@Valid @RequestBody Messages msg) {
-        msg.setState(Messages.CLOSE);
-        msg.setFrom(this.getUserId());
-        User user = userServer.findById(this.getUserId());
-        msg.setFrom(user.getNickname());
+    private ResponseEntity<String> send(@RequestParam String to,
+                                        @RequestParam String limitDate,
+                                        @RequestParam String content,
+                                        @RequestParam(required = false) String question,
+                                        @RequestParam(required = false) String answer,
+                                        @RequestParam(required = false) String photos,
+                                        @RequestParam(required = false) String video,
+                                        @RequestParam(required = false) String sound,
+                                        @RequestParam String burnAfterReading,
+                                        @RequestParam double x,
+                                        @RequestParam double y
+    ) {
+        Messages msg = new Messages();
+        if (this.getUserId() != null) {
+            msg.setFrom(this.getUserId());
+            User user = userServer.findById(this.getUserId());
+            if (user != null)
+                msg.setFrom(user.getNickname());
+        }
+        msg.setTo(to);
+        msg.setLimitDate(DateTools.strToDate(limitDate));
+        msg.setContent(content);
+//        msg.setPhotos(new ArrayList(Collections.singletonList(photos)));
+        List<MessagesPhoto> list = new ArrayList<>();
+        List<String> stringList = new ArrayList(Collections.singletonList(photos));
+        for(String s: stringList){
+            MessagesPhoto p = new MessagesPhoto();
+            p.setSource(s);
+            list.add(p);
+        }
+        msg.setPhotos(list);
+        msg.setVideoPath(video);
+        msg.setQuestion(question);
+        msg.setAnswer(answer);
+        msg.setSoundPath(sound);
+        msg.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
+        msg.setPoint(new GeoJsonPoint(x, y));
         server.save(msg);
-        return new ResponseEntity<>(getLocalException("success.action.is.ok") + "_" + msg.getId(), HttpStatus.OK);
+        return new ResponseEntity<>(msg.getId(), HttpStatus.OK);
     }
 
     /**
@@ -86,7 +132,7 @@ public class MessagesController extends BaseController {
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
         Messages m = server.validate(id, answer);
         if (m == null) {
-            throw new FeelingException(getLocalException("error.answer.is.error"));
+            throw new FeelingCommonException(getLocalException("error.answer.is.error"));
         } else {
             //返回地址信息，进行查找和定位
             Messages n = new Messages();
@@ -110,7 +156,7 @@ public class MessagesController extends BaseController {
         switch (m.getState()) {
             case 9:
                 return new ResponseEntity<>(getLocalException("error.message.is.deleted"), HttpStatus.ALREADY_REPORTED);
-            case 1 :
+            case 1:
                 m.setState(Messages.DELETED);
                 server.save(m);
                 return new ResponseEntity<>(getLocalException("error.message.is.deleted"), HttpStatus.ACCEPTED);

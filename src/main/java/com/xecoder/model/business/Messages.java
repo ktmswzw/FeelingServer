@@ -2,7 +2,7 @@ package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xecoder.common.util.DateUtils;
+import com.xecoder.common.util.DateTools;
 import com.xecoder.model.embedded.MessagesPhoto;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -115,7 +115,7 @@ public class Messages implements Serializable {
     @JsonProperty(value = "limit_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date limitDate = DateUtils.addDay(new Date(),7);
+    private Date limitDate = DateTools.addDay(new Date(),7);
 
     /**
      * 阅后即焚

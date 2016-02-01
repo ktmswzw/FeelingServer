@@ -1,6 +1,6 @@
 package com.xecoder.interceptor;
 
-import com.xecoder.common.exception.FeelingException;
+import com.xecoder.common.exception.FeelingAuthException;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NoAuth;
@@ -64,7 +64,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             token = request.getParameter(BaseController.TOKEN_STR);
         }
         else {
-            throw new FeelingException(messageSource.getMessage("error.user.not.register",null, Locale.getDefault()));
+            throw new FeelingAuthException(messageSource.getMessage("error.user.not.register",null, Locale.getDefault()));
         }
         try {
             final Claims claims = Jwts.parser().setSigningKey("FEELING_ME007")
@@ -72,12 +72,12 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute("claims", claims);
         }
         catch (final SignatureException e) {
-            throw new FeelingException(messageSource.getMessage("error.token.validation.failed",null, Locale.getDefault()));
+            throw new FeelingAuthException(messageSource.getMessage("error.token.validation.failed",null, Locale.getDefault()));
         }
 
         String userId = authServer.getUserIdByToken(token);
         if (userId == null) {
-            throw new FeelingException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
+            throw new FeelingAuthException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
         }
 
         BaseController base = (BaseController)((HandlerMethod) handler).getBean();
