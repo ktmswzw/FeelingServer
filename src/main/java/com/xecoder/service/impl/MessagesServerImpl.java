@@ -134,7 +134,7 @@ public class MessagesServerImpl extends AbstractService<Messages> {
      */
     public Messages validate(String id, String answer) {
         if (StringUtils.isNotBlank(id)) {
-            Messages m = this.findByPk(id);
+            Messages m = findById(id);
             if (StringUtils.isBlank(m.getQuestion()))
                 return m;
             else if (StringUtils.isBlank(m.getAnswer()))
@@ -162,9 +162,9 @@ public class MessagesServerImpl extends AbstractService<Messages> {
         Messages messages = new Messages();
         messages.setId(id);
         //java计算
-        messages = this.findByPk(id);
+        messages = this.findById(id);
         Point point1 = new Point(messages.getPoint().getX(),messages.getPoint().getY());
-        return SurfaceDistanceUtils.getShortestDistance(point,point1)>=0.1?true:false;
+        return SurfaceDistanceUtils.getShortestDistance(point,point1)<=0.1?true:false;
 
         //mongodb计算
 //        Criteria criteria = makeCriteria(messages);

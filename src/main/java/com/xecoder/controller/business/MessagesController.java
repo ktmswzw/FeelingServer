@@ -11,6 +11,7 @@ import com.xecoder.service.impl.MessagesServerImpl;
 import com.xecoder.service.impl.UserServerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +61,11 @@ public class MessagesController extends BaseController {
         msg.setTo(to);
         GeoJsonPoint point = new GeoJsonPoint(x, y);
         msg.setPoint(point);
-        return new ResponseEntity<>(server.search(page, size, new Sort("OrderByLimitDateAsc"), msg), HttpStatus.OK);
+        List<Messages> list = server.search(page, size, new Sort("OrderByLimitDateAsc"), msg);
+        if(list!=null&&list.size()!=0)
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
     }
 
 
@@ -128,7 +133,8 @@ public class MessagesController extends BaseController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.POST)
+    @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.GET)
+    @ResponseBody
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
         Messages m = server.validate(id, answer);
         if (m == null) {
@@ -145,12 +151,37 @@ public class MessagesController extends BaseController {
     }
 
     /**
+     * 是否近距离开启
+     * @param id
+     * @param x
+     * @param y
+     * @return
+     */
+    @RequestMapping(value = "/arrival/{x}/{y}/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @NoAuth
+    private ResponseEntity<?> isArrival(@PathVariable double x,
+                                        @PathVariable double y,
+                                        @PathVariable String id
+    ) {
+        Messages messages;
+        if(server.isArrival(id,new Point(x,y))) {
+            messages = server.findById(id);
+            return new ResponseEntity<>(messages, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
+    /**
      * 丢弃
      *
      * @param id
      * @return
      */
     @RequestMapping(value = "drop/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
     private ResponseEntity<?> drop(@Valid @PathVariable String id) {
         Messages m = server.findById(id);
         switch (m.getState()) {
