@@ -5,7 +5,7 @@ import com.xecoder.common.util.DateTools;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
-import com.xecoder.model.core.NoAuth;
+import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.service.impl.MessagesServerImpl;
 import com.xecoder.service.impl.UserServerImpl;
@@ -50,7 +50,7 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     @ResponseBody
-    @NoAuth
+    @NonAuthoritative
     private ResponseEntity<?> search(@RequestParam(required = false) String to,
                                      @RequestParam(required = false) double x,
                                      @RequestParam(required = false) double y,
@@ -159,7 +159,7 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "/arrival/{x}/{y}/{id}", method = RequestMethod.GET)
     @ResponseBody
-    @NoAuth
+    @NonAuthoritative
     private ResponseEntity<?> isArrival(@PathVariable double x,
                                         @PathVariable double y,
                                         @PathVariable String id

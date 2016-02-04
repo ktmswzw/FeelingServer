@@ -3,7 +3,7 @@ package com.xecoder.interceptor;
 import com.xecoder.common.exception.FeelingAuthException;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.BaseBean;
-import com.xecoder.model.core.NoAuth;
+import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.service.impl.AuthServerImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -49,7 +49,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         HandlerMethod method = (HandlerMethod) handler;
-        boolean isAn = method.getMethod().isAnnotationPresent(NoAuth.class);
+        boolean isAn = method.getMethod().isAnnotationPresent(NonAuthoritative.class);
 
         if (isAn) {
             return true;

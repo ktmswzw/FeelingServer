@@ -4,7 +4,7 @@ import com.xecoder.common.json.JsonMap;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
-import com.xecoder.model.core.NoAuth;
+import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.service.impl.UserServerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,23 +30,24 @@ public class LoginController extends BaseController {
     /**
      * 登录接口
      *
-     * @param telephone 手机号
+     * @param username 手机号
      * @param password  密码
      * @param device    设备，APP ,WEB
      * @return 用户信息、token
      */
     @RequestMapping(value = "login")
     @ResponseBody
-    @NoAuth
-    public ResponseEntity<?> login(@RequestParam String telephone, @RequestParam String password, @RequestParam DeviceEnum device) {
-        String token = userServer.login(telephone, password, device, this.getVersionStr()).getToken();
-        User user = userServer.findByPhone(telephone);
+    @NonAuthoritative
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
+        String token = userServer.login(username, password, device, this.getVersionStr()).getToken();
+        User user = userServer.findByPhone(username);
         Map<String, Object> result = new JsonMap<>();
         result.put("token", token);
         result.put("nickname", user.getNickname());
         result.put("avatar", user.getAvatar());
         result.put("motto", user.getMotto());
-        result.put("user_id", user.getId());
+        result.put("userId", user.getId());
+        result.put("status","200");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

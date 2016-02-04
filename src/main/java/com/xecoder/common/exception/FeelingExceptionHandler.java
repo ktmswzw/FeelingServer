@@ -31,12 +31,12 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> FeelingExceptionHandler(FeelingCommonException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTitle(messageSource.getMessage("error.info.system", null, Locale.getDefault()));
-        errorDetail.setStatus(HttpStatus.NOT_FOUND.value());
+        errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDetail.setDetail(ce.getMessage());
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setDeveloperMessage("com.xecoder");
 
-        return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.OK);
     }
 
 
@@ -64,7 +64,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
             validationErrorList.add(validationError);
         }
 
-        return handleExceptionInternal(manve, errorDetail, headers, status, request);
+        return handleExceptionInternal(manve, errorDetail, headers, HttpStatus.OK, request);
     }
 
     @Override
@@ -87,8 +87,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         validationError.setMessage(messageSource.getMessage("error.parameter.validation.failed", new String[]{ex.getParameterName()+":["+ex.getParameterType()+"]"}, Locale.getDefault()));
         validationErrorList.add(validationError);
 
-        return this.handleExceptionInternal(ex, errorDetail, headers, status, request);
+        return this.handleExceptionInternal(ex, errorDetail, headers, HttpStatus.OK, request);
     }
-
 
 }

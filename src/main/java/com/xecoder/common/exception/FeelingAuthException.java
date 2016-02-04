@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Feeling.com.xecoder.common.exception
  */
 
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+@ResponseStatus(value = HttpStatus.OK)
 public class FeelingAuthException extends RuntimeException {
     private static final long serialVersionUID = -7467053929942663405L;
 

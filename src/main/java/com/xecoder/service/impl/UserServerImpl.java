@@ -147,17 +147,13 @@ public class UserServerImpl extends AbstractService<User> {
         }
         boolean flag = HashPassword.validatePassword(password,auth.getPassword(),auth.getSalt());
         if (!flag) {
-            if (!device.equals(DeviceEnum.WEB))
-                throw new FeelingCommonException(getLocalException("error.user.login.failed"));
-            else {
-                return null;
-            }
+                    throw new FeelingCommonException(getLocalException("error.user.login.failed"));
         }
 
         List<AuthToken> tokens = auth.getEffectiveTokens();
         for (AuthToken token : tokens) {
             if (token.getDevice().equals(device)) {
-                authServer.storeToken(token);
+                //authServer.storeToken(token);
                 return token;
             }
         }

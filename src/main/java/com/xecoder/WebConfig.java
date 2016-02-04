@@ -65,7 +65,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor()).addPathPatterns("/user/**");//认证
+        registry.addInterceptor(authInterceptor()).addPathPatterns("/**");//认证
         registry.addInterceptor(logInterceptor()).addPathPatterns("/**");//日志
         registry.addInterceptor(localeChangeInterceptor());
     }
