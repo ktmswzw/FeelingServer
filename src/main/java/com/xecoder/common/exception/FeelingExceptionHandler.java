@@ -10,17 +10,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Author: zhangxin
  * Date:   15-9-17
  */
+@EnableWebMvc
 @ControllerAdvice
 public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -90,4 +92,19 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(ex, errorDetail, headers, HttpStatus.OK, request);
     }
 
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseBody
+    ResponseEntity<Object> handleControllerException(Throwable ex) {
+        ReturnMessage returnMessage = new ReturnMessage(ex);
+        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Map<String,String> responseBody = new HashMap<>();
+        responseBody.put("path",request.getContextPath());
+        responseBody.put("message","The URL you have reached is not in service at this time (404).");
+        return new ResponseEntity<>(responseBody,HttpStatus.OK);
+    }
 }

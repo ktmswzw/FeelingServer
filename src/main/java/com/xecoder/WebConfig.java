@@ -6,6 +6,7 @@ import com.xecoder.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -22,6 +23,14 @@ import java.util.Locale;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+
+    @Bean  // Magic entry
+    public DispatcherServlet dispatcherServlet() {
+        DispatcherServlet ds = new DispatcherServlet();
+        ds.setThrowExceptionIfNoHandlerFound(true);
+        return ds;
+    }
 
     //绑定资源，本地化操作
     @Bean
@@ -69,15 +78,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(logInterceptor()).addPathPatterns("/**");//日志
         registry.addInterceptor(localeChangeInterceptor());
     }
-
-//    @Bean
-//    public FilterRegistrationBean simpleCORSFilter() {
-//        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-//        registrationBean.setFilter(new CORSFilter());
-//        registrationBean.addUrlPatterns("/*");
-//        return registrationBean;
-//    }
-
 
     @Bean
     public CORSFilter simpleCORSFilter(){
