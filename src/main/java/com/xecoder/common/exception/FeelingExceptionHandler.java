@@ -29,11 +29,11 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource;
 
-    @ExceptionHandler(FeelingCommonException.class)
+    @ExceptionHandler(HttpServiceException.class)
     @ResponseBody
-    public ResponseEntity<?> FeelingExceptionHandler(FeelingCommonException ce) {
+    public ResponseEntity<?> HttpServiceException(HttpServiceException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setTitle(messageSource.getMessage("error.info.system", null, Locale.getDefault()));
+        errorDetail.setTitle(getMsg("error.info.system"));
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDetail.setDetail(ce.getMessage());
         errorDetail.setTimestamp(System.currentTimeMillis());
@@ -51,8 +51,8 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorDetail.setTitle(messageSource.getMessage("error.validation.failed", null, Locale.getDefault()));
-        errorDetail.setDetail(messageSource.getMessage("error.input.validation.failed", null, Locale.getDefault()));
+        errorDetail.setTitle(getMsg("error.validation.failed"));
+        errorDetail.setDetail(getMsg("error.input.validation.failed"));
         errorDetail.setDeveloperMessage(manve.getClass().getName());
 
         List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
@@ -78,8 +78,8 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorDetail.setTitle(messageSource.getMessage("error.validation.failed", null, Locale.getDefault()));
-        errorDetail.setDetail(messageSource.getMessage("error.input.validation.failed", null, Locale.getDefault()));
+        errorDetail.setTitle(getMsg("error.validation.failed"));
+        errorDetail.setDetail(getMsg("error.input.validation.failed"));
         errorDetail.setDeveloperMessage(ex.getClass().getName());
 
         List<ValidationError> validationErrorList = errorDetail.getErrors().get(ex.getParameterName());
@@ -103,11 +103,16 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
+
+    private String getMsg(String msgcode) {
+        return messageSource.getMessage(msgcode,null, Locale.getDefault());
+    }
+
+
     @Override
     @ResponseBody
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Map<String,String> responseBody = new HashMap<>();
-        ReturnMessage returnMessage = new ReturnMessage("ERROR PATH");
+        ReturnMessage returnMessage = new ReturnMessage(getMsg("org.springframework.web.servlet.NoHandlerFoundException.error"));
         return new ResponseEntity<>(returnMessage,HttpStatus.OK);
     }
 }

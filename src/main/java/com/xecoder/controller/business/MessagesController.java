@@ -1,6 +1,6 @@
 package com.xecoder.controller.business;
 
-import com.xecoder.common.exception.FeelingCommonException;
+import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Messages;
@@ -138,7 +138,7 @@ public class MessagesController extends BaseController {
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
         Messages m = server.validate(id, answer);
         if (m == null) {
-            throw new FeelingCommonException(getLocalException("error.answer.is.error"));
+            throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
             //返回地址信息，进行查找和定位
             Messages n = new Messages();
