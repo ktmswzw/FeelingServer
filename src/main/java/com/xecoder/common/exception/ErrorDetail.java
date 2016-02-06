@@ -12,12 +12,21 @@ import java.util.Map;
 public class ErrorDetail  implements Serializable {
 
     private static final long serialVersionUID = 2803327363412578379L;
+    protected String errorCode = "-1";		//錯誤代碼，0為無錯誤
     private String title;
     private int status;
     private String detail;
     private long timestamp;
     private String developerMessage;
     private Map<String, List<ValidationError>> errors = new HashMap<>();
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
     public String getTitle() {
         return title;

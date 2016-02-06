@@ -1,7 +1,5 @@
 package com.xecoder.common.exception;
 
-import org.springframework.http.HttpStatus;
-
 /**
  * Created by  moxz
  * User: 224911261@qq.com
@@ -11,22 +9,11 @@ import org.springframework.http.HttpStatus;
 public class HttpServiceException extends RuntimeException {
     private static final long serialVersionUID = 3976892301056166141L;
     private ReturnMessage returnMessage;
-    private HttpStatus status;
 
-    public HttpServiceException(ReturnMessage returnMessage){
-        super(returnMessage.getMessage());
-        this.returnMessage = returnMessage;
-        this.status = returnMessage.getStatus();
+    public HttpServiceException(String msg){
+        super(msg);
+        this.returnMessage = new ReturnMessage(msg);
     }
-
-    public HttpStatus getStatus() {
-        return returnMessage.getStatus();
-    }
-
-    public String getErrorCode() {
-        return returnMessage.getErrorCode();
-    }
-
     public ReturnMessage getReturnMessage() {
         return returnMessage;
     }

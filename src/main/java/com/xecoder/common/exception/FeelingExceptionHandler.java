@@ -30,6 +30,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
 
     @ExceptionHandler(FeelingCommonException.class)
+    @ResponseBody
     public ResponseEntity<?> FeelingExceptionHandler(FeelingCommonException ce) {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTitle(messageSource.getMessage("error.info.system", null, Locale.getDefault()));
@@ -43,6 +44,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @Override
+    @ResponseBody
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException manve, HttpHeaders headers,
                                                                HttpStatus status, WebRequest request) {
 
@@ -70,6 +72,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @ResponseBody
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers,
                                                                        HttpStatus status, WebRequest request) {
         ErrorDetail errorDetail = new ErrorDetail();
@@ -96,15 +99,15 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Throwable.class)
     @ResponseBody
     ResponseEntity<Object> handleControllerException(Throwable ex) {
-        ReturnMessage returnMessage = new ReturnMessage(ex);
+        ReturnMessage returnMessage = ((HttpServiceException) ex).getReturnMessage();
         return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
     @Override
+    @ResponseBody
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String,String> responseBody = new HashMap<>();
-        responseBody.put("path",request.getContextPath());
-        responseBody.put("message","The URL you have reached is not in service at this time (404).");
-        return new ResponseEntity<>(responseBody,HttpStatus.OK);
+        ReturnMessage returnMessage = new ReturnMessage("ERROR PATH");
+        return new ResponseEntity<>(returnMessage,HttpStatus.OK);
     }
 }

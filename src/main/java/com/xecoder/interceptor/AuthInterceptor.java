@@ -1,7 +1,6 @@
 package com.xecoder.interceptor;
 
 import com.xecoder.common.exception.HttpServiceException;
-import com.xecoder.common.exception.ReturnMessageEnum;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
@@ -19,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by  moxz
@@ -64,7 +64,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             token = request.getParameter(BaseController.TOKEN_STR);
         }
         else {
-            throw new HttpServiceException(ReturnMessageEnum.Common.RequiredFieldsIsEmpty.getReturnMessage());
+            throw new HttpServiceException(getMsg("error.user.not.register"));
         }
         try {
             final Claims claims = Jwts.parser().setSigningKey("FEELING_ME007")
@@ -72,12 +72,12 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute("claims", claims);
         }
         catch (final SignatureException e) {
-            //throw new HttpServiceException(messageSource.getMessage("error.token.validation.failed",null, Locale.getDefault()));
+            throw new HttpServiceException(getMsg("error.token.validation.failed"));
         }
 
         String userId = authServer.getUserIdByToken(token);
         if (userId == null) {
-            //throw new HttpServiceException(messageSource.getMessage("error.user.out.time",null, Locale.getDefault()));
+            throw new HttpServiceException(getMsg("error.user.out.time"));
         }
 
         BaseController base = (BaseController)((HandlerMethod) handler).getBean();
@@ -88,6 +88,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         base.setBaseBean(baseBean);
         base.setDeviceVersion(request.getHeader(BaseController.VERSION_STR));
         return true;
+    }
+
+    private String getMsg(String msgcode) {
+        return messageSource.getMessage(msgcode,null, Locale.getDefault());
     }
 
 

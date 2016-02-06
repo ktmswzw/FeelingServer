@@ -84,4 +84,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return new CORSFilter();
     }
 
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        super.configureMessageConverters(converters);
+//        converters.add(new RestJackson2HttpMessageConverter());
+//    }
+
 }
