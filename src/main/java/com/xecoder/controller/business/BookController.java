@@ -56,7 +56,6 @@ public class BookController extends BaseController {
     @ResponseBody
     public ResponseEntity<?> jwtDelete() {
         Map<String, Object> claims = (Map<String, Object>) request.getAttribute("claims");//获取解密内容
-        request.setAttribute("claims", claims);
         String id = String.valueOf(claims.get("id"));
         if(id==null){
             new ResponseEntity<>("id is null", HttpStatus.OK);

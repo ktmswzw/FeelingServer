@@ -26,7 +26,7 @@ import java.util.TreeMap;
 @ControllerAdvice
 public class BaseController {
 
-    public static String TOKEN_STR = "TOKEN";
+    public static String TOKEN_STR = "token";
     private static String SEPARATOR = "-";
     public static String VERSION_STR = "CLIENT-VERSION";
     protected HttpServletRequest request;

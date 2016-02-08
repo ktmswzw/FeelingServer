@@ -1,7 +1,6 @@
 package com.xecoder.model.core;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,22 +22,22 @@ public class BaseBean implements Serializable {
     public String errorCode = "0";		//錯誤代碼，0為無錯誤
 
     @Field(value = "base_creator")
+    @JsonIgnore
     private String baseCreator;
 
     @Field(value = "base_last_modifier")
+    @JsonIgnore
     private String baseLastModifier;
 
     @Field(value = "base_create_time")
-    @JsonProperty(value = "base_create_time")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonIgnore
     private Date baseCreateTime;
 
 
     @Field(value = "base_last_modify_time")
-    @JsonProperty(value = "base_last_modify_time")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonIgnore
     private Date baseLastModifyTime;
 
     public BaseBean() {
