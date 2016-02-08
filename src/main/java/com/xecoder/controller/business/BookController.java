@@ -3,13 +3,13 @@ package com.xecoder.controller.business;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Book;
 import com.xecoder.service.dao.BookDao;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by  moxz
@@ -55,7 +55,8 @@ public class BookController extends BaseController {
     @RequestMapping(value = "jwtDelete", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<?> jwtDelete() {
-        Claims claims = (Claims) request.getAttribute("claims");//获取解密内容
+        Map<String, Object> claims = (Map<String, Object>) request.getAttribute("claims");//获取解密内容
+        request.setAttribute("claims", claims);
         String id = String.valueOf(claims.get("id"));
         if(id==null){
             new ResponseEntity<>("id is null", HttpStatus.OK);

@@ -1,5 +1,6 @@
 package com.xecoder.controller.core;
 
+import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.BaseBean;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class BaseController {
     protected HttpSession session;
     private String token;
     private String userId;
+    private String jwt;
     public BaseBean baseBean;
 
 
@@ -56,6 +58,7 @@ public class BaseController {
         this.response = response;
         this.session = request.getSession();
         this.token = request.getHeader(BaseController.TOKEN_STR);
+        this.jwt = request.getHeader(JWTCode.AUTHORIZATION_STR);
     }
 
 
@@ -188,5 +191,13 @@ public class BaseController {
 
     public void setDeviceType(DeviceType deviceType) {
         this.deviceType = deviceType;
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 }

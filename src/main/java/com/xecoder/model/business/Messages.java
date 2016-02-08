@@ -3,6 +3,7 @@ package com.xecoder.model.business;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.xecoder.common.util.DateTools;
+import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.embedded.MessagesPhoto;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -27,7 +28,7 @@ import java.util.List;
  * 消息留言
  */
 @Document(collection = "messages")
-public class Messages implements Serializable {
+public class Messages extends BaseBean implements Serializable  {
     private static final long serialVersionUID = 3937826603798306562L;
 
     public static int CLOSE = 1; //未拆封  默认

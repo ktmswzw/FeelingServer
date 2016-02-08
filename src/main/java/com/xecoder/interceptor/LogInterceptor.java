@@ -2,6 +2,7 @@ package com.xecoder.interceptor;
 
 import com.xecoder.common.util.FeelingLogger;
 import com.xecoder.common.util.IPUtils;
+import com.xecoder.common.util.JWTCode;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.LogRecord;
 import com.xecoder.service.dao.LogRecordDao;
@@ -37,7 +38,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             String uid = baseController.getUserId();
             String action = request.getRequestURI();
             String version = request.getHeader(BaseController.VERSION_STR);
-            String token = request.getHeader(BaseController.TOKEN_STR);
+            String token = request.getHeader(JWTCode.AUTHORIZATION_STR);
             String ip = IPUtils.getRealIpAddr(request);
             String result = new String(wrapper.getContentAsByteArray());
 

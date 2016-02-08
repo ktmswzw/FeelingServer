@@ -2,6 +2,7 @@ package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.embedded.Sex;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -20,7 +21,7 @@ import java.util.Date;
  *
  */
 @Document(collection = "user")
-public class User {
+public class User extends BaseBean {
     public static int USER_OPEN = 1;
     public static int USER_DEL = 5;
     /**

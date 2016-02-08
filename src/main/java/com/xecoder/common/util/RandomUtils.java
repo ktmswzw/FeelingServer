@@ -11,7 +11,7 @@ import java.security.SecureRandom;
  * 2016/1/11-16:07
  * Feeling.com.xecoder.common
  */
-public class RadomUtils {
+public class RandomUtils {
 
     private static int DEFAULT_KEY_LENGTH = 32;
     private static SecureRandom random = null;

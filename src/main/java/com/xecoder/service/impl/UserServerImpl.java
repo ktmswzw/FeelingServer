@@ -2,7 +2,7 @@ package com.xecoder.service.impl;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.HashPassword;
-import com.xecoder.common.util.RadomUtils;
+import com.xecoder.common.util.RandomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
 import com.xecoder.model.business.User;
@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -107,6 +108,7 @@ public class UserServerImpl extends AbstractService<User> {
         return userDao.findByPhone(phone);
     }
 
+    @Transactional
     public String register(String telephone, String password, DeviceEnum device) {
 
         User user = userDao.findByPhone(telephone);
@@ -121,17 +123,24 @@ public class UserServerImpl extends AbstractService<User> {
         this.save(user);
 
         String userId = user.getId();
-        byte[] salt = RadomUtils.getRadomByte();
+        byte[] salt = RandomUtils.getRadomByte();
         HashPassword hashPassword = HashPassword.encryptPassword(password, salt);
         Auth auth =new Auth(userId, hashPassword.getSalt());
         auth.setPassword(hashPassword.getPassword());
-        AuthToken token = new AuthToken(user, device);
-        authServer.storeToken(token);
-        auth.addToken(token);
-        authDao.save(auth);
+        AuthToken token = null;
+        try {
+            token = new AuthToken(user, device);
+            authServer.storeToken(token);
+            auth.addToken(token);
+            authDao.save(auth);
+        }
+        catch (Exception e)
+        {
+            this.delete(user.getId());    //回滚
+        }
 
        // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
-        return token.getToken();
+        return token.getJwt();
     }
 
     public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {

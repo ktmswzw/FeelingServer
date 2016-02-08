@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -74,6 +75,7 @@ public class AuthServerImpl extends AbstractService<Auth> {
         return null;
     }
 
+    @Transactional
     public void storeToken(AuthToken loginToken) {
         String key = loginToken.getToken();
         redisService.setValue(getKey(key), loginToken.getUser().getId());

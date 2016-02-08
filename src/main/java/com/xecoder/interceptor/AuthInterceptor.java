@@ -1,13 +1,11 @@
 package com.xecoder.interceptor;
 
 import com.xecoder.common.exception.HttpServiceException;
+import com.xecoder.common.util.JWTCode;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.service.impl.AuthServerImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -19,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by  moxz
@@ -55,23 +54,31 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        String authorization = null;
         String token = null;
 
-        if (request.getHeader(BaseController.TOKEN_STR) != null) {
-            token = request.getHeader(BaseController.TOKEN_STR);
+        if (request.getHeader(JWTCode.AUTHORIZATION_STR) != null) {
+            authorization = request.getHeader(JWTCode.AUTHORIZATION_STR);
         }
-        else if(request.getParameter(BaseController.TOKEN_STR)!=null){//静态服务器调用时，数据放在url里面
-            token = request.getParameter(BaseController.TOKEN_STR);
+        else if(request.getParameter(JWTCode.AUTHORIZATION_STR)!=null){//静态服务器调用时，数据放在url里面
+            authorization = request.getParameter(JWTCode.AUTHORIZATION_STR);
         }
         else {
             throw new HttpServiceException(getMsg("error.user.not.register"));
         }
         try {
-            final Claims claims = Jwts.parser().setSigningKey("FEELING_ME007")
-                    .parseClaimsJws(token).getBody();
+            Map<String, Object> claims = JWTCode.VERIFIER.verify(authorization);
+            if(claims.size()!=0)
+            {
+                if(claims.containsKey(BaseController.TOKEN_STR))
+                {
+                    request.setAttribute(BaseController.TOKEN_STR, claims.get(BaseController.TOKEN_STR));
+                    token = (String)claims.get(BaseController.TOKEN_STR);
+                }
+            }
             request.setAttribute("claims", claims);
         }
-        catch (final SignatureException e) {
+        catch (Exception e) {
             throw new HttpServiceException(getMsg("error.token.validation.failed"));
         }
 
@@ -83,8 +90,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         BaseController base = (BaseController)((HandlerMethod) handler).getBean();
         //base.setUserId(userId);
         BaseBean baseBean = new BaseBean();
-        baseBean.setCreator("系统用户");
-        baseBean.setLastModifier("最后修");
+        baseBean.setBaseCreator("系统用户");
+        baseBean.setBaseLastModifier("最后修");
         base.setBaseBean(baseBean);
         base.setDeviceVersion(request.getHeader(BaseController.VERSION_STR));
         return true;

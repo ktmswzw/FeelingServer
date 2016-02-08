@@ -1,12 +1,15 @@
 package com.xecoder.model.business;
 
+import com.xecoder.model.core.BaseBean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.*;
 
 @Document(collection = "auth")
-public class Auth {
+public class Auth  extends BaseBean implements Serializable {
+    private static final long serialVersionUID = -2296747606141992756L;
     /**
      * id
      */

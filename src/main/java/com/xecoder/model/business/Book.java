@@ -1,10 +1,12 @@
 package com.xecoder.model.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xecoder.model.core.BaseBean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,9 +17,11 @@ import java.util.Date;
  */
 
 @Document(collection = "book")
-public class Book {
+public class Book  extends BaseBean implements Serializable {
 
-    public Book(String id,String title,String content)
+    private static final long serialVersionUID = -3516779633175220283L;
+
+    public Book(String id, String title, String content)
     {
         this.id = id;
         this.title = title;

@@ -1,5 +1,6 @@
 package com.xecoder.model.business;
 
+import com.xecoder.model.core.BaseBean;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,7 +17,7 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 @Document(collection = "log_record")
-public class LogRecord implements Serializable {
+public class LogRecord  extends BaseBean implements Serializable {
 
     private static final long serialVersionUID = 4135902734480106473L;
     private Date time = new Date();
