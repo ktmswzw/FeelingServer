@@ -24,6 +24,19 @@ public class ReturnMessage implements Serializable {
         this.message = message;
     }
 
+
+    /**
+     * 正常返回
+     * @param message
+     * @param status
+     */
+    public ReturnMessage(String message,HttpStatus status) {
+        super();
+        this.message = message;
+        this.status = status;
+        this.errorCode = "0";
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

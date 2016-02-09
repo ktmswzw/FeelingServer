@@ -1,5 +1,6 @@
 package com.xecoder.controller.business;
 
+import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Book;
 import com.xecoder.service.dao.BookDao;
@@ -49,19 +50,23 @@ public class BookController extends BaseController {
     @ResponseBody
     public ResponseEntity<?> pathDelete(@PathVariable String id) {
         dao.delete(id);
-        return new ResponseEntity<>("path delete is ok", HttpStatus.OK);
+        ReturnMessage returnMessage = new ReturnMessage("path delete is ok",HttpStatus.OK);
+        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
+    @SuppressWarnings(value = "unchecked")
     @RequestMapping(value = "jwtDelete", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<?> jwtDelete() {
         Map<String, Object> claims = (Map<String, Object>) request.getAttribute("claims");//获取解密内容
         String id = String.valueOf(claims.get("id"));
         if(id==null){
-            new ResponseEntity<>("id is null", HttpStatus.OK);
+            ReturnMessage returnMessage = new ReturnMessage("id is null",HttpStatus.BAD_REQUEST);
+            new ResponseEntity<>(returnMessage, HttpStatus.OK);
         }
         dao.delete(id);
-        return new ResponseEntity<>("jwt delete ok", HttpStatus.OK);
+        ReturnMessage returnMessage = new ReturnMessage("jwt delete is ok",HttpStatus.OK);
+        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
     @RequestMapping(value = "all", method = RequestMethod.GET)
