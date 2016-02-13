@@ -26,6 +26,12 @@ public class BookController extends BaseController {
     @Autowired
     BookDao dao;
 
+    /**
+     * 添加
+     * @param title
+     * @param content
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> add(@RequestParam String title,
@@ -36,6 +42,13 @@ public class BookController extends BaseController {
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
+    /**
+     * 修改
+     * @param id
+     * @param title
+     * @param content
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<?> modify(@RequestParam String id,
@@ -46,6 +59,11 @@ public class BookController extends BaseController {
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "pathDelete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<?> pathDelete(@PathVariable String id) {
@@ -54,6 +72,10 @@ public class BookController extends BaseController {
         return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @return
+     */
     @SuppressWarnings(value = "unchecked")
     @RequestMapping(value = "jwtDelete", method = RequestMethod.DELETE)
     @ResponseBody
