@@ -35,7 +35,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setTitle(getMsg("error.info.system"));
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorDetail.setDetail(ce.getMessage());
+        errorDetail.setMessage(ce.getMessage());
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setDeveloperMessage("com.xecoder");
 
@@ -52,7 +52,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDetail.setTitle(getMsg("error.validation.failed"));
-        errorDetail.setDetail(getMsg("error.input.validation.failed"));
+        errorDetail.setMessage(getMsg("error.input.validation.failed"));
         errorDetail.setDeveloperMessage(manve.getClass().getName());
 
         List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
@@ -79,7 +79,7 @@ public class FeelingExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetail.setTimestamp(System.currentTimeMillis());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDetail.setTitle(getMsg("error.validation.failed"));
-        errorDetail.setDetail(getMsg("error.input.validation.failed"));
+        errorDetail.setMessage(getMsg("error.input.validation.failed"));
         errorDetail.setDeveloperMessage(ex.getClass().getName());
 
         List<ValidationError> validationErrorList = errorDetail.getErrors().get(ex.getParameterName());

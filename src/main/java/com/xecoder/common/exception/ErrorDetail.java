@@ -15,7 +15,7 @@ public class ErrorDetail  implements Serializable {
     protected String errorCode = "-1";		//錯誤代碼，0為無錯誤
     private String title;
     private int status;
-    private String detail;
+    private String message;
     private long timestamp;
     private String developerMessage;
     private Map<String, List<ValidationError>> errors = new HashMap<>();
@@ -44,12 +44,12 @@ public class ErrorDetail  implements Serializable {
         this.status = status;
     }
 
-    public String getDetail() {
-        return detail;
+    public String getMessage() {
+        return message;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public long getTimestamp() {

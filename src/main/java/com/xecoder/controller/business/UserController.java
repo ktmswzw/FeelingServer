@@ -1,5 +1,6 @@
 package com.xecoder.controller.business;
 
+import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
@@ -32,8 +33,9 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     @NonAuthoritative
-    public ResponseEntity<String> register(@Valid @RequestParam String username,@Valid  @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        return new ResponseEntity<>(userServer.register(username, password, device), HttpStatus.OK);
+    public ResponseEntity<?> register(@Valid @RequestParam String username,@Valid  @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
+        ReturnMessage returnMessage = new ReturnMessage(userServer.register(username, password, device),HttpStatus.OK);
+        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
 
 

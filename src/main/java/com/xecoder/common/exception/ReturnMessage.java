@@ -17,7 +17,7 @@ public class ReturnMessage implements Serializable {
 
     protected String errorCode = "-1";		//錯誤代碼，0為無錯誤
     protected String message;		//錯誤信息
-    protected HttpStatus status = HttpStatus.BAD_REQUEST;	//HTTP錯誤代碼
+    protected int status = HttpStatus.BAD_REQUEST.value();	//HTTP錯誤代碼
 
     public ReturnMessage(String message) {
         super();
@@ -33,7 +33,7 @@ public class ReturnMessage implements Serializable {
     public ReturnMessage(String message,HttpStatus status) {
         super();
         this.message = message;
-        this.status = status;
+        this.status = status.value();
         this.errorCode = "0";
     }
 
@@ -53,11 +53,11 @@ public class ReturnMessage implements Serializable {
         this.message = message;
     }
 
-    public HttpStatus getStatus() {
+    public int getStatus() {
         return status;
     }
 
     public void setStatus(HttpStatus status) {
-        this.status = status;
+        this.status = status.value();
     }
 }

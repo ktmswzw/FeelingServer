@@ -140,7 +140,7 @@ public class UserServerImpl extends AbstractService<User> {
         }
 
        // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
-        return token.getJwt();
+        return token.getToken();
     }
 
     public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {
