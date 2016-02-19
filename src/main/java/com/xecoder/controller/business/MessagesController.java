@@ -1,6 +1,7 @@
 package com.xecoder.controller.business;
 
 import com.xecoder.common.exception.HttpServiceException;
+import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Messages;
@@ -86,7 +87,7 @@ public class MessagesController extends BaseController {
     @SuppressWarnings(value = "unchecked")
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<String> send(@RequestParam String to,
+    private ResponseEntity<?> send(@RequestParam String to,
                                         @RequestParam String limitDate,
                                         @RequestParam String content,
                                         @RequestParam(required = false) String question,
@@ -94,7 +95,7 @@ public class MessagesController extends BaseController {
                                         @RequestParam(required = false) String photos,
                                         @RequestParam(required = false) String video,
                                         @RequestParam(required = false) String sound,
-                                        @RequestParam String burnAfterReading,
+                                        @RequestParam(required = false) String burnAfterReading,
                                         @RequestParam double x,
                                         @RequestParam double y
     ) {
@@ -124,7 +125,7 @@ public class MessagesController extends BaseController {
         msg.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
         msg.setPoint(new GeoJsonPoint(x, y));
         server.save(msg);
-        return new ResponseEntity<>(msg.getId(), HttpStatus.OK);
+        return new ResponseEntity<>(new ReturnMessage(msg.getId(),HttpStatus.OK), HttpStatus.OK);
     }
 
     /**
