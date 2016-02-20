@@ -1,9 +1,9 @@
-package com.xecoder.interceptor;
+package com.xecoder.config;
 
 import com.xecoder.common.util.FeelingLogger;
 import com.xecoder.common.util.IPUtils;
 import com.xecoder.common.util.JWTCode;
-import com.xecoder.controller.core.BaseController;
+import com.xecoder.service.restful.BaseController;
 import com.xecoder.model.business.LogRecord;
 import com.xecoder.service.dao.LogRecordDao;
 import org.springframework.beans.factory.annotation.Autowired;

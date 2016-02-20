@@ -1,11 +1,11 @@
-package com.xecoder.interceptor;
+package com.xecoder.config;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.JWTCode;
-import com.xecoder.controller.core.BaseController;
+import com.xecoder.service.restful.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
-import com.xecoder.service.impl.AuthServerImpl;
+import com.xecoder.service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private AuthServerImpl authServer;
+    private AuthService authServer;
 
     @Autowired
     private MessageSource messageSource;

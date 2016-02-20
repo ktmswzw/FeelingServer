@@ -1,4 +1,4 @@
-package com.xecoder.service.impl;
+package com.xecoder.service.service;
 
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Service
-public class AuthServerImpl extends AbstractService<Auth> {
+public class AuthService extends AbstractService<Auth> {
 
     @Autowired
     private AuthDao authDao;

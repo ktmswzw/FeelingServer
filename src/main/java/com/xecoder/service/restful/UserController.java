@@ -1,11 +1,11 @@
-package com.xecoder.controller.business;
+package com.xecoder.service.restful;
 
 import com.xecoder.common.exception.ReturnMessage;
-import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
-import com.xecoder.service.impl.UserServerImpl;
+import com.xecoder.service.service.ImageSignService;
+import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,10 @@ import java.util.List;
 public class UserController extends BaseController {
 
     @Autowired
-    UserServerImpl userServer;
+    UserService userServer;
+
+    @Autowired
+    ImageSignService signService;
 
     /**
      * APP注册接口
@@ -51,6 +54,16 @@ public class UserController extends BaseController {
         user.setNickname(name);
         List<User> userList  = userServer.search(0,20, new Sort("OrderByCreateTimeAsc"),user);
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    /**
+     * 获取图片鉴权签名
+     * @return
+     */
+    @RequestMapping(value = "/imageSign", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> getAllUserList() {
+        return new ResponseEntity<>(signService.hashCode(), HttpStatus.OK);
     }
 
 }

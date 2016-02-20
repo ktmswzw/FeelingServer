@@ -35,7 +35,7 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public void expire(String key, int second) {
+    public void expire(String key, long second) {
         redisTemplate.expire(key, second, TimeUnit.SECONDS);
     }
 }

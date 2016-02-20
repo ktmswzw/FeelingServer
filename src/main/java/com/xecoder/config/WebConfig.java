@@ -1,8 +1,5 @@
-package com.xecoder;
+package com.xecoder.config;
 
-import com.xecoder.interceptor.AuthInterceptor;
-import com.xecoder.interceptor.CORSFilter;
-import com.xecoder.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;

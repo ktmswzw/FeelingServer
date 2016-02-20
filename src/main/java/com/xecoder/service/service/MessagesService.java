@@ -1,4 +1,4 @@
-package com.xecoder.service.impl;
+package com.xecoder.service.service;
 
 import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.SurfaceDistanceUtils;
@@ -29,7 +29,7 @@ import java.util.List;
  * Feeling.com.xecoder.service.impl
  */
 @Service
-public class MessagesServerImpl extends AbstractService<Messages> {
+public class MessagesService extends AbstractService<Messages> {
 
     @Autowired
     private MessagesDao messagesDao;

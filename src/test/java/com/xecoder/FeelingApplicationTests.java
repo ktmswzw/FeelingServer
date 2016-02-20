@@ -4,7 +4,7 @@ import com.xecoder.common.util.DateTools;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.service.dao.MessagesDao;
-import com.xecoder.service.impl.MessagesServerImpl;
+import com.xecoder.service.service.MessagesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class FeelingApplicationTests {
 	private MessagesDao messagesDao;
 
 	@Autowired
-	private MessagesServerImpl server;
+	private MessagesService server;
 
 	@Test
 	public void contextLoads() {

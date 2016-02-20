@@ -1,15 +1,14 @@
-package com.xecoder.controller.business;
+package com.xecoder.service.restful;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.common.util.DateTools;
-import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
-import com.xecoder.service.impl.MessagesServerImpl;
-import com.xecoder.service.impl.UserServerImpl;
+import com.xecoder.service.service.MessagesService;
+import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
@@ -33,10 +32,10 @@ import java.util.List;
 @RequestMapping("/messages")
 public class MessagesController extends BaseController {
     @Autowired
-    private MessagesServerImpl server;
+    private MessagesService server;
 
     @Autowired
-    private UserServerImpl userServer;
+    private UserService userServer;
 
     /**
      * 查找附近的1年内有效的消息

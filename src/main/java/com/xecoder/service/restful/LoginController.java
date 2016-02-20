@@ -1,10 +1,9 @@
-package com.xecoder.controller.business;
+package com.xecoder.service.restful;
 
 import com.xecoder.common.exception.ReturnMessage;
-import com.xecoder.controller.core.BaseController;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.DeviceEnum;
-import com.xecoder.service.impl.UserServerImpl;
+import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController extends BaseController {
 
     @Autowired
-    UserServerImpl userServer;
+    UserService userServer;
     /**
      * 登录接口
      *

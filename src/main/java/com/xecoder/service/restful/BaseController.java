@@ -1,4 +1,4 @@
-package com.xecoder.controller.core;
+package com.xecoder.service.restful;
 
 import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.BaseBean;

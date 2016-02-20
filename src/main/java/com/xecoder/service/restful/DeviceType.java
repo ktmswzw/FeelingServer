@@ -1,4 +1,4 @@
-package com.xecoder.controller.core;
+package com.xecoder.service.restful;
 
 /**
  * Created by  moxz

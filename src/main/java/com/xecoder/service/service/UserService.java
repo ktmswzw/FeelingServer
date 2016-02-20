@@ -1,4 +1,4 @@
-package com.xecoder.service.impl;
+package com.xecoder.service.service;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.HashPassword;
@@ -31,9 +31,9 @@ import java.util.List;
  */
 
 @Service
-public class UserServerImpl extends AbstractService<User> {
+public class UserService extends AbstractService<User> {
 
-    private static Logger logger = LoggerFactory.getLogger(UserServerImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
         /*Pageable pageable = new PageRequest(pageBean.getCurrentPage(), pageBean.getMaxPage(), pageBean.getSort(), pageBean.getSortColumn());
     userRepostitory.findAll(pageable);
@@ -44,7 +44,7 @@ public class UserServerImpl extends AbstractService<User> {
     @Autowired
     private AuthDao authDao;
     @Autowired
-    private AuthServerImpl authServer;
+    private AuthService authServer;
 
     @Override
     protected MongoRepository<User, String> getRepository() {

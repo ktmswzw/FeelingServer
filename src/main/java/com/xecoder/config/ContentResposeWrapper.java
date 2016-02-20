@@ -1,4 +1,4 @@
-package com.xecoder.interceptor;
+package com.xecoder.config;
 
 import org.springframework.util.StreamUtils;
 

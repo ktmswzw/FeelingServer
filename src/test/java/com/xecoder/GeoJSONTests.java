@@ -3,7 +3,7 @@ package com.xecoder;
 import com.mongodb.BasicDBObject;
 import com.xecoder.common.util.SurfaceDistanceUtils;
 import com.xecoder.model.business.Messages;
-import com.xecoder.service.impl.MessagesServerImpl;
+import com.xecoder.service.service.MessagesService;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class GeoJSONTests {
     @Autowired
     private GeoLocationDao geoLocationDao;
     @Autowired
-    private MessagesServerImpl server;
+    private MessagesService server;
 
     @Test
     public void contextLoads() {
