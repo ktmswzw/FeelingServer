@@ -62,8 +62,8 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/imageSign", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<?> getAllUserList() {
-        return new ResponseEntity<>(signService.hashCode(), HttpStatus.OK);
+    public ResponseEntity<?> getImageSign() {
+        return new ResponseEntity<>(new ReturnMessage(signService.getQSign()), HttpStatus.OK);
     }
 
 }
