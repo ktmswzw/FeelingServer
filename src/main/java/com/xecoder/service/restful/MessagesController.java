@@ -58,14 +58,14 @@ public class MessagesController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     private ResponseEntity<?> search(@RequestParam(required = false) String to,
-                                     @RequestParam(required = false) double x,
-                                     @RequestParam(required = false) double y,
+                                     @RequestParam(required = false) String x,
+                                     @RequestParam(required = false) String y,
                                      @RequestParam int page,
                                      @RequestParam int size
     ) {
         Messages msg = new Messages();
         msg.setTo(to);
-        GeoJsonPoint point = new GeoJsonPoint(x, y);
+        GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
         msg.setPoint(point);
         List<Messages> list = server.search(page, size, new Sort("OrderByLimitDateAsc"), msg);
         if(list!=null&&list.size()!=0)
@@ -101,8 +101,8 @@ public class MessagesController extends BaseController {
                                         @RequestParam(required = false) String video,
                                         @RequestParam(required = false) String sound,
                                         @RequestParam(required = false) String burnAfterReading,
-                                        @RequestParam double x,
-                                        @RequestParam double y
+                                        @RequestParam String x,
+                                        @RequestParam String y
     ) {
         MessagesSecret secret = new MessagesSecret();
         Messages msg = new Messages();
@@ -129,7 +129,7 @@ public class MessagesController extends BaseController {
         secret.setAnswer(answer);
         secret.setSoundPath(sound);
         secret.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
-        msg.setPoint(new GeoJsonPoint(x, y));
+        msg.setPoint(new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y)));
         server.save(msg);
         secret.setMsgId(msg.getId());
         secretService.save(secret);
