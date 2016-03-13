@@ -3,8 +3,10 @@ package com.xecoder.service.service;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.SurfaceDistanceUtils;
 import com.xecoder.model.business.Messages;
+import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.service.dao.MessagesDao;
+import com.xecoder.service.dao.MessagesSecretDao;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class MessagesService extends AbstractService<Messages> {
 
     @Autowired
     private MessagesDao messagesDao;
+
+    @Autowired
+    private MessagesSecretDao secretDao;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -132,16 +137,17 @@ public class MessagesService extends AbstractService<Messages> {
      * @param answer
      * @return
      */
-    public Messages validate(String id, String answer) {
+    public MessagesSecret validate(String id, String answer) {
         if (StringUtils.isNotBlank(id)) {
-            Messages m = findById(id);
+            Messages msg = findById(id);
+            MessagesSecret m = secretDao.findByMsgId(id);
             if (StringUtils.isBlank(m.getQuestion()))
                 return m;
             else if (StringUtils.isBlank(m.getAnswer()))
                 return m;
             else if (StringUtils.equals(m.getAnswer(), answer.trim())) {
-                m.setState(Messages.LOCKED);
-                this.save(m);//锁定，待距离小于0.1KM时发起解锁申请
+                msg.setState(Messages.LOCKED);
+                this.save(msg);//锁定，待距离小于0.1KM时发起解锁申请
                 return m;
             }
             else

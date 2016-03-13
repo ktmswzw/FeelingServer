@@ -7,6 +7,8 @@ import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
+import com.xecoder.model.embedded.MessagesSecret;
+import com.xecoder.service.service.MessagesSecretService;
 import com.xecoder.service.service.MessagesService;
 import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/messages")
 public class MessagesController extends BaseController {
+
     @Autowired
     private MessagesService server;
+
+    @Autowired
+    private MessagesSecretService secretService;
 
     @Autowired
     private UserService userServer;
@@ -98,6 +104,7 @@ public class MessagesController extends BaseController {
                                         @RequestParam double x,
                                         @RequestParam double y
     ) {
+        MessagesSecret secret = new MessagesSecret();
         Messages msg = new Messages();
         if (this.getUserId() != null) {
             msg.setFrom(this.getUserId());
@@ -106,8 +113,8 @@ public class MessagesController extends BaseController {
                 msg.setFrom(user.getNickname());
         }
         msg.setTo(to);
-        msg.setLimitDate(DateTools.strToDate(limitDate));
-        msg.setContent(content);
+        secret.setLimitDate(DateTools.strToDate(limitDate));
+        secret.setContent(content);
 //        msg.setPhotos(new ArrayList(Collections.singletonList(photos)));
         List<MessagesPhoto> list = new ArrayList<>();
         List<String> stringList = new ArrayList(Collections.singletonList(photos));
@@ -116,14 +123,17 @@ public class MessagesController extends BaseController {
             p.setSource(s);
             list.add(p);
         }
-        msg.setPhotos(list);
-        msg.setVideoPath(video);
-        msg.setQuestion(question);
-        msg.setAnswer(answer);
-        msg.setSoundPath(sound);
-        msg.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
+        secret.setPhotos(list);
+        secret.setVideoPath(video);
+        secret.setQuestion(question);
+        secret.setAnswer(answer);
+        secret.setSoundPath(sound);
+        secret.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
         msg.setPoint(new GeoJsonPoint(x, y));
         server.save(msg);
+        secret.setMsgId(msg.getId());
+        secretService.save(secret);
+
         return new ResponseEntity<>(new ReturnMessage(msg.getId(),HttpStatus.OK), HttpStatus.OK);
     }
 
@@ -136,17 +146,11 @@ public class MessagesController extends BaseController {
     @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.GET)
     @ResponseBody
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
-        Messages m = server.validate(id, answer);
+        MessagesSecret m = server.validate(id, answer);
         if (m == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
-            //返回地址信息，进行查找和定位
-            Messages n = new Messages();
-            n.setCity(m.getCity());
-            n.setDistrict(m.getDistrict());
-            n.setPoint(m.getPoint());
-            n.setAddress(m.getAddress());
-            return new ResponseEntity<>(n, HttpStatus.OK);
+            return new ResponseEntity<>(m, HttpStatus.OK);
         }
     }
 

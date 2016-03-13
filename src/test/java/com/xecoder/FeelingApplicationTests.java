@@ -3,7 +3,9 @@ package com.xecoder;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.embedded.MessagesPhoto;
+import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.dao.MessagesDao;
+import com.xecoder.service.dao.MessagesSecretDao;
 import com.xecoder.service.service.MessagesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +34,10 @@ public class FeelingApplicationTests {
 	private MessagesDao messagesDao;
 
 	@Autowired
+	private MessagesSecretDao secretDao;
+
+
+	@Autowired
 	private MessagesService server;
 
 	@Test
@@ -39,15 +45,17 @@ public class FeelingApplicationTests {
 
 		Messages msg = new Messages();
 
+		MessagesSecret secret = new MessagesSecret();
+
 		msg.setFrom("小红");
 		msg.setTo("小明");
-		msg.setContent("我在这里，你在哪里？");
+		secret.setContent("我在这里，你在哪里？");
 		msg.setCity("宁波");
 		msg.setDistrict("鄞州");
 		msg.setAddress("学士路655号");
-		msg.setAnswer("me is who");
-		msg.setQuestion("who is me");
-		msg.setLimitDate(DateTools.addDay(new Date(),10));
+		secret.setAnswer("me is who");
+		secret.setQuestion("who is me");
+		secret.setLimitDate(DateTools.addDay(new Date(),10));
 		GeoJsonPoint point = new GeoJsonPoint(112.99206,22.740501);
 		msg.setPoint(point);
 
@@ -58,11 +66,15 @@ public class FeelingApplicationTests {
 		List<MessagesPhoto> list = new ArrayList<>();
 		list.add(messagesPhoto);
 
-		msg.setPhotos(list);
+		secret.setPhotos(list);
 
-		msg.setBurnAfterReading(true);
+		secret.setBurnAfterReading(true);
 
 		messagesDao.save(msg);
+
+		secret.setMsgId(msg.getId());
+		secretDao.save(secret);
+
 
 		//double x = server.getDistance("1",0,0);
 
