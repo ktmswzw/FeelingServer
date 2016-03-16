@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Document(collection = "auth")
-public class Auth  extends BaseBean implements Serializable {
+public class Auth extends BaseBean implements Serializable {
     private static final long serialVersionUID = -2296747606141992756L;
     /**
      * id
@@ -87,6 +87,11 @@ public class Auth  extends BaseBean implements Serializable {
         this.salt = salt;
     }
 
+    /**
+     * 获取没有超期的数据
+     *
+     * @return
+     */
     public List<AuthToken> getEffectiveTokens() {
         if (tokens.isEmpty()) {
             return Collections.emptyList();
@@ -102,20 +107,6 @@ public class Auth  extends BaseBean implements Serializable {
         return tokens;
     }
 
-    public List<AuthToken> getEffectiveTokens(String token) {
-        if (tokens.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        Iterator<AuthToken> itr = tokens.iterator();
-        while (itr.hasNext()) {
-            AuthToken tk = itr.next();
-            if (tk.isExpired() || tk.getToken().equals(token)) {
-                itr.remove();
-            }
-        }
-        return tokens;
-    }
 
     public String getOwner() {
         return owner;

@@ -82,6 +82,12 @@ public class AuthService extends AbstractService<Auth> {
         redisService.expire(getKey(key), EXPIRED_SECOND);
     }
 
+    @Transactional
+    public void deleteToken(String token) {
+        redisService.delete(getKey(token));
+    }
+
+
     public String getUserIdByToken(String token)
     {
         return redisService.getValue(getKey(token));

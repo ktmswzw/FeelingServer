@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -61,7 +62,7 @@ public class UserService extends AbstractService<User> {
     @Override
     public List<User> search(int page, int size, Sort sort, User searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
-        Query query= makeQuery(criteria);
+        Query query = makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
         if (sort != null) {
             query.with(sort);
@@ -103,8 +104,7 @@ public class UserService extends AbstractService<User> {
         return null;
     }
 
-    public User findByPhone(String phone)
-    {
+    public User findByPhone(String phone) {
         return userDao.findByPhone(phone);
     }
 
@@ -125,7 +125,7 @@ public class UserService extends AbstractService<User> {
         String userId = user.getId();
         byte[] salt = RandomUtils.getRadomByte();
         HashPassword hashPassword = HashPassword.encryptPassword(password, salt);
-        Auth auth =new Auth(userId, hashPassword.getSalt());
+        Auth auth = new Auth(userId, hashPassword.getSalt());
         auth.setPassword(hashPassword.getPassword());
         AuthToken token = null;
         try {
@@ -133,13 +133,11 @@ public class UserService extends AbstractService<User> {
             authServer.storeToken(token);
             auth.addToken(token);
             authDao.save(auth);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             this.delete(user.getId());    //回滚
         }
 
-       // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
+        // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
         return token.getToken();
     }
 
@@ -152,21 +150,24 @@ public class UserService extends AbstractService<User> {
 
         Auth auth = authDao.findByOwner(user.getId());
         if (auth == null) {
-                throw new HttpServiceException(getLocalException("error.user.not.register"));
+            throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
-        boolean flag = HashPassword.validatePassword(password,auth.getPassword(),auth.getSalt());
+        boolean flag = HashPassword.validatePassword(password, auth.getPassword(), auth.getSalt());
         if (!flag) {
-                    throw new HttpServiceException(getLocalException("error.user.login.failed"));
+            throw new HttpServiceException(getLocalException("error.user.login.failed"));
         }
 
+        AuthToken loginToken = new AuthToken(user, device);//重新生成
         List<AuthToken> tokens = auth.getEffectiveTokens();
-        for (AuthToken token : tokens) {
-            if (token.getDevice().equals(device)) {
-                //authServer.storeToken(token);
-                return token;
+        Iterator<AuthToken> itr = tokens.iterator();
+        while (itr.hasNext()) {
+            AuthToken t = itr.next();
+            if (t.getDevice() == device) {
+                authServer.deleteToken(t.getToken());//删除redis
+                itr.remove();//同设备删除
             }
         }
-        AuthToken loginToken = new AuthToken(user, device);
+        //更新token
         authServer.storeToken(loginToken);
         auth.addToken(loginToken);
         authDao.save(auth);
