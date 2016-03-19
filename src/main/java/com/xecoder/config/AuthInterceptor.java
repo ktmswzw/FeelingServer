@@ -64,18 +64,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         try {
             Map<String, Object> claims = JWTCode.VERIFIER.verify(authorization);//不会被篡改和超期
-/*            if(claims.size()!=0)
+            if(claims.size()!=0)
             {
                 if(!claims.containsKey("exp"))//必须有超期限制
                 {
                     throw new HttpServiceException(getMsg("error.token.validation.failed"));
                 }
-                if(claims.containsKey(BaseController.TOKEN_STR))
-                {
-                    request.setAttribute(BaseController.TOKEN_STR, claims.get(BaseController.TOKEN_STR));
-                    token = (String)claims.get(BaseController.TOKEN_STR);
-                }
-            }*/
+            }
 
             userId = String.valueOf(claims.get(BaseController.USERID_STR));//获取用户信息
             request.setAttribute("claims", claims);
