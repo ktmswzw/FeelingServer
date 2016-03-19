@@ -5,7 +5,6 @@ import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.service.restful.BaseController;
-import com.xecoder.service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -27,9 +26,6 @@ import java.util.Map;
  */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
-
-    @Autowired
-    private AuthService authServer;
 
     @Autowired
     private MessageSource messageSource;
@@ -54,8 +50,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String authorization = null;
-        String token = null;
+        String authorization;
+        String userId;
 
         if (request.getHeader(JWTCode.AUTHORIZATION_STR) != null) {
             authorization = request.getHeader(JWTCode.AUTHORIZATION_STR);
@@ -67,32 +63,30 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new HttpServiceException(getMsg("error.user.not.register"));
         }
         try {
-            Map<String, Object> claims = JWTCode.VERIFIER.verify(authorization);
-            if(claims.size()!=0)
+            Map<String, Object> claims = JWTCode.VERIFIER.verify(authorization);//不会被篡改和超期
+/*            if(claims.size()!=0)
             {
-//                if(!claims.containsKey("exp"))
-//                {
-//                    throw new HttpServiceException(getMsg("error.token.validation.failed"));
-//                }
+                if(!claims.containsKey("exp"))//必须有超期限制
+                {
+                    throw new HttpServiceException(getMsg("error.token.validation.failed"));
+                }
                 if(claims.containsKey(BaseController.TOKEN_STR))
                 {
                     request.setAttribute(BaseController.TOKEN_STR, claims.get(BaseController.TOKEN_STR));
                     token = (String)claims.get(BaseController.TOKEN_STR);
                 }
-            }
+            }*/
+
+            userId = String.valueOf(claims.get(BaseController.USERID_STR));//获取用户信息
             request.setAttribute("claims", claims);
         }
         catch (Exception e) {
             throw new HttpServiceException(getMsg("error.token.validation.failed"));
         }
 
-        String userId = authServer.getUserIdByToken(token);
-        if (userId == null) {
-            throw new HttpServiceException(getMsg("error.user.out.time"));
-        }
 
         BaseController base = (BaseController)((HandlerMethod) handler).getBean();
-        //base.setUserId(userId);
+        base.setUserId(userId);
         BaseBean baseBean = new BaseBean();
         baseBean.setBaseCreator("系统用户");
         baseBean.setBaseLastModifier("最后修");

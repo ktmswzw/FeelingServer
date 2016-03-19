@@ -27,6 +27,7 @@ import java.util.TreeMap;
 public class BaseController {
 
     public static String TOKEN_STR = "token";
+    public static String USERID_STR = "userId";
     private static String SEPARATOR = "-";
     public static String VERSION_STR = "CLIENT-VERSION";
     protected HttpServletRequest request;
@@ -199,5 +200,13 @@ public class BaseController {
 
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    public static String getUseridStr() {
+        return USERID_STR;
+    }
+
+    public static void setUseridStr(String useridStr) {
+        USERID_STR = useridStr;
     }
 }

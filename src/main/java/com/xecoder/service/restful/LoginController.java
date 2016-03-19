@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-
 /**
  * Created by  moxz
  * User: 224911261@qq.com
@@ -37,10 +35,7 @@ public class LoginController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        String token = userServer.login(username, password, device, this.getVersionStr()).getToken();
-        HashMap<String, Object> claims = new HashMap<String, Object>();
-        claims.put("token", token);
-        //System.out.println(JWTCode.SIGNER.sign(claims));
+        String token = userServer.login(username, password, device, this.getVersionStr()).getJwt();
         return new ResponseEntity<>(new ReturnMessage(token,HttpStatus.OK), HttpStatus.OK);
     }
 }

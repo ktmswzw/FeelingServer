@@ -45,7 +45,7 @@ public class AuthToken  extends BaseBean implements Serializable {
      * 令牌所属的用户
      */
     @JsonIgnore
-    private User user;
+    private String userid;
 
 
     @JsonIgnore
@@ -56,7 +56,7 @@ public class AuthToken  extends BaseBean implements Serializable {
         this.token = getRandomToken();
         this.jwt = getJWT(this.token,user.getId());
         this.timestamp = new Date();
-        this.user = user;
+        this.userid = user.getId();
         this.device = device;
     }
 
@@ -73,7 +73,7 @@ public class AuthToken  extends BaseBean implements Serializable {
         claims.put("userId", userId);
         claims.put(BaseController.TOKEN_STR,token);
         claims.put("iss","imakehabits.com");
-        //claims.put("exp",(System.currentTimeMillis() + this.EXPIRED_TIME )/ 1000L);
+        claims.put("exp",(System.currentTimeMillis() + this.EXPIRED_TIME )/ 1000L);
         String jwt = JWTCode.SIGNER.sign(claims);
         System.out.println("jwt = " + jwt);
         return jwt;
@@ -105,14 +105,6 @@ public class AuthToken  extends BaseBean implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public boolean isExpired() {
         return System.currentTimeMillis() - this.timestamp.getTime() > EXPIRED_TIME;
     }
@@ -123,5 +115,13 @@ public class AuthToken  extends BaseBean implements Serializable {
 
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 }

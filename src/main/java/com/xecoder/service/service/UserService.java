@@ -44,8 +44,6 @@ public class UserService extends AbstractService<User> {
     private UserDao userDao;
     @Autowired
     private AuthDao authDao;
-    @Autowired
-    private AuthService authServer;
 
     @Override
     protected MongoRepository<User, String> getRepository() {
@@ -118,7 +116,7 @@ public class UserService extends AbstractService<User> {
 
         user = new User();
         user.setPhone(telephone);
-        user.setAvatar("cb3cecad-fbbb-4171-b881-6ed5f281f235");
+        user.setAvatar("0598e899-3524-4349-8e4e-db692ba343d2");
         user.setNickname(telephone.substring(telephone.length() - 4));
         this.save(user);
 
@@ -130,7 +128,6 @@ public class UserService extends AbstractService<User> {
         AuthToken token = null;
         try {
             token = new AuthToken(user, device);
-            authServer.storeToken(token);
             auth.addToken(token);
             authDao.save(auth);
         } catch (Exception e) {
@@ -138,7 +135,7 @@ public class UserService extends AbstractService<User> {
         }
 
         // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
-        return token.getToken();
+        return token.getJwt();
     }
 
     public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {
@@ -163,12 +160,9 @@ public class UserService extends AbstractService<User> {
         while (itr.hasNext()) {
             AuthToken t = itr.next();
             if (t.getDevice() == device) {
-                authServer.deleteToken(t.getToken());//删除redis
                 itr.remove();//同设备删除
             }
         }
-        //更新token
-        authServer.storeToken(loginToken);
         auth.addToken(loginToken);
         authDao.save(auth);
 
