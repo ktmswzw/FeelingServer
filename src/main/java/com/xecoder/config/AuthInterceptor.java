@@ -2,9 +2,9 @@ package com.xecoder.config;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.JWTCode;
-import com.xecoder.service.restful.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
+import com.xecoder.service.restful.BaseController;
 import com.xecoder.service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -70,6 +70,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             Map<String, Object> claims = JWTCode.VERIFIER.verify(authorization);
             if(claims.size()!=0)
             {
+//                if(!claims.containsKey("exp"))
+//                {
+//                    throw new HttpServiceException(getMsg("error.token.validation.failed"));
+//                }
                 if(claims.containsKey(BaseController.TOKEN_STR))
                 {
                     request.setAttribute(BaseController.TOKEN_STR, claims.get(BaseController.TOKEN_STR));

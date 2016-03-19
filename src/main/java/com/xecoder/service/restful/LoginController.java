@@ -1,7 +1,6 @@
 package com.xecoder.service.restful;
 
 import com.xecoder.common.exception.ReturnMessage;
-import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.service.service.UserService;
@@ -41,7 +40,7 @@ public class LoginController extends BaseController {
         String token = userServer.login(username, password, device, this.getVersionStr()).getToken();
         HashMap<String, Object> claims = new HashMap<String, Object>();
         claims.put("token", token);
-        System.out.println(JWTCode.SIGNER.sign(claims));
+        //System.out.println(JWTCode.SIGNER.sign(claims));
         return new ResponseEntity<>(new ReturnMessage(token,HttpStatus.OK), HttpStatus.OK);
     }
 }
