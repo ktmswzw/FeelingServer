@@ -112,6 +112,11 @@ public class Messages extends BaseBean implements Serializable  {
     @Transient
     private double distance;
 
+    @Transient
+    private double x;
+    @Transient
+    private double y;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -218,5 +223,21 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 }

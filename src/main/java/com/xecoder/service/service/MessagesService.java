@@ -80,6 +80,8 @@ public class MessagesService extends AbstractService<Messages> {
                 for (GeoResult<Messages> e : empGeoResults) {
                     Messages messages = e.getContent();
                     messages.setDistance(e.getDistance().getValue());
+                    messages.setX(messages.getPoint().getX());
+                    messages.setY(messages.getPoint().getY());
                     list.add(messages);
                 }
             }
