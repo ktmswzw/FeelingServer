@@ -146,11 +146,11 @@ public class MessagesController extends BaseController {
     @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.GET)
     @ResponseBody
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
-        MessagesSecret m = server.validate(id, answer);
-        if (m == null) {
+        String  sId = server.validate(id, answer);
+        if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
-            return new ResponseEntity<>(m, HttpStatus.OK);
+            return new ResponseEntity<>(sId, HttpStatus.OK);
         }
     }
 

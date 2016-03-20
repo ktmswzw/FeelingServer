@@ -104,10 +104,15 @@ public class MessagesService extends AbstractService<Messages> {
             criteria = makeCriteria(criteria, "_id", new ObjectId(model.getId()));
         }
         if (StringUtils.isNotEmpty(model.getTo())) {
-            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
+//            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
+            criteria = makeCriteria(criteria, "to", model.getTo());
+        }
+        else
+        {
+            criteria.and("to").exists(false);
         }
         if (StringUtils.isNotEmpty(model.getFrom())) {
-            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getFrom() + ".*$");
+            criteria = makeCriteriaRegex(criteria, "from", "^.*" + model.getFrom() + ".*$");
         }
         criteria = makeCriteria(criteria, "state", Messages.CLOSE);//未被开启过
         criteria.where("limit_date").lte(DateTools.addDay(new Date(), 365)).gt(new Date());//一年有效期内
@@ -118,7 +123,6 @@ public class MessagesService extends AbstractService<Messages> {
     @Override
     public Messages findByPk(Object... keys) {
         return messagesDao.findOne(String.valueOf(keys));
-//        return messagesDao.findById(String.valueOf(keys));
     }
 
     @Override
@@ -139,21 +143,35 @@ public class MessagesService extends AbstractService<Messages> {
      * @param answer
      * @return
      */
-    public MessagesSecret validate(String id, String answer) {
+    public String validate(String id, String answer) {
         if (StringUtils.isNotBlank(id)) {
             Messages msg = findById(id);
             MessagesSecret m = secretDao.findByMsgId(id);
             if (StringUtils.isBlank(m.getQuestion()))
-                return m;
+                return m.getId();
             else if (StringUtils.isBlank(m.getAnswer()))
-                return m;
+                return m.getId();
             else if (StringUtils.equals(m.getAnswer(), answer.trim())) {
                 msg.setState(Messages.LOCKED);
                 this.save(msg);//锁定，待距离小于0.1KM时发起解锁申请
-                return m;
+                return m.getId();
             }
             else
                 return null;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取最终结果
+     * @param id
+     * @return
+     */
+    public MessagesSecret getSecretContent(String id) {
+        if (StringUtils.isNotBlank(id)) {
+            MessagesSecret m = secretDao.findByMsgId(id);
+            return m;
         } else {
             return null;
         }
@@ -172,7 +190,7 @@ public class MessagesService extends AbstractService<Messages> {
         //java计算
         messages = this.findById(id);
         Point point1 = new Point(messages.getPoint().getX(),messages.getPoint().getY());
-        return SurfaceDistanceUtils.getShortestDistance(point,point1)<=0.1?true:false;
+        return SurfaceDistanceUtils.getShortestDistance(point,point1)<=0.1?true:false;//曲面计算
 
         //mongodb计算
 //        Criteria criteria = makeCriteria(messages);
