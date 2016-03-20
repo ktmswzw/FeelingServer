@@ -105,6 +105,10 @@ public class Messages extends BaseBean implements Serializable  {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateDate;
 
+    /**
+     * 问题
+     */
+    private String question;
 
     /**
      * 临时距离，默认为空，查询结果时赋值
@@ -239,5 +243,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 }

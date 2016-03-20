@@ -49,10 +49,6 @@ public class MessagesSecret {
      */
     private String videoPath;
 
-    /**
-     * 问题
-     */
-    private String question;
 
     /**
      * 答案
@@ -120,14 +116,6 @@ public class MessagesSecret {
 
     public void setVideoPath(String videoPath) {
         this.videoPath = videoPath;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
     }
 
     public String getAnswer() {

@@ -125,7 +125,7 @@ public class MessagesController extends BaseController {
         }
         secret.setPhotos(list);
         secret.setVideoPath(video);
-        secret.setQuestion(question);
+        msg.setQuestion(question);
         secret.setAnswer(answer);
         secret.setSoundPath(sound);
         secret.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));
@@ -164,12 +164,12 @@ public class MessagesController extends BaseController {
     @RequestMapping(value = "/arrival/{x}/{y}/{id}", method = RequestMethod.GET)
     @ResponseBody
     @NonAuthoritative
-    private ResponseEntity<?> isArrival(@PathVariable double x,
-                                        @PathVariable double y,
+    private ResponseEntity<?> isArrival(@PathVariable String x,
+                                        @PathVariable String y,
                                         @PathVariable String id
     ) {
         Messages messages;
-        if(server.isArrival(id,new Point(x,y))) {
+        if(server.isArrival(id,new Point(Double.parseDouble(y),Double.parseDouble(x)))) {
             messages = server.findById(id);
             return new ResponseEntity<>(messages, HttpStatus.OK);
         }
