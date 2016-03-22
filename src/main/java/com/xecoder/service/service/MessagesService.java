@@ -109,7 +109,10 @@ public class MessagesService extends AbstractService<Messages> {
         }
         else
         {
-            criteria.and("to").exists(false);
+            if(criteria==null)
+                criteria.where("to").exists(false);
+            else
+                criteria.and("to").exists(false);
         }
         if (StringUtils.isNotEmpty(model.getFrom())) {
             criteria = makeCriteriaRegex(criteria, "from", "^.*" + model.getFrom() + ".*$");

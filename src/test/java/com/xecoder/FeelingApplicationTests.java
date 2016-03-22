@@ -54,7 +54,7 @@ public class FeelingApplicationTests {
 		msg.setDistrict("鄞州");
 		msg.setAddress("学士路655号");
 		secret.setAnswer("me is who");
-		secret.setQuestion("who is me");
+		msg.setQuestion("who is me");
 		secret.setLimitDate(DateTools.addDay(new Date(),10));
 		GeoJsonPoint point = new GeoJsonPoint(112.99206,22.740501);
 		msg.setPoint(point);
