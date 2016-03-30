@@ -150,7 +150,7 @@ public class MessagesController extends BaseController {
         if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
-            return new ResponseEntity<>(sId, HttpStatus.OK);
+            return new ResponseEntity<>(new ReturnMessage(sId,HttpStatus.OK), HttpStatus.OK);
         }
     }
 
@@ -174,8 +174,7 @@ public class MessagesController extends BaseController {
             return new ResponseEntity<>(messages, HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
-
+            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"),HttpStatus.NOT_FOUND),HttpStatus.NOT_FOUND);
     }
 
     /**
