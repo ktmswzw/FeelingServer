@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 /**
  * Created by  moxz
  * User: 224911261@qq.com
@@ -71,7 +73,7 @@ public class MessagesController extends BaseController {
         if(list!=null&&list.size()!=0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else
-            return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(list, NOT_FOUND);
     }
 
 
@@ -145,6 +147,7 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.GET)
     @ResponseBody
+    @NonAuthoritative
     private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
         String  sId = server.validate(id, answer);
         if (sId == null) {
@@ -155,7 +158,7 @@ public class MessagesController extends BaseController {
     }
 
     /**
-     * 是否近距离开启
+     * 是否近距离开启( 服务器认证)
      * @param id
      * @param x
      * @param y
@@ -168,13 +171,31 @@ public class MessagesController extends BaseController {
                                         @PathVariable String y,
                                         @PathVariable String id
     ) {
-        Messages messages;
         if(server.isArrival(id,new Point(Double.parseDouble(y),Double.parseDouble(x)))) {
-            messages = server.findById(id);
-            return new ResponseEntity<>(messages, HttpStatus.OK);
+            MessagesSecret messagesSecret = secretService.findById(id);
+            return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"),HttpStatus.NOT_FOUND),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"), NOT_FOUND), NOT_FOUND);
+    }
+
+
+    /**
+     * 是否近距离开启( 手机端认证)
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/openOver/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @NonAuthoritative
+    private ResponseEntity<?> openOver(@PathVariable String id
+    ) {
+        MessagesSecret messagesSecret = secretService.findById(id);
+        if(messagesSecret!=null){
+            return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"),HttpStatus.NOT_FOUND),NOT_FOUND);
     }
 
     /**

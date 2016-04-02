@@ -38,6 +38,10 @@ public class MessagesSecretService extends AbstractService<MessagesSecret> {
         return doCount(query, MessagesSecret.class);
     }
 
+    public MessagesSecret findByMsgId(String msgId){
+        return dao.findByMsgId(msgId);
+    }
+
     @Override
     public List<MessagesSecret> search(int page, int size, Sort sort, MessagesSecret searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);

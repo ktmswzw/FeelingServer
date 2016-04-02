@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
  * User: 224911261@qq.com
  * 2016/1/11-13:21
  * Feeling.com.xecoder.model
+ * 不需要登陆认证
  */
 
 @Retention(RetentionPolicy.RUNTIME)
