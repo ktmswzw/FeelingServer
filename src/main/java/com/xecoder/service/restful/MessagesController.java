@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -117,7 +118,7 @@ public class MessagesController extends BaseController {
         msg.setTo(to);
         secret.setLimitDate(DateTools.strToDate(limitDate));
         secret.setContent(content);
-//        msg.setPhotos(new ArrayList(Collections.singletonList(photos)));
+//        msg.setPhotosList(new ArrayList(Collections.singletonList(photos)));
         List<MessagesPhoto> list = new ArrayList<>();
         List<String> stringList = new ArrayList(Collections.singletonList(photos));
         for(String s: stringList){
@@ -125,7 +126,7 @@ public class MessagesController extends BaseController {
             p.setSource(s);
             list.add(p);
         }
-        secret.setPhotos(list);
+        secret.setPhotosList(list);
         secret.setVideoPath(video);
         msg.setQuestion(question);
         secret.setAnswer(answer);
@@ -173,6 +174,7 @@ public class MessagesController extends BaseController {
     ) {
         if(server.isArrival(id,new Point(Double.parseDouble(y),Double.parseDouble(x)))) {
             MessagesSecret messagesSecret = secretService.findById(id);
+
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         }
         else
@@ -192,6 +194,11 @@ public class MessagesController extends BaseController {
     ) {
         MessagesSecret messagesSecret = secretService.findById(id);
         if(messagesSecret!=null){
+            List<String> photos=  new ArrayList<>();
+            if(messagesSecret.getPhotosList()!=null)
+                photos.addAll(messagesSecret.getPhotosList().stream().map(MessagesPhoto::getSource).collect(Collectors.toList()));
+            if(photos.size()>0)
+            messagesSecret.setPhotos(photos.toArray(new String[photos.size()]));
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         }
         else

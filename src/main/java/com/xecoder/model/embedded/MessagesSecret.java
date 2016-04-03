@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.xecoder.common.util.DateTools;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,9 +37,10 @@ public class MessagesSecret {
     /**
      * 图片组
      */
-    @NotEmpty
-    private List<MessagesPhoto> photos;
+    private List<MessagesPhoto> photosList;
 
+    @Transient
+    private String[] photos;
     /**
      * 留声机
      */
@@ -94,12 +96,12 @@ public class MessagesSecret {
         this.content = content;
     }
 
-    public List<MessagesPhoto> getPhotos() {
-        return photos;
+    public List<MessagesPhoto> getPhotosList() {
+        return photosList;
     }
 
-    public void setPhotos(List<MessagesPhoto> photos) {
-        this.photos = photos;
+    public void setPhotosList(List<MessagesPhoto> photosList) {
+        this.photosList = photosList;
     }
 
     public String getSoundPath() {
@@ -140,5 +142,13 @@ public class MessagesSecret {
 
     public void setBurnAfterReading(boolean burnAfterReading) {
         this.burnAfterReading = burnAfterReading;
+    }
+
+    public String[] getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(String[] photos) {
+        this.photos = photos;
     }
 }

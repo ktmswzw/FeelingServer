@@ -66,7 +66,7 @@ public class FeelingApplicationTests {
 		List<MessagesPhoto> list = new ArrayList<>();
 		list.add(messagesPhoto);
 
-		secret.setPhotos(list);
+		secret.setPhotosList(list);
 
 		secret.setBurnAfterReading(true);
 
