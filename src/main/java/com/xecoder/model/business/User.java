@@ -107,6 +107,12 @@ public class User extends BaseBean {
         this.phone = phone;
     }
 
+    @Transient
+    private String IMToken;
+
+    @Transient
+    private String JWTToken;
+
     public String getId() {
         return id;
     }
@@ -225,5 +231,21 @@ public class User extends BaseBean {
 
     public void setDevice(DeviceEnum device) {
         this.device = device;
+    }
+
+    public String getIMToken() {
+        return IMToken;
+    }
+
+    public void setIMToken(String IMToken) {
+        this.IMToken = IMToken;
+    }
+
+    public String getJWTToken() {
+        return JWTToken;
+    }
+
+    public void setJWTToken(String JWTToken) {
+        this.JWTToken = JWTToken;
     }
 }

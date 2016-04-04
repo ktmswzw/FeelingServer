@@ -10,6 +10,7 @@ import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.service.dao.AuthDao;
 import com.xecoder.service.dao.UserDao;
+import com.xecoder.service.restful.RongCloudController;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ import java.util.List;
  * Feeling.com.xecoder.service.impl
  */
 
-@Service
+@Service(value = "userService")
 public class UserService extends AbstractService<User> {
 
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -138,7 +139,7 @@ public class UserService extends AbstractService<User> {
         return token.getJwt();
     }
 
-    public AuthToken login(String telephone, String password, DeviceEnum device, String versionStr) {
+    public User login(String telephone, String password, DeviceEnum device, String versionStr) {
         User user = userDao.findByPhone(telephone);
 
         if (user == null) {
@@ -166,7 +167,12 @@ public class UserService extends AbstractService<User> {
         auth.addToken(loginToken);
         authDao.save(auth);
 
-        return loginToken;
+        RongCloudController rongCloudController = new RongCloudController();
+        String imtoken = rongCloudController.getIMK(user.getId(),user.getNickname(),user.getAvatar());
+        user.setIMToken(StringUtils.isNotBlank(imtoken)?imtoken:"");
+        user.setJWTToken(loginToken.getJwt());
+
+        return user;
     }
 
 }

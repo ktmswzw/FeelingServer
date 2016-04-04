@@ -1,8 +1,8 @@
 package com.xecoder.service.restful;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xecoder.FeelingApplication;
 import com.xecoder.common.exception.HttpServiceException;
+import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.rongcloud.*;
@@ -10,6 +10,8 @@ import com.xecoder.service.service.ApiHttpService;
 import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,26 +37,18 @@ public class RongCloudController extends BaseController {
      * 获取TOKEN
      * @return String token
      */
-    @RequestMapping(value = "/getIMToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/IMToken", method = RequestMethod.GET)
     @ResponseBody
-    public String getIMToken(){
+    public ResponseEntity<?>  getIMToken(){
         User user = userServer.findById(this.getUserId());
         if(user!=null) {
-            try {
-                result = ApiHttpService.getToken(KEY, SECRET, this.getUserId(), user.getNickname(), this.getQcloudUrl(user.getAvatar()), FormatType.json);
-            } catch (Exception e) {
-                throw new HttpServiceException(getLocalException("error.answer.is.error"));
-            }
+            return new ResponseEntity<>(new ReturnMessage(this.getIMK(this.getUserId(),user.getNickname(),user.getAvatar()), HttpStatus.OK), HttpStatus.OK);
         }
         else
         {
             throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
-        if(result.getHttpCode()!=200){
-            throw new HttpServiceException(getLocalException("error.user.not.register"));
-        }
-        TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
-        return json.getToken();
+
     }
 
     public static void main(String[] args) {
@@ -66,6 +60,21 @@ public class RongCloudController extends BaseController {
             System.out.println("json = " + json);
         } catch (Exception e) {
 
+        }
+    }
+
+    public String getIMK(String userId,String name,String avatar){
+        try {
+            result = ApiHttpService.getToken(KEY, SECRET, userId, name, this.getQcloudUrl(avatar), FormatType.json);
+
+            if(result.getHttpCode()!=200){
+                throw new HttpServiceException(getLocalException("error.user.not.register"));
+            }
+
+            TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
+            return json.getToken();
+        } catch (Exception e) {
+            throw new HttpServiceException(getLocalException("error.answer.is.error"));
         }
     }
 

@@ -19,7 +19,7 @@ import java.util.List;
  * 2016/3/13-14:22
  * Feeling.com.xecoder.service.service
  */
-@Service
+@Service(value = "messagesSecretService")
 public class MessagesSecretService extends AbstractService<MessagesSecret> {
 
 

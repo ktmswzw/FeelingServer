@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 2016/2/20-11:41
  * Feeling.com.xecoder.service.service
  */
-@Service
+@Service(value = "imageSignService")
 public class ImageSignService  {
 
     @Autowired

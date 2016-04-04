@@ -30,7 +30,7 @@ import java.util.List;
  * 2016/1/27-13:37
  * Feeling.com.xecoder.service.impl
  */
-@Service
+@Service(value = "messagesService")
 public class MessagesService extends AbstractService<Messages> {
 
     @Autowired

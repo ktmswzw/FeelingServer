@@ -1,6 +1,7 @@
 package com.xecoder.service.restful;
 
 import com.xecoder.common.exception.ReturnMessage;
+import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.service.service.UserService;
@@ -35,7 +36,7 @@ public class LoginController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        String token = userServer.login(username, password, device, this.getVersionStr()).getJwt();
-        return new ResponseEntity<>(new ReturnMessage(token,HttpStatus.OK), HttpStatus.OK);
+        User u = userServer.login(username, password, device, this.getVersionStr());
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 }
