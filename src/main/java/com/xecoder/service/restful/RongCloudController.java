@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 @RestController
-public class RongCloudAController extends BaseController {
+public class RongCloudController extends BaseController {
     private final static String KEY = "25wehl3uwkppw";
     private final static String SECRET = "9ZOJgx4Nlc4";
 
