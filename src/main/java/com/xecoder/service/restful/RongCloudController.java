@@ -1,15 +1,15 @@
 package com.xecoder.service.restful;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xecoder.FeelingApplication;
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
-import com.xecoder.model.rongcloud.FormatType;
-import com.xecoder.model.rongcloud.SdkHttpResult;
-import com.xecoder.model.rongcloud.TxtMessage;
+import com.xecoder.model.rongcloud.*;
 import com.xecoder.service.service.ApiHttpService;
 import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,9 +50,23 @@ public class RongCloudController extends BaseController {
         {
             throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
+        if(result.getHttpCode()!=200){
+            throw new HttpServiceException(getLocalException("error.user.not.register"));
+        }
+        TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
+        return json.getToken();
+    }
 
-        JSONObject jsb = JSONObject.parseObject((JSONObject.parseObject(result.toString()).get("result").toString()));
-        return jsb.get("token").toString();
+    public static void main(String[] args) {
+        SdkHttpResult result;
+        try {
+            result = ApiHttpService.getToken(KEY, SECRET, "123456", "abc", "http://aa.com/a.png", FormatType.json);
+            System.out.println("result = " + result);
+            TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
+            System.out.println("json = " + json);
+        } catch (Exception e) {
+
+        }
     }
 
     @RequestMapping(value = "/publishMessage", method = RequestMethod.GET)
