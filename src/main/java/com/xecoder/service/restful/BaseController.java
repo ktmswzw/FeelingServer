@@ -1,5 +1,6 @@
 package com.xecoder.service.restful;
 
+import com.xecoder.common.qcloud.HabitPicKey;
 import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.BaseBean;
 import org.apache.commons.beanutils.BeanUtils;
@@ -80,6 +81,15 @@ public class BaseController {
         return this.messageSource.getMessage(errorKey,null, Locale.getDefault());
     }
 
+    /**
+     * 图片路径
+     * @param id
+     * @return
+     */
+    public String getQcloudUrl(String id)
+    {
+        return HabitPicKey.DOMAIN + "/" + id;
+    }
 
 
     /**
