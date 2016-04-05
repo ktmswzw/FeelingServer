@@ -51,17 +51,17 @@ public class RongCloudController extends BaseController {
 
     }
 
-    public static void main(String[] args) {
-        SdkHttpResult result;
-        try {
-            result = ApiHttpService.getToken(KEY, SECRET, "123456", "abc", "http://aa.com/a.png", FormatType.json);
-            System.out.println("result = " + result);
-            TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
-            System.out.println("json = " + json);
-        } catch (Exception e) {
-
-        }
-    }
+//    public static void main(String[] args) {
+//        SdkHttpResult result;
+//        try {
+//            result = ApiHttpService.getToken(KEY, SECRET, "123456", "abc", "http://aa.com/a.png", FormatType.json);
+//            System.out.println("result = " + result);
+//            TokenJson json = (TokenJson) GsonUtil.fromJson(result.getResult().toString(),TokenJson.class);
+//            System.out.println("json = " + json);
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
     public String getIMK(String userId,String name,String avatar){
         try {
