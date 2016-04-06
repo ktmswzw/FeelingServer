@@ -2,9 +2,11 @@ package com.xecoder.service.service;
 
 import com.xecoder.dao.FriendDao;
 import com.xecoder.dao.FriendGroupingDao;
+import com.xecoder.dao.UserDao;
 import com.xecoder.model.business.Friend;
 import com.xecoder.model.business.FriendGrouping;
 import com.xecoder.model.business.Messages;
+import com.xecoder.model.business.User;
 import com.xecoder.service.core.AbstractService;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -16,6 +18,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +31,10 @@ public class FriendService extends AbstractService<Friend>{
 
     @Autowired
     private FriendGroupingDao friendGroupingDao;
+
+
+    @Autowired
+    private UserDao userDao;
 
     @Override
     protected MongoRepository<Friend, String> getRepository() {
@@ -89,12 +96,17 @@ public class FriendService extends AbstractService<Friend>{
         if (list1.size() != 0) {
             Friend result = list1.get(0);
             result.setBlacklist(false);
+            result.setUpdateTime(new Date());
             result.setGrouping(groupingName);
             return this.save(result);//更新
         } else {
             Friend friend1 = new Friend();
             friend1.setGrouping(groupingName);
+            friend1.setCreateTime(new Date());
             friend1.setKeyUserId(friend.getKeyUserId());
+            User user = userDao.findOne(relUserId);
+            if(user!=null)
+                friend1.setRemark(user.getNickname());
             friend1.setUser(relUserId);
             return save(friend1);//保存
         }
