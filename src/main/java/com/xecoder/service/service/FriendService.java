@@ -57,9 +57,10 @@ public class FriendService extends AbstractService<Friend>{
      * @return
      */
     public Friend addAdv(Friend friend) {
-        String groupingName = friend.getGrouping(), relUserId = friend.getId();
+        String groupingName = friend.getGrouping(), relUserId = friend.getUser();
         //判断分组情况
         FriendGrouping friendGrouping = new FriendGrouping();
+        friendGrouping.setUserId(friend.getKeyUserId());
         groupingName = StringUtils.isNotBlank(groupingName) ? groupingName : "默认分组";
         List<FriendGrouping> list = friendGroupingDao.findByGroupingAndUserId(friend.getGrouping(),friend.getKeyUserId());
         if (list.size() == 0) {
@@ -73,7 +74,7 @@ public class FriendService extends AbstractService<Friend>{
                     isExist = true;
                 }
             }
-            if (!isExist) {
+            if (isExist) {
                 friendGrouping.setSort(1);
                 friendGrouping.setGrouping(groupingName);
                 friendGroupingDao.save(friendGrouping);
@@ -83,15 +84,16 @@ public class FriendService extends AbstractService<Friend>{
         Friend searchFriend = new Friend();
         searchFriend.setKeyUserId(friend.getKeyUserId());
         searchFriend.setUser(relUserId);
+        searchFriend.setAll(true);
         List<Friend> list1 = this.search(0,1000,null,searchFriend);
         if (list1.size() != 0) {
             Friend result = list1.get(0);
+            result.setBlacklist(false);
             result.setGrouping(groupingName);
-            return this.save(result);//更新组
+            return this.save(result);//更新
         } else {
             Friend friend1 = new Friend();
             friend1.setGrouping(groupingName);
-            friend1.setBlacklist(false);
             friend1.setKeyUserId(friend.getKeyUserId());
             friend1.setUser(relUserId);
             return save(friend1);//保存
@@ -113,7 +115,8 @@ public class FriendService extends AbstractService<Friend>{
         if (StringUtils.isNotEmpty(model.getUser())) {
             criteria = makeCriteria(criteria, "user", model.getUser());
         }
-        criteria = makeCriteria(criteria, "blacklist", false);//未被开启过
+        if(!model.isAll())
+        criteria = makeCriteria(criteria, "blacklist", model.isBlacklist());
 
         return criteria;
     }

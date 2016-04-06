@@ -3,6 +3,7 @@ package com.xecoder.model.business;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -68,6 +69,9 @@ public class Friend {
      * 好友类型(未使用)
      */
     private int relationship;
+
+    @Transient
+    private boolean all = false;
 
     public String getId() {
         return id;
@@ -141,4 +145,11 @@ public class Friend {
         this.updateTime = updateTime;
     }
 
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vincent on 4/6/16.
@@ -32,9 +33,9 @@ public class FriendController extends BaseController {
      * @param userId
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/{userId}/{groupingName}", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<?> addFriend(@RequestParam String userId,@RequestParam(required = false) String groupingName) {
+    private ResponseEntity<?> addFriend(@PathVariable String userId,@PathVariable String groupingName) {
         User user = userServer.findById(userId);
         if(user!=null) {
             Date now = new Date();
@@ -44,8 +45,39 @@ public class FriendController extends BaseController {
             friend.setUser(userId);
             friend.setCreateTime(now);
             friend.setUpdateTime(now);
-            friendService.addAdv(friend);
+            friend = friendService.addAdv(friend);
             return new ResponseEntity<>(friend, HttpStatus.OK);
+        }
+        else
+        {
+            throw new HttpServiceException(getLocalException("error.user.not.register"));
+        }
+
+    }
+
+    /**
+     * 拉黑好友
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    private ResponseEntity<?> blackFriend(@PathVariable String userId) {
+        User user = userServer.findById(userId);
+        if(user!=null) {
+            Date now = new Date();
+            Friend friend = new Friend();
+            friend.setKeyUserId(this.getUserId());
+            friend.setUser(userId);
+            List<Friend> list = friendService.search(1,10,null,friend);
+            if(list!=null) {
+                Friend friend2 = list.get(0);
+                friend2.setBlacklist(true);
+                friendService.save(friend2);//拉黑
+                return new ResponseEntity<>(friend2, HttpStatus.OK);
+            }
+            else
+                throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
         else
         {
