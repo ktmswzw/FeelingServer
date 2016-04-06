@@ -1,4 +1,4 @@
-package com.xecoder.service.restful;
+package com.xecoder.restful;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;

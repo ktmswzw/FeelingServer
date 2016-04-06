@@ -1,8 +1,8 @@
-package com.xecoder.service.restful;
+package com.xecoder.restful;
 
 import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.model.business.Book;
-import com.xecoder.service.dao.BookDao;
+import com.xecoder.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

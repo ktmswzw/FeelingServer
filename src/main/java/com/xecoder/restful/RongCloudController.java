@@ -1,15 +1,12 @@
-package com.xecoder.service.restful;
+package com.xecoder.restful;
 
-import com.xecoder.FeelingApplication;
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.model.business.User;
-import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.rongcloud.*;
 import com.xecoder.service.service.ApiHttpService;
 import com.xecoder.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

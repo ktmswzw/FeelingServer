@@ -1,4 +1,4 @@
-package com.xecoder.service.restful;
+package com.xecoder.restful;
 
 /**
  * Created by  moxz

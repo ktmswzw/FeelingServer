@@ -1,4 +1,4 @@
-package com.xecoder.service.dao;
+package com.xecoder.dao;
 
 import com.xecoder.model.business.LogRecord;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by  moxz
  * User: 224911261@qq.com
  * 2016/1/22-14:06
- * Feeling.com.xecoder.service.dao
+ * Feeling.com.xecoder.dao
  */
 @Repository
 public interface LogRecordDao extends MongoRepository<LogRecord,String> {

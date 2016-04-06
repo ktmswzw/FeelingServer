@@ -1,6 +1,5 @@
-package com.xecoder.service.restful;
+package com.xecoder.restful;
 
-import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.DeviceEnum;

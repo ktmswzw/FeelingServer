@@ -5,7 +5,7 @@ import com.xecoder.common.util.Digests;
 import com.xecoder.common.util.Encodes;
 import com.xecoder.common.util.JWTCode;
 import com.xecoder.common.util.RandomUtils;
-import com.xecoder.service.restful.BaseController;
+import com.xecoder.restful.BaseController;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.embedded.DeviceEnum;
 import org.springframework.data.mongodb.core.mapping.Document;

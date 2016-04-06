@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
  * Created by  moxz
  * User: 224911261@qq.com
  * 2016/1/28-12:38
- * Feeling.com.xecoder.service.dao
+ * Feeling.com.xecoder.dao
  */
 @Repository
 public interface GeoLocationDao extends MongoRepository<GeoLocation,String> {

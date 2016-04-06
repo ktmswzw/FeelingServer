@@ -1,4 +1,4 @@
-package com.xecoder.service.dao;
+package com.xecoder.dao;
 
 import com.xecoder.model.business.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

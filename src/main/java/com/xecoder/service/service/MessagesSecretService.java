@@ -2,7 +2,7 @@ package com.xecoder.service.service;
 
 import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.core.AbstractService;
-import com.xecoder.service.dao.MessagesSecretDao;
+import com.xecoder.dao.MessagesSecretDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

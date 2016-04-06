@@ -4,7 +4,7 @@ import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.JWTCode;
 import com.xecoder.model.core.BaseBean;
 import com.xecoder.model.core.NonAuthoritative;
-import com.xecoder.service.restful.BaseController;
+import com.xecoder.restful.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
