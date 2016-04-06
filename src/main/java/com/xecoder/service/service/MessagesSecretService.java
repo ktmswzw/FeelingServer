@@ -54,11 +54,6 @@ public class MessagesSecretService extends AbstractService<MessagesSecret> {
     }
 
     @Override
-    protected Criteria makeCriteriaByPk(MessagesSecret model) {
-        return null;
-    }
-
-    @Override
     protected Criteria makeCriteria(MessagesSecret model) {
         Criteria criteria = null;
         if (StringUtils.isNotEmpty(model.getMsgId())) {
@@ -72,13 +67,4 @@ public class MessagesSecretService extends AbstractService<MessagesSecret> {
             return dao.findOne((String) keys[0]);
     }
 
-    @Override
-    public Iterable<MessagesSecret> findByNameLike(String name, String sortColumn) {
-        return null;
-    }
-
-    @Override
-    public Iterable<MessagesSecret> search(String keyword, int page, int size, String sortColumn) {
-        return null;
-    }
 }

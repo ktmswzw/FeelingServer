@@ -70,11 +70,6 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
-    protected Criteria makeCriteriaByPk(User model) {
-        return null;
-    }
-
-    @Override
     protected Criteria makeCriteria(User model) {
         Criteria criteria = null;
         if (StringUtils.isNotEmpty(model.getNickname())) {
@@ -88,20 +83,6 @@ public class UserService extends AbstractService<User> {
         return userDao.findByPhone((String) keys[0]);
     }
 
-    @Override
-    public Iterable<User> findByNameLike(String name, String sortColumn) {
-        return null;
-    }
-//
-//    @Override
-//    public long searchCount(String keyword) {
-//        return userDao.searchCount(keyword);
-//    }
-
-    @Override
-    public Iterable<User> search(String keyword, int page, int size, String sortColumn) {
-        return null;
-    }
 
     public User findByPhone(String phone) {
         return userDao.findByPhone(phone);

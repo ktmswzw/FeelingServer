@@ -51,11 +51,6 @@ public class Friend {
      */
     private String remark;
 
-    /**
-     * 是否督导
-     */
-    @Field(value = "is_supervise")
-    private boolean isSupervise = false;
 
     @Field(value = "create_time")
     @JsonProperty(value = "create_time")
@@ -146,11 +141,4 @@ public class Friend {
         this.updateTime = updateTime;
     }
 
-    public boolean getIsSupervise() {
-        return isSupervise;
-    }
-
-    public void setIsSupervise(boolean isSupervise) {
-        this.isSupervise = isSupervise;
-    }
 }

@@ -16,10 +16,6 @@ public interface IService<T> extends Pagination {
 
     public T findByPk(Object... keys);
 
-    public Iterable<T> findByNameLike(String name, String sortColumn);
-
-    public Iterable<T> search(String keyword, int page, int size, String sortColumn);
-
     public T save(T model);
 
     public Iterable<T> save(Iterable<T> model);

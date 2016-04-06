@@ -136,7 +136,6 @@ public abstract class AbstractService<T> implements IService<T> {
 
     abstract protected long count(T searchCondition);
     abstract public List<T> search(int page, int size, Sort sort, T searchCondition);
-    abstract protected Criteria makeCriteriaByPk(T model);
     abstract protected Criteria makeCriteria(T model);
 
 }

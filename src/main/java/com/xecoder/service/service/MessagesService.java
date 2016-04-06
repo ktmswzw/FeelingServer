@@ -93,11 +93,6 @@ public class MessagesService extends AbstractService<Messages> {
     }
 
     @Override
-    protected Criteria makeCriteriaByPk(Messages model) {
-        return null;
-    }
-
-    @Override
     protected Criteria makeCriteria(Messages model) {
         Criteria criteria = null;
         if (StringUtils.isNotEmpty(model.getId())) {
@@ -126,16 +121,6 @@ public class MessagesService extends AbstractService<Messages> {
     @Override
     public Messages findByPk(Object... keys) {
         return messagesDao.findOne(String.valueOf(keys));
-    }
-
-    @Override
-    public Iterable<Messages> findByNameLike(String name, String sortColumn) {
-        return messagesDao.findAll();
-    }
-
-    @Override
-    public Iterable<Messages> search(String keyword, int page, int size, String sortColumn) {
-        return null;
     }
 
     /**
