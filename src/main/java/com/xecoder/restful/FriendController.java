@@ -38,9 +38,9 @@ public class FriendController extends BaseController {
      * 查找清单
      * @return
      */
-    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    private ResponseEntity<?> search(@PathVariable String name) {
+    private ResponseEntity<?> search(@RequestParam(required = false) String name) {
         Friend friend = new Friend();
         if(StringUtils.isNotBlank(name))
             friend.setRemark(name);
