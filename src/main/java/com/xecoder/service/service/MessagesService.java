@@ -1,8 +1,10 @@
 package com.xecoder.service.service;
 
 import com.xecoder.common.util.DateTools;
+import com.xecoder.common.util.ImageUtil;
 import com.xecoder.common.util.SurfaceDistanceUtils;
 import com.xecoder.model.business.Messages;
+import com.xecoder.model.business.User;
 import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.core.AbstractService;
 import com.xecoder.dao.MessagesDao;
@@ -38,6 +40,9 @@ public class MessagesService extends AbstractService<Messages> {
 
     @Autowired
     private MessagesSecretDao secretDao;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -79,6 +84,9 @@ public class MessagesService extends AbstractService<Messages> {
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {
                     Messages messages = e.getContent();
+                    User u = userService.findById(messages.getFromId());
+                    if(u!=null)
+                    messages.setAvatar(StringUtils.isBlank(u.getAvatar())?"": ImageUtil.getPathSmall(u.getAvatar()));
                     messages.setDistance(e.getDistance().getValue());
                     messages.setX(messages.getPoint().getX());
                     messages.setY(messages.getPoint().getY());

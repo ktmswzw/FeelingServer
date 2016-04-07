@@ -121,6 +121,10 @@ public class Messages extends BaseBean implements Serializable  {
     @Transient
     private double y;
 
+
+    @Transient
+    private String avatar;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -251,5 +255,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

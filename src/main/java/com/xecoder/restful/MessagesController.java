@@ -116,6 +116,7 @@ public class MessagesController extends BaseController {
                 msg.setFrom(user.getNickname());
         }
         msg.setTo(to);
+        msg.setFromId(this.getUserId());
         secret.setLimitDate(DateTools.strToDate(limitDate));
         secret.setContent(content);
 //        msg.setPhotosList(new ArrayList(Collections.singletonList(photos)));

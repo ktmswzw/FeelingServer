@@ -43,50 +43,38 @@ public class FeelingApplicationTests {
 	@Test
 	public void contextLoads() {
 
-		Messages msg = new Messages();
-
-		MessagesSecret secret = new MessagesSecret();
-
-		msg.setFrom("小红");
-		msg.setTo("小明");
-		secret.setContent("我在这里，你在哪里？");
-		msg.setCity("宁波");
-		msg.setDistrict("鄞州");
-		msg.setAddress("学士路655号");
-		secret.setAnswer("me is who");
-		msg.setQuestion("who is me");
-		secret.setLimitDate(DateTools.addDay(new Date(),10));
-		GeoJsonPoint point = new GeoJsonPoint(112.99206,22.740501);
-		msg.setPoint(point);
-
-		MessagesPhoto  messagesPhoto = new MessagesPhoto();
-		messagesPhoto.setName("1");
-		messagesPhoto.setSource("222");
-		messagesPhoto.setThumbnails("111");
-		List<MessagesPhoto> list = new ArrayList<>();
-		list.add(messagesPhoto);
-
-		secret.setPhotosList(list);
-
-		secret.setBurnAfterReading(true);
-
-		messagesDao.save(msg);
-
-		secret.setMsgId(msg.getId());
-		secretDao.save(secret);
-
-
-		//double x = server.getDistance("1",0,0);
-
-//		List features = Arrays.asList("Lambdas", "Default Method", "Stream API", "Date and Time API");
-//		features.forEach(n -> System.out.println(n));
-//		features.forEach(System.out::println);
+//		Messages msg = new Messages();
 //
-//		List languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp");
+//		MessagesSecret secret = new MessagesSecret();
 //
-//		Predicate<String> startsWithJ = (n) -> n.startsWith("J");
-//		Predicate<String> fourLetterLong = (n) -> n.length() == 4;
-//		languages.stream().filter(startsWithJ.and(fourLetterLong)).forEach((n) -> System.out.print("\nName, which starts with 'J' and four letter long is : " + n));
+//		msg.setFrom("小红");
+//		msg.setTo("小明");
+//		secret.setContent("我在这里，你在哪里？");
+//		msg.setCity("宁波");
+//		msg.setDistrict("鄞州");
+//		msg.setAddress("学士路655号");
+//		secret.setAnswer("me is who");
+//		msg.setQuestion("who is me");
+//		secret.setLimitDate(DateTools.addDay(new Date(),10));
+//		GeoJsonPoint point = new GeoJsonPoint(112.99206,22.740501);
+//		msg.setPoint(point);
+//
+//		MessagesPhoto  messagesPhoto = new MessagesPhoto();
+//		messagesPhoto.setName("1");
+//		messagesPhoto.setSource("222");
+//		messagesPhoto.setThumbnails("111");
+//		List<MessagesPhoto> list = new ArrayList<>();
+//		list.add(messagesPhoto);
+//
+//		secret.setPhotosList(list);
+//
+//		secret.setBurnAfterReading(true);
+//
+//		messagesDao.save(msg);
+//
+//		secret.setMsgId(msg.getId());
+//		secretDao.save(secret);
+
 	}
 
 }
