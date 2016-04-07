@@ -1,5 +1,6 @@
 package com.xecoder.common.util;
 
+import com.xecoder.common.qcloud.HabitPicKey;
 import com.xecoder.common.qcloud.PicCloud;
 import com.xecoder.common.qcloud.UploadResult;
 import com.xecoder.model.business.ImageBackup;
@@ -119,6 +120,23 @@ public class ImageUtil {
     {
         PicCloud pc = new PicCloud(APP_ID_V2, SECRET_ID_V2, SECRET_KEY_V2, BUCKET);
         return pc.getAppSign();
+    }
+
+
+    /**
+     * 获取完整路径
+     * @return
+     */
+    public static String getPath(String url){
+        return "http://"+HabitPicKey.DOMAIN + "/" + url;
+    }
+
+    /**
+     * 获取完整路径small
+     * @return
+     */
+    public static String getPathSmall(String url){
+        return getPath(url) + "/small";
     }
 
 }

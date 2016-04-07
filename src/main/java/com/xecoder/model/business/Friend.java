@@ -71,6 +71,12 @@ public class Friend {
     private int relationship;
 
     @Transient
+    private String avatar = "";
+
+    @Transient
+    private String motto = "";
+
+    @Transient
     private boolean all = false;
 
     public String getId() {
@@ -151,5 +157,21 @@ public class Friend {
 
     public void setAll(boolean all) {
         this.all = all;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getMotto() {
+        return motto;
+    }
+
+    public void setMotto(String motto) {
+        this.motto = motto;
     }
 }

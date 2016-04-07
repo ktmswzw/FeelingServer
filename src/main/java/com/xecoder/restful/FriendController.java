@@ -1,6 +1,7 @@
 package com.xecoder.restful;
 
 import com.xecoder.common.exception.HttpServiceException;
+import com.xecoder.common.util.ImageUtil;
 import com.xecoder.model.business.Friend;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
@@ -45,6 +46,16 @@ public class FriendController extends BaseController {
             friend.setRemark(name);
         friend.setKeyUserId(this.getUserId());
         List<Friend> list = friendService.search(1,1000,null,friend);
+
+        for(Friend f:list){
+            User u = userServer.findById(f.getUser());
+            if(u!=null){
+                f.setAvatar(StringUtils.isBlank(u.getAvatar())?"":ImageUtil.getPathSmall(u.getAvatar()));
+                f.setRemark(StringUtils.isBlank(f.getRemark())?u.getNickname():f.getRemark());
+                f.setMotto(u.getMotto()!=null?u.getMotto():"");
+            }
+        }
+
         if(list.size()>0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else
