@@ -2,6 +2,7 @@ package com.xecoder.restful;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
+import com.xecoder.common.util.ImageUtil;
 import com.xecoder.model.embedded.DeviceEnum;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
@@ -71,6 +72,8 @@ public class UserController extends BaseController {
     public ResponseEntity<?> getUser(@Valid @PathVariable String id) {
         User user = userServer.findById(id);
         if(user!=null) {
+            String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
+            user.setAvatar(avatar);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else

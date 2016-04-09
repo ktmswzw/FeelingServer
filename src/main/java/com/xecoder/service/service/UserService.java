@@ -2,6 +2,7 @@ package com.xecoder.service.service;
 
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.util.HashPassword;
+import com.xecoder.common.util.ImageUtil;
 import com.xecoder.common.util.RandomUtils;
 import com.xecoder.model.business.Auth;
 import com.xecoder.model.business.AuthToken;
@@ -136,6 +137,7 @@ public class UserService extends AbstractService<User> {
             throw new HttpServiceException(getLocalException("error.user.login.failed"));
         }
 
+        String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
         AuthToken loginToken = new AuthToken(user, device);//重新生成
         List<AuthToken> tokens = auth.getEffectiveTokens();
         Iterator<AuthToken> itr = tokens.iterator();
@@ -149,8 +151,9 @@ public class UserService extends AbstractService<User> {
         authDao.save(auth);
 
         RongCloudController rongCloudController = new RongCloudController();
-        String imtoken = rongCloudController.getIMK(user.getId(),user.getNickname(),user.getAvatar());
+        String imtoken = rongCloudController.getIMK(user.getId(),user.getNickname(),avatar);
         user.setIMToken(StringUtils.isNotBlank(imtoken)?imtoken:"");
+        user.setAvatar(avatar);
         user.setJWTToken(loginToken.getJwt());
 
         return user;
