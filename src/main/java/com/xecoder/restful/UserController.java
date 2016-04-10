@@ -83,18 +83,18 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 获取用户
+     * 保存用户
      * @param id
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     @ResponseBody
-    public ResponseEntity<?> saveUser(@Valid @PathVariable String id,@Valid @RequestParam String nickname,@RequestParam String avatar,@Valid @RequestParam Sex sex,@Valid @RequestParam String phone) {
+    public ResponseEntity<?> saveUser(@Valid @PathVariable String id,@Valid @RequestParam String nickname,@RequestParam String avatar,@Valid @RequestParam Sex sex,@Valid @RequestParam String motto) {
         User user = userServer.findById(id);
         if(user!=null) {
             user.setAvatar(StringUtils.isNotBlank(avatar)?avatar:user.getAvatar());
             user.setNickname(StringUtils.isNotBlank(nickname)?nickname:user.getNickname());
-            user.setPhone(StringUtils.isNotBlank(phone)?phone:user.getPhone());
+            user.setMotto(StringUtils.isNotBlank(motto)?motto:user.getMotto());
             user.setSex(StringUtils.isNotBlank(sex.toString())?sex:user.getSex());
             userServer.save(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
