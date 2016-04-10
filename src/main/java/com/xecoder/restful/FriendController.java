@@ -95,6 +95,29 @@ public class FriendController extends BaseController {
     }
 
     /**
+     * 修改好友备注
+     * @param id
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "/remark/{id}/{name}", method = RequestMethod.POST)
+    @ResponseBody
+    private ResponseEntity<?> remark(@PathVariable String id,@PathVariable String name) {
+        Friend friend = friendService.findById(id);
+        if(friend!=null) {
+            friend.setRemark(name);
+            friendService.save(friend);
+
+            return new ResponseEntity<>(friend, HttpStatus.OK);
+        }
+        else
+        {
+            throw new HttpServiceException(getLocalException("error.user.not.register"));
+        }
+
+    }
+
+    /**
      * 拉黑好友
      * @param userId
      * @return
