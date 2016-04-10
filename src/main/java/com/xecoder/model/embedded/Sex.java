@@ -7,15 +7,16 @@ package com.xecoder.model.embedded;
  * Feeling.com.xecoder.model.business
  */
 public enum Sex {
-    MALE(1),FEMALE(2);
+    MALE(1), FEMALE(2), OTHER(2);
 
     private int value;
+
     Sex(int value) {
         this.value = value;
     }
 
     public static Sex getSex(int value) {
-        return value == 1 ? MALE : FEMALE;
+        return value == 1 ? MALE : (value == 2) ? FEMALE : OTHER;
     }
 
     public int getValue() {

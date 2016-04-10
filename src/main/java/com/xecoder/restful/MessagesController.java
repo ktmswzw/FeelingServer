@@ -119,7 +119,6 @@ public class MessagesController extends BaseController {
         msg.setFromId(this.getUserId());
         secret.setLimitDate(DateTools.strToDate(limitDate));
         secret.setContent(content);
-//        msg.setPhotosList(new ArrayList(Collections.singletonList(photos)));
         List<MessagesPhoto> list = new ArrayList<>();
         List<String> stringList = new ArrayList(Collections.singletonList(photos));
         for(String s: stringList){
