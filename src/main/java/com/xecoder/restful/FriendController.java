@@ -78,6 +78,13 @@ public class FriendController extends BaseController {
             friend.setGrouping(groupingName);
             friend.setUser(userId);
             friend = friendService.addAdv(friend);
+
+            Friend friend1 = new Friend();
+            friend1.setKeyUserId(userId);
+            friend1.setGrouping(groupingName);
+            friend1.setUser(this.getUserId());
+            friendService.addAdv(friend1);
+
             return new ResponseEntity<>(friend, HttpStatus.OK);
         }
         else
