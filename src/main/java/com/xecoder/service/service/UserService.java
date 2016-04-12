@@ -47,6 +47,9 @@ public class UserService extends AbstractService<User> {
     @Autowired
     private AuthDao authDao;
 
+    @Autowired
+    ImageSignService signService;
+
     @Override
     protected MongoRepository<User, String> getRepository() {
         return userDao;
@@ -155,6 +158,7 @@ public class UserService extends AbstractService<User> {
         user.setIMToken(StringUtils.isNotBlank(imtoken)?imtoken:"");
         user.setAvatar(avatar);
         user.setJWTToken(loginToken.getJwt());
+        user.setSignToken(signService.getQSign());
 
         return user;
     }

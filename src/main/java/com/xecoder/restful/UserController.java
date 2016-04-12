@@ -40,7 +40,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     @NonAuthoritative
-    public ResponseEntity<?> register(@Valid @RequestParam String username,@Valid  @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
+    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
         ReturnMessage returnMessage = new ReturnMessage(userServer.register(username, password, device),HttpStatus.OK);
         return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
@@ -53,7 +53,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/lists/{name}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<?> getAllUserList(@Valid @PathVariable String name) {
+    public ResponseEntity<?> getAllUserList(@PathVariable String name) {
         User user = new User();
         user.setNickname(name);
         List<User> userList  = userServer.search(0,20, new Sort("OrderByCreateTimeAsc"),user);
@@ -69,7 +69,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<?> getUser(@Valid @PathVariable String id) {
+    public ResponseEntity<?> getUser(@PathVariable String id) {
         User user = userServer.findById(id);
         if(user!=null) {
             String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
@@ -87,15 +87,15 @@ public class UserController extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<?> saveUser(@Valid @PathVariable String id,@Valid @RequestParam String nickname,@RequestParam String avatar,@Valid @RequestParam Sex sex,@Valid @RequestParam String motto) {
+    public ResponseEntity<?> saveUser(@PathVariable String id,@RequestParam String nickname,@RequestParam String avatar,@RequestParam Sex sex,@RequestParam String motto) {
         User user = userServer.findById(id);
         if(user!=null) {
             user.setAvatar(StringUtils.isNotBlank(avatar)?avatar:user.getAvatar());
             user.setNickname(StringUtils.isNotBlank(nickname)?nickname:user.getNickname());
             user.setMotto(StringUtils.isNotBlank(motto)?motto:user.getMotto());
-            user.setSex(StringUtils.isNotBlank(sex.toString())?sex:user.getSex());
+            user.setSex(sex!=null?sex:user.getSex());
             userServer.save(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }

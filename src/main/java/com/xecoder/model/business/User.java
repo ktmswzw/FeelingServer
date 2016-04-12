@@ -113,6 +113,9 @@ public class User extends BaseBean {
     @Transient
     private String JWTToken;
 
+    @Transient
+    private String SignToken;
+
     public String getId() {
         return id;
     }
@@ -247,5 +250,13 @@ public class User extends BaseBean {
 
     public void setJWTToken(String JWTToken) {
         this.JWTToken = JWTToken;
+    }
+
+    public String getSignToken() {
+        return SignToken;
+    }
+
+    public void setSignToken(String signToken) {
+        SignToken = signToken;
     }
 }
