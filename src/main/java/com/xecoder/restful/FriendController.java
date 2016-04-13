@@ -36,27 +36,28 @@ public class FriendController extends BaseController {
 
     /**
      * 查找清单
+     *
      * @return
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     private ResponseEntity<?> search(@RequestParam(required = false) String name) {
         Friend friend = new Friend();
-        if(StringUtils.isNotBlank(name))
+        if (StringUtils.isNotBlank(name))
             friend.setRemark(name);
         friend.setKeyUserId(this.getUserId());
-        List<Friend> list = friendService.search(1,1000,null,friend);
+        List<Friend> list = friendService.search(1, 1000, null, friend);
 
-        for(Friend f:list){
+        for (Friend f : list) {
             User u = userServer.findById(f.getUser());
-            if(u!=null){
-                f.setAvatar(StringUtils.isBlank(u.getAvatar())?"":ImageUtil.getPathSmall(u.getAvatar()));
-                f.setRemark(StringUtils.isBlank(f.getRemark())?u.getNickname():f.getRemark());
-                f.setMotto(u.getMotto()!=null?u.getMotto():"");
+            if (u != null) {
+                f.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
+                f.setRemark(StringUtils.isBlank(f.getRemark()) ? u.getNickname() : f.getRemark());
+                f.setMotto(u.getMotto() != null ? u.getMotto() : "");
             }
         }
 
-        if(list.size()>0)
+        if (list.size() > 0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else
             return new ResponseEntity<>(list, NOT_FOUND);
@@ -65,14 +66,15 @@ public class FriendController extends BaseController {
 
     /**
      * 添加好友
+     *
      * @param userId
      * @return
      */
     @RequestMapping(value = "/{userId}/{groupingName}", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<?> addFriend(@PathVariable String userId,@PathVariable String groupingName) {
+    private ResponseEntity<?> addFriend(@PathVariable String userId, @PathVariable String groupingName) {
         User user = userServer.findById(userId);
-        if(user!=null) {
+        if (user != null) {
             Friend friend = new Friend();
             friend.setKeyUserId(this.getUserId());
             friend.setGrouping(groupingName);
@@ -86,9 +88,7 @@ public class FriendController extends BaseController {
             friendService.addAdv(friend1);
 
             return new ResponseEntity<>(friend, HttpStatus.OK);
-        }
-        else
-        {
+        } else {
             throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
 
@@ -96,22 +96,21 @@ public class FriendController extends BaseController {
 
     /**
      * 修改好友备注
+     *
      * @param id
      * @param name
      * @return
      */
     @RequestMapping(value = "/remark/{id}/{name}", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<?> remark(@PathVariable String id,@PathVariable String name) {
+    private ResponseEntity<?> remark(@PathVariable String id, @PathVariable String name) {
         Friend friend = friendService.findById(id);
-        if(friend!=null) {
+        if (friend != null) {
             friend.setRemark(name);
             friendService.save(friend);
 
             return new ResponseEntity<>(friend, HttpStatus.OK);
-        }
-        else
-        {
+        } else {
             throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
 
@@ -119,31 +118,32 @@ public class FriendController extends BaseController {
 
     /**
      * 拉黑好友
-     * @param userId
+     *
+     * @param id
      * @return
      */
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    private ResponseEntity<?> blackFriend(@PathVariable String userId) {
-        User user = userServer.findById(userId);
-        if(user!=null) {
-            Date now = new Date();
-            Friend friend = new Friend();
-            friend.setKeyUserId(this.getUserId());
-            friend.setUser(userId);
+    private ResponseEntity<?> blackFriend(@PathVariable String id) {
+        Friend friend = friendService.findById(id);
+        if (friend != null) {
+            friend.setBlacklist(true);
+            friend.setUpdateTime(new Date());
+            friendService.save(friend);//拉黑
+
+            Friend friend2 = new Friend();
+            friend2.setKeyUserId(friend.getUser());
+            friend2.setUser(this.getUserId());
             List<Friend> list = friendService.search(1,10,null,friend);
-            if(list!=null) {
-                Friend friend2 = list.get(0);
-                friend2.setBlacklist(true);
-                friend2.setUpdateTime(now);
-                friendService.save(friend2);//拉黑
-                return new ResponseEntity<>(friend2, HttpStatus.OK);
+            for(Friend friend3:list){
+                friend3.setBlacklist(true);
+                friend3.setUpdateTime(new Date());
+                friendService.save(friend3);//拉黑
             }
-            else
-                throw new HttpServiceException(getLocalException("error.user.not.register"));
-        }
-        else
-        {
+
+
+            return new ResponseEntity<>(friend, HttpStatus.OK);
+        } else {
             throw new HttpServiceException(getLocalException("error.user.not.register"));
         }
 
