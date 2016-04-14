@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serializable;
 import java.util.*;
 
-@Document(collection = "auth")
+@Document(collection = "user_auth")
 public class Auth extends BaseBean implements Serializable {
     private static final long serialVersionUID = -2296747606141992756L;
     /**

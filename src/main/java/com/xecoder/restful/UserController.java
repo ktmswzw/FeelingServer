@@ -41,8 +41,7 @@ public class UserController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        ReturnMessage returnMessage = new ReturnMessage(userServer.register(username, password, device),HttpStatus.OK);
-        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
+        return new ResponseEntity<>(userServer.register(username, password, device), HttpStatus.OK);
     }
 
 

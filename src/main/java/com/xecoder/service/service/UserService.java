@@ -93,7 +93,7 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional
-    public String register(String telephone, String password, DeviceEnum device) {
+    public User register(String telephone, String password, DeviceEnum device) {
 
         User user = userDao.findByPhone(telephone);
         if (user != null) {
@@ -103,7 +103,7 @@ public class UserService extends AbstractService<User> {
         user = new User();
         user.setPhone(telephone);
         user.setAvatar("0598e899-3524-4349-8e4e-db692ba343d2");
-        user.setNickname(telephone.substring(telephone.length() - 4));
+        user.setNickname(telephone);
         this.save(user);
 
         String userId = user.getId();
@@ -116,12 +116,11 @@ public class UserService extends AbstractService<User> {
             token = new AuthToken(user, device);
             auth.addToken(token);
             authDao.save(auth);
+            setKey(user,token);
         } catch (Exception e) {
             this.delete(user.getId());    //回滚
         }
-
-        // imService.register(userId, user.getNickname(), user.getAvatar()); //第三方注册
-        return token.getJwt();
+        return user;
     }
 
     public User login(String telephone, String password, DeviceEnum device, String versionStr) {
@@ -140,7 +139,7 @@ public class UserService extends AbstractService<User> {
             throw new HttpServiceException(getLocalException("error.user.login.failed"));
         }
 
-        String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
+
         AuthToken loginToken = new AuthToken(user, device);//重新生成
         List<AuthToken> tokens = auth.getEffectiveTokens();
         Iterator<AuthToken> itr = tokens.iterator();
@@ -152,15 +151,23 @@ public class UserService extends AbstractService<User> {
         }
         auth.addToken(loginToken);
         authDao.save(auth);
+        setKey(user,loginToken);
+        return user;
+    }
 
+    /**
+     * 设置其他内容
+     * @param user
+     * @param loginToken
+     */
+    private void setKey(User user,AuthToken loginToken){
+        String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
         RongCloudController rongCloudController = new RongCloudController();
         String imtoken = rongCloudController.getIMK(user.getId(),user.getNickname(),avatar);
         user.setIMToken(StringUtils.isNotBlank(imtoken)?imtoken:"");
         user.setAvatar(avatar);
         user.setJWTToken(loginToken.getJwt());
         user.setSignToken(signService.getQSign());
-
-        return user;
     }
 
 }

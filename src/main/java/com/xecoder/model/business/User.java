@@ -47,7 +47,7 @@ public class User extends BaseBean {
     /**
      * 性别
      */
-    private Sex sex = Sex.MALE;
+    private Sex sex = Sex.OTHER;
 
     /**
      * 手机号

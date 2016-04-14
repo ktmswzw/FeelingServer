@@ -94,8 +94,16 @@ public class MessagesService extends AbstractService<Messages> {
                 }
             }
         } else {//按姓名搜索
-            if (StringUtils.isNotBlank(searchCondition.getTo()))
+            if (StringUtils.isNotBlank(searchCondition.getTo())) {
                 list = doFind(query, Messages.class);
+                for(Messages m:list)
+                {
+                    User u = userService.findById(m.getFromId());
+                    if(u!=null)
+                    m.setAvatar(StringUtils.isBlank(u.getAvatar())?"": ImageUtil.getPathSmall(u.getAvatar()));
+                }
+            }
+
         }
         return list;
     }

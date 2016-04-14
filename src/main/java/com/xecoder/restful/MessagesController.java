@@ -3,6 +3,7 @@ package com.xecoder.restful;
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.common.util.DateTools;
+import com.xecoder.common.util.ImageUtil;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
@@ -11,6 +12,7 @@ import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.service.MessagesSecretService;
 import com.xecoder.service.service.MessagesService;
 import com.xecoder.service.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
@@ -120,7 +122,7 @@ public class MessagesController extends BaseController {
         secret.setLimitDate(DateTools.strToDate(limitDate));
         secret.setContent(content);
         List<MessagesPhoto> list = new ArrayList<>();
-        List<String> stringList = new ArrayList(Collections.singletonList(photos));
+        String[] stringList = photos.split(",");
         for(String s: stringList){
             MessagesPhoto p = new MessagesPhoto();
             p.setSource(s);
@@ -174,7 +176,6 @@ public class MessagesController extends BaseController {
     ) {
         if(server.isArrival(id,new Point(Double.parseDouble(y),Double.parseDouble(x)))) {
             MessagesSecret messagesSecret = secretService.findById(id);
-
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         }
         else
