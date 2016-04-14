@@ -148,10 +148,10 @@ public class MessagesController extends BaseController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "validate/{id}/{answer}", method = RequestMethod.GET)
+    @RequestMapping(value = "validate/{id}", method = RequestMethod.GET)
     @ResponseBody
     @NonAuthoritative
-    private ResponseEntity<?> validate(@Valid @PathVariable String id, @Valid @PathVariable String answer) {
+    private ResponseEntity<?> validate(@PathVariable String id, @RequestParam(required = false) String answer) {
         String  sId = server.validate(id, answer);
         if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
@@ -214,7 +214,7 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "drop/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    private ResponseEntity<?> drop(@Valid @PathVariable String id) {
+    private ResponseEntity<?> drop(@PathVariable String id) {
         Messages m = server.findById(id);
         switch (m.getState()) {
             case 9:
