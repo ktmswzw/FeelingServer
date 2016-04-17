@@ -78,8 +78,8 @@ public class MessagesService extends AbstractService<Messages> {
         query.skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
         GeoJsonPoint point = searchCondition.getPoint();
-        if (point != null) {//按经纬度搜索
-            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(500)).query(query);//单位: 20千米
+        if (searchCondition.getTo().equals("")) {//按经纬度搜索
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(12000)).query(query);//单位: 20千米
             GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {

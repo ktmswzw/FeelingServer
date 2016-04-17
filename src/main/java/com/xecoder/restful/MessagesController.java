@@ -106,6 +106,7 @@ public class MessagesController extends BaseController {
                                         @RequestParam(required = false) String video,
                                         @RequestParam(required = false) String sound,
                                         @RequestParam(required = false) String burnAfterReading,
+                                        @RequestParam(required = false) String address,
                                         @RequestParam String x,
                                         @RequestParam String y
     ) {
@@ -118,6 +119,7 @@ public class MessagesController extends BaseController {
                 msg.setFrom(user.getNickname());
         }
         msg.setTo(to);
+        msg.setAddress(address);
         msg.setFromId(this.getUserId());
         secret.setLimitDate(DateTools.strToDate(limitDate));
         secret.setContent(content);
