@@ -16,8 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
- * 用户文档
- * @author hongh
+ * 用户
  *
  */
 @Document(collection = "user")
@@ -82,6 +81,7 @@ public class User extends BaseBean {
 
     private String region;
 
+    private boolean register = true;
 
     @NotEmpty  @Transient
     private String password;
@@ -258,5 +258,13 @@ public class User extends BaseBean {
 
     public void setSignToken(String signToken) {
         SignToken = signToken;
+    }
+
+    public boolean isRegister() {
+        return register;
+    }
+
+    public void setRegister(boolean register) {
+        this.register = register;
     }
 }

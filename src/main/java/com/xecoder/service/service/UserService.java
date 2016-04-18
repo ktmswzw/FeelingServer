@@ -99,11 +99,14 @@ public class UserService extends AbstractService<User> {
         if (user != null) {
             throw new HttpServiceException(getLocalException("error.user.is.exist"));
         }
-
         user = new User();
+        if(telephone.length()!=11)
+        {
+            user.setRegister(false);//非注册用户
+        }
         user.setPhone(telephone);
         user.setAvatar("0598e899-3524-4349-8e4e-db692ba343d2");
-        user.setNickname(telephone);
+        user.setNickname("");
         this.save(user);
 
         String userId = user.getId();
@@ -114,6 +117,31 @@ public class UserService extends AbstractService<User> {
         AuthToken token = null;
         try {
             token = new AuthToken(user, device);
+            auth.addToken(token);
+            authDao.save(auth);
+            setKey(user,token);
+        } catch (Exception e) {
+            this.delete(user.getId());    //回滚
+        }
+        return user;
+    }
+
+    @Transactional
+    public User reset(String telephone, String password, DeviceEnum device) {
+
+        User user = userDao.findByPhone(telephone);
+        if (user == null) {
+            throw new HttpServiceException(getLocalException("error.user.not.register"));
+        }
+        String userId = user.getId();
+        byte[] salt = RandomUtils.getRadomByte();
+        HashPassword hashPassword = HashPassword.encryptPassword(password, salt);
+        Auth auth = new Auth(userId, hashPassword.getSalt());
+        auth.setPassword(hashPassword.getPassword());
+        AuthToken token = null;
+        try {
+            token = new AuthToken(user, device);
+            auth.removeAllToken();
             auth.addToken(token);
             authDao.save(auth);
             setKey(user,token);

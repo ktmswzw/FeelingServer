@@ -72,7 +72,7 @@ public class AuthToken  extends BaseBean implements Serializable {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put(BaseController.TOKEN_STR,token);
-        claims.put("iss","imakehabits.com");
+        claims.put("iss","xecoder.com");
         claims.put("exp",(System.currentTimeMillis() + this.EXPIRED_TIME )/ 1000L);
         String jwt = JWTCode.SIGNER.sign(claims);
         System.out.println("jwt = " + jwt);

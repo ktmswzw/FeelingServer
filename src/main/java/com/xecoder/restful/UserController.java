@@ -44,6 +44,21 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(userServer.register(username, password, device), HttpStatus.OK);
     }
 
+    /**
+     * APP重置接口
+     *
+     * @param username  手机号
+     * @param password   密码
+     * @param device     设备，APP ,WEB
+     * @return
+     */
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    @ResponseBody
+    @NonAuthoritative
+    public ResponseEntity<?> reset(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
+        return new ResponseEntity<>(userServer.reset(username, password, device), HttpStatus.OK);
+    }
+
 
     /**
      * 获取用户列表

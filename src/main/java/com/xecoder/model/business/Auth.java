@@ -79,6 +79,12 @@ public class Auth extends BaseBean implements Serializable {
         this.tokens.add(token);
     }
 
+
+    public void removeAllToken() {
+        this.tokens = new ArrayList<>();
+    }
+
+
     public String getSalt() {
         return salt;
     }
