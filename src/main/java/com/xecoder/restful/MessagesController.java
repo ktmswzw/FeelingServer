@@ -4,6 +4,7 @@ import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.ImageUtil;
+import com.xecoder.common.util.StringUtilsSelf;
 import com.xecoder.model.business.Messages;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +74,7 @@ public class MessagesController extends BaseController {
         msg.setTo(to);
         GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
         msg.setPoint(point);
-        List<Messages> list = server.search(page, size, new Sort("OrderByLimitDateAsc"), msg);
+        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
         if(list!=null&&list.size()!=0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else
@@ -98,7 +100,7 @@ public class MessagesController extends BaseController {
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
     private ResponseEntity<?> send(@RequestParam String to,
-                                        @RequestParam String limitDate,
+                                        @RequestParam(required = false) String limitDate,
                                         @RequestParam String content,
                                         @RequestParam(required = false) String question,
                                         @RequestParam(required = false) String answer,
@@ -121,7 +123,7 @@ public class MessagesController extends BaseController {
         msg.setTo(to);
         msg.setAddress(address);
         msg.setFromId(this.getUserId());
-        secret.setLimitDate(DateTools.strToDate(limitDate));
+        secret.setLimitDate(DateTools.addDay(new Date(),10000));
         secret.setContent(content);
         List<MessagesPhoto> list = new ArrayList<>();
         String[] stringList = photos.split(",");
@@ -133,6 +135,7 @@ public class MessagesController extends BaseController {
         secret.setPhotosList(list);
         secret.setVideoPath(video);
         msg.setQuestion(question);
+        msg.setAnswerTip(StringUtilsSelf.setAnswerTip(answer));
         secret.setAnswer(answer);
         secret.setSoundPath(sound);
         secret.setBurnAfterReading(Boolean.parseBoolean(burnAfterReading));

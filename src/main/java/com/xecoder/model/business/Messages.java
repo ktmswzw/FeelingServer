@@ -110,6 +110,12 @@ public class Messages extends BaseBean implements Serializable  {
      */
     private String question;
 
+
+    /**
+     * 答案提示
+     */
+    private String answerTip;
+
     /**
      * 临时距离，默认为空，查询结果时赋值
      */
@@ -263,5 +269,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getAnswerTip() {
+        return answerTip;
+    }
+
+    public void setAnswerTip(String answerTip) {
+        this.answerTip = answerTip;
     }
 }
