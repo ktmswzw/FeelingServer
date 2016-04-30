@@ -121,6 +121,7 @@ public class Messages extends BaseBean implements Serializable  {
     /**
      * 答案提示
      */
+    @JsonProperty(value = "answer_tip")
     private String answerTip;
 
     /**

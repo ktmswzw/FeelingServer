@@ -107,7 +107,7 @@ public class MessagesService extends AbstractService<Messages> {
      * @param user
      * @return
      */
-    public List<Messages> searchByNameAndPhone(User user) {
+    public List<Messages> searchByNameAndPhone(User user,Point point) {
         DBObject queryObject = new BasicDBObject();
 
         BasicDBList values = new BasicDBList();
@@ -121,6 +121,9 @@ public class MessagesService extends AbstractService<Messages> {
             User u = userService.findById(m.getFromId());
             if (u != null)
                 m.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
+            m.setDistance(SurfaceDistanceUtils.getShortestDistance(m.getPoint(), point));
+            m.setX(m.getPoint().getX());
+            m.setY(m.getPoint().getY());
         }
 
 

@@ -63,7 +63,6 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     @ResponseBody
-    @NonAuthoritative
     private ResponseEntity<?> search(@RequestParam(required = false) String to,
                                      @RequestParam(required = false) String x,
                                      @RequestParam(required = false) String y,
@@ -71,20 +70,22 @@ public class MessagesController extends BaseController {
                                      @RequestParam int size
     ) {
         List<Messages> list = null;
-        User user = userServer.findById(this.getUserId());
-        if(user!=null) {
-            list = server.searchByNameAndPhone(user);//附近个人相关的信息
+        User user = null;
+        GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
+        if (this.getUserId() != null) {
+            user = userServer.findById(this.getUserId());
         }
-        if(list!=null&&list.size()!=0){
+        if (user != null) {
+            list = server.searchByNameAndPhone(user,point);//附近个人相关的信息
+        }
+        if (list != null && list.size() != 0) {
             return new ResponseEntity<>(list, HttpStatus.OK);
-        }
-        else {
+        } else {
             //如果没有搜到,则搜索周围的数据
-            GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
             list = server.search(page, size, point);//附近20公里无名消息
         }
 
-        if(list!=null&&list.size()!=0)
+        if (list != null && list.size() != 0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else
             return new ResponseEntity<>(list, NOT_FOUND);
@@ -109,17 +110,17 @@ public class MessagesController extends BaseController {
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
     private ResponseEntity<?> send(@RequestParam String to,
-                                        @RequestParam(required = false) String limitDate,
-                                        @RequestParam String content,
-                                        @RequestParam(required = false) String question,
-                                        @RequestParam(required = false) String answer,
-                                        @RequestParam(required = false) String photos,
-                                        @RequestParam(required = false) String video,
-                                        @RequestParam(required = false) String sound,
-                                        @RequestParam(required = false) String burnAfterReading,
-                                        @RequestParam(required = false) String address,
-                                        @RequestParam String x,
-                                        @RequestParam String y
+                                   @RequestParam(required = false) String limitDate,
+                                   @RequestParam String content,
+                                   @RequestParam(required = false) String question,
+                                   @RequestParam(required = false) String answer,
+                                   @RequestParam(required = false) String photos,
+                                   @RequestParam(required = false) String video,
+                                   @RequestParam(required = false) String sound,
+                                   @RequestParam(required = false) String burnAfterReading,
+                                   @RequestParam(required = false) String address,
+                                   @RequestParam String x,
+                                   @RequestParam String y
     ) {
         MessagesSecret secret = new MessagesSecret();
         Messages msg = new Messages();
@@ -132,11 +133,11 @@ public class MessagesController extends BaseController {
         msg.setTo(to);
         msg.setAddress(address);
         msg.setFromId(this.getUserId());
-        secret.setLimitDate(DateTools.addDay(new Date(),10000));
+        secret.setLimitDate(DateTools.addDay(new Date(), 10000));
         secret.setContent(content);
         List<MessagesPhoto> list = new ArrayList<>();
         String[] stringList = photos.split(",");
-        for(String s: stringList){
+        for (String s : stringList) {
             MessagesPhoto p = new MessagesPhoto();
             p.setSource(s);
             list.add(p);
@@ -153,7 +154,7 @@ public class MessagesController extends BaseController {
         secret.setMsgId(msg.getId());
         secretService.save(secret);
 
-        return new ResponseEntity<>(new ReturnMessage(msg.getId(),HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new ReturnMessage(msg.getId(), HttpStatus.OK), HttpStatus.OK);
     }
 
     /**
@@ -166,16 +167,17 @@ public class MessagesController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     private ResponseEntity<?> validate(@PathVariable String id, @RequestParam(required = false) String answer) {
-        String  sId = server.validate(id, answer);
+        String sId = server.validate(id, answer);
         if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
-            return new ResponseEntity<>(new ReturnMessage(sId,HttpStatus.OK), HttpStatus.OK);
+            return new ResponseEntity<>(new ReturnMessage(sId, HttpStatus.OK), HttpStatus.OK);
         }
     }
 
     /**
      * 是否近距离开启( 服务器认证)
+     *
      * @param id
      * @param x
      * @param y
@@ -188,17 +190,17 @@ public class MessagesController extends BaseController {
                                         @PathVariable String y,
                                         @PathVariable String id
     ) {
-        if(server.isArrival(id,new Point(Double.parseDouble(y),Double.parseDouble(x)))) {
+        if (server.isArrival(id, new Point(Double.parseDouble(y), Double.parseDouble(x)))) {
             MessagesSecret messagesSecret = secretService.findById(id);
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
-        }
-        else
+        } else
             return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"), NOT_FOUND), NOT_FOUND);
     }
 
 
     /**
      * 是否近距离开启( 手机端认证)
+     *
      * @param id
      * @return
      */
@@ -208,16 +210,15 @@ public class MessagesController extends BaseController {
     private ResponseEntity<?> openOver(@PathVariable String id
     ) {
         MessagesSecret messagesSecret = secretService.findById(id);
-        if(messagesSecret!=null){
-            List<String> photos=  new ArrayList<>();
-            if(messagesSecret.getPhotosList()!=null)
+        if (messagesSecret != null) {
+            List<String> photos = new ArrayList<>();
+            if (messagesSecret.getPhotosList() != null)
                 photos.addAll(messagesSecret.getPhotosList().stream().map(MessagesPhoto::getSource).collect(Collectors.toList()));
-            if(photos.size()>0)
-            messagesSecret.setPhotos(photos.toArray(new String[photos.size()]));
+            if (photos.size() > 0)
+                messagesSecret.setPhotos(photos.toArray(new String[photos.size()]));
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"),HttpStatus.NOT_FOUND),NOT_FOUND);
+        } else
+            return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"), HttpStatus.NOT_FOUND), NOT_FOUND);
     }
 
     /**
