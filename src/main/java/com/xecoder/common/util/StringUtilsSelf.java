@@ -26,9 +26,9 @@ public class StringUtilsSelf {
         }
     }
 
-
-    public static void main(String[] args) {
-        setAnswerTip(" 我 是一abc个大花123123朵");
-    }
+//
+//    public static void main(String[] args) {
+//        setAnswerTip(" 我 是一abc个大花123123朵");
+//    }
 
 }

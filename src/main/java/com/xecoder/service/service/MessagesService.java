@@ -1,5 +1,8 @@
 package com.xecoder.service.service;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.ImageUtil;
 import com.xecoder.common.util.SurfaceDistanceUtils;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
@@ -59,52 +63,67 @@ public class MessagesService extends AbstractService<Messages> {
         return doCount(query, Messages.class);
     }
 
+    @Override
+    public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
+        return null;
+    }
+
     /**
-     * 默认搜索20千米范围内信息，按位置排序
+     * 默认搜索20千米范围内无指定人的信息，按位置排序
      *
      * @param page
      * @param size
-     * @param sort
-     * @param searchCondition
+     * @param point
      * @return
      */
-    @Override
-    public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
-        Criteria criteria = makeCriteria(searchCondition);
-//        Criteria criteria =   new Criteria();
-
-//        Query query = new Query(criteria);
+    public List<Messages> search(int page, int size,GeoJsonPoint point) {
+        Criteria criteria = Criteria.where("to").exists(false);
         Query query = makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
-        GeoJsonPoint point = searchCondition.getPoint();
-        if (searchCondition.getTo().equals("")) {//按经纬度搜索
-            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(12000)).query(query);//单位: 20千米
+        //按经纬度搜索
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(20)).query(query);//单位: 20千米
             GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {
                     Messages messages = e.getContent();
                     User u = userService.findById(messages.getFromId());
-                    if(u!=null)
-                    messages.setAvatar(StringUtils.isBlank(u.getAvatar())?"": ImageUtil.getPathSmall(u.getAvatar()));
+                    if (u != null)
+                        messages.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
                     messages.setDistance(e.getDistance().getValue());
                     messages.setX(messages.getPoint().getX());
                     messages.setY(messages.getPoint().getY());
                     list.add(messages);
                 }
             }
-        } else {//按姓名搜索
-            if (StringUtils.isNotBlank(searchCondition.getTo())) {
-                list = doFind(query, Messages.class);
-                for(Messages m:list)
-                {
-                    User u = userService.findById(m.getFromId());
-                    if(u!=null)
-                    m.setAvatar(StringUtils.isBlank(u.getAvatar())?"": ImageUtil.getPathSmall(u.getAvatar()));
-                }
-            }
 
+        return list;
+    }
+
+
+    /**
+     * 默认搜索姓名和手机号码
+     *
+     * @param user
+     * @return
+     */
+    public List<Messages> searchByNameAndPhone(User user) {
+        DBObject queryObject = new BasicDBObject();
+
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("to", user.getPhone()));
+        values.add(new BasicDBObject("to", user.getNickname()));
+        values.add(new BasicDBObject("to", user.getRealname()));
+        queryObject.put("$or", values);
+        Query query = new BasicQuery(queryObject);
+        List<Messages> list = doFind(query, Messages.class);
+        for (Messages m : list) {
+            User u = userService.findById(m.getFromId());
+            if (u != null)
+                m.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
         }
+
+
         return list;
     }
 
@@ -115,12 +134,13 @@ public class MessagesService extends AbstractService<Messages> {
             criteria = makeCriteria(criteria, "_id", new ObjectId(model.getId()));
         }
         if (StringUtils.isNotEmpty(model.getTo())) {
-//            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
+            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
             criteria = makeCriteria(criteria, "to", model.getTo());
         }
-        else
-        {
-            if(criteria==null)
+        if (StringUtils.isNotEmpty(model.getTo())) {
+            criteria = makeCriteria(criteria, "to", model.getTo());
+        } else {
+            if (criteria == null)
                 criteria.where("to").exists(false);
             else
                 criteria.and("to").exists(false);
@@ -159,8 +179,7 @@ public class MessagesService extends AbstractService<Messages> {
                 msg.setState(Messages.LOCKED);
                 this.save(msg);//锁定，待距离小于0.1KM时发起解锁申请
                 return m.getId();
-            }
-            else
+            } else
                 return null;
         } else {
             return null;
@@ -169,6 +188,7 @@ public class MessagesService extends AbstractService<Messages> {
 
     /**
      * 获取最终结果
+     *
      * @param id
      * @return
      */
@@ -193,8 +213,8 @@ public class MessagesService extends AbstractService<Messages> {
         messages.setId(id);
         //java计算
         messages = this.findById(id);
-        Point point1 = new Point(messages.getPoint().getX(),messages.getPoint().getY());
-        return SurfaceDistanceUtils.getShortestDistance(point,point1)<=0.1?true:false;//曲面计算
+        Point point1 = new Point(messages.getPoint().getX(), messages.getPoint().getY());
+        return SurfaceDistanceUtils.getShortestDistance(point, point1) <= 0.1 ? true : false;//曲面计算
 
         //mongodb计算
 //        Criteria criteria = makeCriteria(messages);

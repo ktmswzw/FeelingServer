@@ -70,11 +70,20 @@ public class MessagesController extends BaseController {
                                      @RequestParam int page,
                                      @RequestParam int size
     ) {
-        Messages msg = new Messages();
-        msg.setTo(to);
-        GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
-        msg.setPoint(point);
-        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
+        List<Messages> list = null;
+        User user = userServer.findById(this.getUserId());
+        if(user!=null) {
+            list = server.searchByNameAndPhone(user);//附近个人相关的信息
+        }
+        if(list!=null&&list.size()!=0){
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+        else {
+            //如果没有搜到,则搜索周围的数据
+            GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
+            list = server.search(page, size, point);//附近20公里无名消息
+        }
+
         if(list!=null&&list.size()!=0)
             return new ResponseEntity<>(list, HttpStatus.OK);
         else

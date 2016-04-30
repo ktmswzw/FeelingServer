@@ -47,6 +47,13 @@ public class Messages extends BaseBean implements Serializable  {
      */
     private String to;
 
+
+    @Transient
+    private String phone;
+
+    @Transient
+    private String nickname;
+
     /**
      * 经纬度坐标
      * http://docs.mongodb.org/manual/reference/command/geoNear
@@ -277,5 +284,21 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setAnswerTip(String answerTip) {
         this.answerTip = answerTip;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
