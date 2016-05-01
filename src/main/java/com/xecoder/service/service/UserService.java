@@ -56,7 +56,7 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
-    protected long count(User searchCondition) {
+    public long count(User searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
         Query query = makeQuery(criteria);
         return doCount(query, User.class);

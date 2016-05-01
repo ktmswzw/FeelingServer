@@ -139,6 +139,10 @@ public class Messages extends BaseBean implements Serializable  {
     @Transient
     private String avatar;
 
+
+    @Transient
+    private long tryCount;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -301,5 +305,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public long getTryCount() {
+        return tryCount;
+    }
+
+    public void setTryCount(long tryCount) {
+        this.tryCount = tryCount;
     }
 }

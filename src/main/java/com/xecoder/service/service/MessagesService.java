@@ -57,7 +57,7 @@ public class MessagesService extends AbstractService<Messages> {
     }
 
     @Override
-    protected long count(Messages searchCondition) {
+    public long count(Messages searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
         Query query = makeQuery(criteria);
         return doCount(query, Messages.class);
@@ -65,7 +65,10 @@ public class MessagesService extends AbstractService<Messages> {
 
     @Override
     public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
-        return null;
+        Criteria criteria = makeCriteria(searchCondition);
+        Query query = makeQuery(criteria);
+        query.skip(calcSkipNum(page, size)).limit(size);
+        return doFind(query, Messages.class);
     }
 
     /**
@@ -125,35 +128,19 @@ public class MessagesService extends AbstractService<Messages> {
             m.setX(m.getPoint().getX());
             m.setY(m.getPoint().getY());
         }
-
-
         return list;
     }
+
 
     @Override
     protected Criteria makeCriteria(Messages model) {
         Criteria criteria = null;
-        if (StringUtils.isNotEmpty(model.getId())) {
-            criteria = makeCriteria(criteria, "_id", new ObjectId(model.getId()));
+        if (StringUtils.isNotEmpty(model.getFromId())) {
+            criteria = makeCriteria(criteria, "fromId",model.getFromId());
         }
-        if (StringUtils.isNotEmpty(model.getTo())) {
-            criteria = makeCriteriaRegex(criteria, "to", "^.*" + model.getTo() + ".*$");//模糊查询
-            criteria = makeCriteria(criteria, "to", model.getTo());
+        if (StringUtils.isNotEmpty(model.getToId())) {
+            criteria = makeCriteria(criteria, "toId",model.getToId());
         }
-        if (StringUtils.isNotEmpty(model.getTo())) {
-            criteria = makeCriteria(criteria, "to", model.getTo());
-        } else {
-            if (criteria == null)
-                criteria.where("to").exists(false);
-            else
-                criteria.and("to").exists(false);
-        }
-        if (StringUtils.isNotEmpty(model.getFrom())) {
-            criteria = makeCriteriaRegex(criteria, "from", "^.*" + model.getFrom() + ".*$");
-        }
-        criteria = makeCriteria(criteria, "state", Messages.CLOSE);//未被开启过
-        criteria.where("limit_date").lte(DateTools.addDay(new Date(), 365)).gt(new Date());//一年有效期内
-
         return criteria;
     }
 

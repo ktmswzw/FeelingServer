@@ -42,7 +42,7 @@ public class FriendService extends AbstractService<Friend>{
     }
 
     @Override
-    protected long count(Friend searchCondition) {
+    public long count(Friend searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
         Query query = makeQuery(criteria);
         return doCount(query, Friend.class);

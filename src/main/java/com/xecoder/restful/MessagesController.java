@@ -6,12 +6,14 @@ import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.ImageUtil;
 import com.xecoder.common.util.StringUtilsSelf;
 import com.xecoder.model.business.Messages;
+import com.xecoder.model.business.TryHistory;
 import com.xecoder.model.business.User;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.service.service.MessagesSecretService;
 import com.xecoder.service.service.MessagesService;
+import com.xecoder.service.service.TryHistoryService;
 import com.xecoder.service.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,9 @@ public class MessagesController extends BaseController {
 
     @Autowired
     private UserService userServer;
+
+    @Autowired
+    private TryHistoryService tryService;
 
     /**
      * 查找附近的1年内有效的消息
@@ -243,4 +248,40 @@ public class MessagesController extends BaseController {
         }
     }
 
+
+    /**
+     * 查询自己的收件箱和发件箱
+     * @param self
+     * @param page
+     * @param size
+     * @return
+     */
+    @RequestMapping(value = "/self/{self}", method = RequestMethod.POST)
+    @ResponseBody
+    private ResponseEntity<?> search(@PathVariable boolean self,
+                                     @RequestParam int page,
+                                     @RequestParam int size
+    ) {
+        Messages msg = new Messages();
+        User user = userServer.findById(this.getUserId());
+        if(user!=null) {
+            if(self)
+            {
+                msg.setFromId(this.getUserId());
+            }
+            else
+                msg.setToId(this.getUserId());
+        }
+        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
+        TryHistory tryBean = new TryHistory();
+        for(Messages bean: list)
+        {
+            tryBean.setMessageId(bean.getId());
+            bean.setTryCount(tryService.count(tryBean));
+        }
+        if (list != null && list.size() != 0)
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(list, NOT_FOUND);
+    }
 }

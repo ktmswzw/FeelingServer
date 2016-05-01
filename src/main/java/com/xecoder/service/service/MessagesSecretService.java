@@ -32,7 +32,7 @@ public class MessagesSecretService extends AbstractService<MessagesSecret> {
     }
 
     @Override
-    protected long count(MessagesSecret searchCondition) {
+    public long count(MessagesSecret searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
         Query query = makeQuery(criteria);
         return doCount(query, MessagesSecret.class);
