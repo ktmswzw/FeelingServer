@@ -157,7 +157,7 @@ public class MessagesService extends AbstractService<Messages> {
      * @param answer
      * @return
      */
-    public String validate(String id, String answer) {
+    public String validate(String id, String answer,String uid) {
         if (StringUtils.isNotBlank(id)) {
             Messages msg = findById(id);
             MessagesSecret m = secretDao.findByMsgId(id);
@@ -167,6 +167,7 @@ public class MessagesService extends AbstractService<Messages> {
                 return m.getId();
             else if (StringUtils.equals(m.getAnswer(), answer.trim())) {
                 msg.setState(Messages.LOCKED);
+                msg.setToId(uid);
                 this.save(msg);//锁定，待距离小于0.1KM时发起解锁申请
                 return m.getId();
             } else

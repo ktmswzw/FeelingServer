@@ -81,7 +81,7 @@ public class MessagesController extends BaseController {
             user = userServer.findById(this.getUserId());
         }
         if (user != null) {
-            list = server.searchByNameAndPhone(user,point);//附近个人相关的信息
+            list = server.searchByNameAndPhone(user, point);//附近个人相关的信息
         }
         if (list != null && list.size() != 0) {
             return new ResponseEntity<>(list, HttpStatus.OK);
@@ -130,10 +130,8 @@ public class MessagesController extends BaseController {
         MessagesSecret secret = new MessagesSecret();
         Messages msg = new Messages();
         if (this.getUserId() != null) {
-            msg.setFrom(this.getUserId());
             User user = userServer.findById(this.getUserId());
-            if (user != null)
-                msg.setFrom(user.getNickname());
+            msg.setFrom(user.getNickname());
         }
         msg.setTo(to);
         msg.setAddress(address);
@@ -172,7 +170,7 @@ public class MessagesController extends BaseController {
     @ResponseBody
     @NonAuthoritative
     private ResponseEntity<?> validate(@PathVariable String id, @RequestParam(required = false) String answer) {
-        String sId = server.validate(id, answer);
+        String sId = server.validate(id, answer,this.getUserId());
         if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
@@ -251,6 +249,7 @@ public class MessagesController extends BaseController {
 
     /**
      * 查询自己的收件箱和发件箱
+     *
      * @param self
      * @param page
      * @param size
@@ -258,26 +257,38 @@ public class MessagesController extends BaseController {
      */
     @RequestMapping(value = "/self/{self}", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<?> search(@PathVariable boolean self,
-                                     @RequestParam int page,
-                                     @RequestParam int size
+    private ResponseEntity<?> self(@PathVariable boolean self,
+                                   @RequestParam int page,
+                                   @RequestParam int size
     ) {
         Messages msg = new Messages();
         User user = userServer.findById(this.getUserId());
-        if(user!=null) {
-            if(self)
-            {
+        if (user != null) {
+            if (self) {
                 msg.setFromId(this.getUserId());
-            }
-            else
+            } else
                 msg.setToId(this.getUserId());
         }
         List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
         TryHistory tryBean = new TryHistory();
-        for(Messages bean: list)
-        {
-            tryBean.setMessageId(bean.getId());
-            bean.setTryCount(tryService.count(tryBean));
+        for (Messages bean : list) {
+            if(self) {//自己发出被破解的次数,破解者的头像
+                tryBean.setMessageId(bean.getId());
+                bean.setTryCount(tryService.count(tryBean));
+                if(bean.getToId()!=null) {
+                    User userTo = userServer.findById(bean.getToId());
+                    bean.setAvatar(userTo.getAvatar());
+                    bean.setFrom(userTo.getNickname());
+                }
+            }
+            else {//自己收到的信件,发出者信息
+                bean.setTryCount(0);
+                if(bean.getFromId()!=null) {
+                    User userFrom = userServer.findById(bean.getFromId());
+                    bean.setAvatar(userFrom.getAvatar());
+                    bean.setFrom(userFrom.getNickname());
+                }
+            }
         }
         if (list != null && list.size() != 0)
             return new ResponseEntity<>(list, HttpStatus.OK);
