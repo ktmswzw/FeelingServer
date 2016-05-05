@@ -86,7 +86,7 @@ public class UserController extends BaseController {
     public ResponseEntity<?> getUser(@PathVariable String id) {
         User user = userServer.findById(id);
         if(user!=null) {
-            String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
+            String avatar = ImageUtil.getPathSmall(user.getAvatar());
             user.setAvatar(avatar);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }

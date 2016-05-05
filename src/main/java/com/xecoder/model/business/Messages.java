@@ -135,12 +135,8 @@ public class Messages extends BaseBean implements Serializable  {
     @Transient
     private double y;
 
-
-    @Transient
     private String avatar;
 
-
-    @Transient
     private long tryCount;
 
     public void setId(String id) {

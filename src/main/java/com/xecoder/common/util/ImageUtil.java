@@ -136,7 +136,13 @@ public class ImageUtil {
      * @return
      */
     public static String getPathSmall(String url){
-        return getPath(url) + "/small";
+        if(url!=null) {
+            return getPath(url) + "/small";
+        }
+        else
+        {
+            return "";
+        }
     }
 
 }

@@ -189,7 +189,7 @@ public class UserService extends AbstractService<User> {
      * @param loginToken
      */
     private void setKey(User user,AuthToken loginToken){
-        String avatar = StringUtils.isBlank(user.getAvatar())?"": ImageUtil.getPathSmall(user.getAvatar());
+        String avatar = ImageUtil.getPathSmall(user.getAvatar());
         RongCloudController rongCloudController = new RongCloudController();
         String imtoken = rongCloudController.getIMK(user.getId(),user.getNickname(),avatar);
         user.setIMToken(StringUtils.isNotBlank(imtoken)?imtoken:"");

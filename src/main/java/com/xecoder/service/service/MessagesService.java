@@ -92,7 +92,7 @@ public class MessagesService extends AbstractService<Messages> {
                     Messages messages = e.getContent();
                     User u = userService.findById(messages.getFromId());
                     if (u != null)
-                        messages.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
+                        messages.setAvatar(ImageUtil.getPathSmall(u.getAvatar()));
                     messages.setDistance(e.getDistance().getValue());
                     messages.setX(messages.getPoint().getX());
                     messages.setY(messages.getPoint().getY());
@@ -123,7 +123,7 @@ public class MessagesService extends AbstractService<Messages> {
         for (Messages m : list) {
             User u = userService.findById(m.getFromId());
             if (u != null)
-                m.setAvatar(StringUtils.isBlank(u.getAvatar()) ? "" : ImageUtil.getPathSmall(u.getAvatar()));
+                m.setAvatar(ImageUtil.getPathSmall(u.getAvatar()));
             m.setDistance(SurfaceDistanceUtils.getShortestDistance(m.getPoint(), point));
             m.setX(m.getPoint().getX());
             m.setY(m.getPoint().getY());

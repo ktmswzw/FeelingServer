@@ -277,7 +277,7 @@ public class MessagesController extends BaseController {
                 bean.setTryCount(tryService.count(tryBean));
                 if(bean.getToId()!=null) {
                     User userTo = userServer.findById(bean.getToId());
-                    bean.setAvatar(userTo.getAvatar());
+                    bean.setAvatar(ImageUtil.getPathSmall(userTo.getAvatar()));
                     bean.setFrom(userTo.getNickname());
                 }
             }
@@ -285,7 +285,7 @@ public class MessagesController extends BaseController {
                 bean.setTryCount(0);
                 if(bean.getFromId()!=null) {
                     User userFrom = userServer.findById(bean.getFromId());
-                    bean.setAvatar(userFrom.getAvatar());
+                    bean.setAvatar(ImageUtil.getPathSmall(userFrom.getAvatar()));
                     bean.setFrom(userFrom.getNickname());
                 }
             }
