@@ -15,7 +15,6 @@ import com.xecoder.service.service.MessagesSecretService;
 import com.xecoder.service.service.MessagesService;
 import com.xecoder.service.service.TryHistoryService;
 import com.xecoder.service.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
@@ -171,6 +170,11 @@ public class MessagesController extends BaseController {
     @NonAuthoritative
     private ResponseEntity<?> validate(@PathVariable String id, @RequestParam(required = false) String answer) {
         String sId = server.validate(id, answer,this.getUserId());
+        TryHistory tryHistory = new TryHistory();
+        tryHistory.setMessageId(id);
+        tryHistory.setTryDate(new Date());
+        tryHistory.setTryAnswer(answer);
+        tryService.save(tryHistory);
         if (sId == null) {
             throw new HttpServiceException(getLocalException("error.answer.is.error"));
         } else {
