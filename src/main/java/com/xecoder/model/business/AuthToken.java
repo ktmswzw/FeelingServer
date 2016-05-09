@@ -47,15 +47,17 @@ public class AuthToken  extends BaseBean implements Serializable {
     @JsonIgnore
     private String userid;
 
+    private String deviceToken;
+
 
     @JsonIgnore
     private String jwt;
 
-    public AuthToken(User user, DeviceEnum device) {
-
+    public AuthToken(User user, DeviceEnum device, String deviceToken) {
         this.token = getRandomToken();
         this.jwt = getJWT(this.token,user.getId());
         this.timestamp = new Date();
+        this.deviceToken = deviceToken;
         this.userid = user.getId();
         this.device = device;
     }
@@ -123,5 +125,13 @@ public class AuthToken  extends BaseBean implements Serializable {
 
     public void setUserid(String userid) {
         this.userid = userid;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }

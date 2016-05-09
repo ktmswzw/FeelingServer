@@ -34,8 +34,8 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "login")
     @ResponseBody
     @NonAuthoritative
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        User u = userServer.login(username, password, device, this.getVersionStr());
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device,@RequestParam(defaultValue = "")  String deviceToken) {
+        User u = userServer.login(username, password, device, this.getVersionStr(),deviceToken);
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
 }

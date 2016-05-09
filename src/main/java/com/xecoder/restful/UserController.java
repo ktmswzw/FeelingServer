@@ -40,8 +40,8 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     @NonAuthoritative
-    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        return new ResponseEntity<>(userServer.register(username, password, device), HttpStatus.OK);
+    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device,@RequestParam(defaultValue = "") String deviceToken) {
+        return new ResponseEntity<>(userServer.register(username, password, device,deviceToken), HttpStatus.OK);
     }
 
     /**
@@ -55,8 +55,8 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     @ResponseBody
     @NonAuthoritative
-    public ResponseEntity<?> reset(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device) {
-        return new ResponseEntity<>(userServer.reset(username, password, device), HttpStatus.OK);
+    public ResponseEntity<?> reset(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) DeviceEnum device,@RequestParam(defaultValue = "")  String deviceToken) {
+        return new ResponseEntity<>(userServer.reset(username, password, device,deviceToken), HttpStatus.OK);
     }
 
 
