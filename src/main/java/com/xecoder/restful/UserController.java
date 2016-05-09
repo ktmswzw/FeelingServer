@@ -134,7 +134,7 @@ public class UserController extends BaseController {
      * 更新设备编号
      * @return
      */
-    @RequestMapping(value = "/updateDeviceToken/{deviceToken}", method = RequestMethod.GET)
+    @RequestMapping(value = "/updateDeviceToken/{deviceToken}", method = RequestMethod.PATCH)
     @ResponseBody
     public ResponseEntity<?> updateDeviceToken(@PathVariable String deviceToken) {
         userServer.updateDeviceToken(this.getUserId(),deviceToken);
