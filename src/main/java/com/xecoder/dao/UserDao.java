@@ -4,6 +4,8 @@ import com.xecoder.model.business.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by  moxz
  * User: 224911261@qq.com
@@ -23,6 +25,7 @@ public interface UserDao extends MongoRepository<User, String> {
                     "]}";
 
     User findByPhone(String phone);
+    List<User> findByNickname(String nickname);
 //
 //    @Query(value = FIND, count = true)
 //    Long searchCount(String keyword);

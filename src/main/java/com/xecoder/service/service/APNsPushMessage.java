@@ -11,20 +11,46 @@ import java.util.Map;
 /**
  * Created by vincent on 16/5/9.
  */
-public class APNsPushMessage {
+public class APNsPushMessage implements Runnable {
 
     private final static ApnsService service = APNS.newService()
             .withCert(APNsPushMessage.class.getResourceAsStream("/" + "Feeling.p12"), "123qwe$%^<>?")
             .withSandboxDestination()
             .build();
 
+    private String message;
+    private String token;
+    private int badge;
 
     public ApnsService getService() {
         return service;
     }
 
+    public String getMessage() {
+        return message;
+    }
 
-//    public static void main(String[] args) {
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public int getBadge() {
+        return badge;
+    }
+
+    public void setBadge(int badge) {
+        this.badge = badge;
+    }
+
+    //    public static void main(String[] args) {
 //        APNsPushMessage.sendMsg("111","873308653a342ecaad8581a6bb80937732cb867ed9c5d83fb25b3fa3ca83760c",8);
 //}
 
@@ -45,6 +71,11 @@ public class APNsPushMessage {
                 payload);
 
         service.push(notification);
+    }
+
+    @Override
+    public void run() {
+        sendMsg(this.message,this.token,this.badge);
     }
 
 //    public String getDerviceToken()

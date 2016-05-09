@@ -5,16 +5,14 @@ import com.xecoder.common.exception.ReturnMessage;
 import com.xecoder.common.util.DateTools;
 import com.xecoder.common.util.ImageUtil;
 import com.xecoder.common.util.StringUtilsSelf;
-import com.xecoder.model.business.Messages;
-import com.xecoder.model.business.TryHistory;
-import com.xecoder.model.business.User;
+import com.xecoder.common.util.mobile.MobileProviderFactory;
+import com.xecoder.dao.AuthDao;
+import com.xecoder.model.business.*;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.model.embedded.MessagesSecret;
-import com.xecoder.service.service.MessagesSecretService;
-import com.xecoder.service.service.MessagesService;
-import com.xecoder.service.service.TryHistoryService;
-import com.xecoder.service.service.UserService;
+import com.xecoder.service.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
@@ -50,6 +48,9 @@ public class MessagesController extends BaseController {
 
     @Autowired
     private UserService userServer;
+
+    @Autowired
+    private AuthDao authDao;
 
     @Autowired
     private TryHistoryService tryService;
@@ -155,9 +156,54 @@ public class MessagesController extends BaseController {
         server.save(msg);
         secret.setMsgId(msg.getId());
         secretService.save(secret);
-
+        if(StringUtils.isNotBlank(to)){
+            sendMsg(to);
+        }
         return new ResponseEntity<>(new ReturnMessage(msg.getId(), HttpStatus.OK), HttpStatus.OK);
     }
+
+    /**
+     * 发送推送
+     * @param to
+     */
+    private void sendMsg(String to){
+        MobileProviderFactory mobileProviderFactory = new MobileProviderFactory();
+        try {
+            long phone = Long.parseLong(to);
+            if(mobileProviderFactory.isValidPhone(phone)){
+                User user = userServer.findByPhone(to);
+                if(user!=null) {
+                    run(user.getId());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            List<User> users = userServer.findByName(to);
+            if(users!=null){
+                for(User u:users){
+                    run(u.getId());
+                }
+            }
+        }
+    }
+
+    private void run(String id)
+    {
+        Auth auth = authDao.findByOwner(id);
+        if (auth != null) {
+            List<AuthToken> authTokens = auth.getEffectiveTokens();
+            authTokens.stream().filter(authToken -> StringUtils.isNotBlank(authToken.getDeviceToken())).forEach(authToken -> {
+                APNsPushMessage apNsPushMessage = new APNsPushMessage();
+                apNsPushMessage.setToken(authToken.getDeviceToken());
+                apNsPushMessage.setBadge(1);
+                apNsPushMessage.setMessage("你收到一封FEELING");
+                apNsPushMessage.run();
+            });
+        }
+    }
+
+
 
     /**
      * 验证答案，答案准确则锁定；（答案、问题）为空，不锁定

@@ -92,6 +92,10 @@ public class UserService extends AbstractService<User> {
         return userDao.findByPhone(phone);
     }
 
+    public List<User> findByName(String nickname) {
+        return userDao.findByNickname(nickname);
+    }
+
     @Transactional
     public User register(String telephone, String password, DeviceEnum device,String deviceToken) {
 
