@@ -97,7 +97,7 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional
-    public User register(String telephone, String password, DeviceEnum device,String deviceToken) {
+    public User register(String telephone, String password, DeviceEnum device) {
 
         User user = userDao.findByPhone(telephone);
         if (user != null) {
@@ -120,7 +120,7 @@ public class UserService extends AbstractService<User> {
         auth.setPassword(hashPassword.getPassword());
         AuthToken token = null;
         try {
-            token = new AuthToken(user, device,deviceToken);
+            token = new AuthToken(user, device);
             auth.addToken(token);
             authDao.save(auth);
             setKey(user,token);
@@ -131,7 +131,7 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional
-    public User reset(String telephone, String password, DeviceEnum device,String deviceToken) {
+    public User reset(String telephone, String password, DeviceEnum device) {
 
         User user = userDao.findByPhone(telephone);
         if (user == null) {
@@ -144,7 +144,7 @@ public class UserService extends AbstractService<User> {
         auth.setPassword(hashPassword.getPassword());
         AuthToken token = null;
         try {
-            token = new AuthToken(user, device,deviceToken);
+            token = new AuthToken(user, device);
             auth.removeAllToken();
             auth.addToken(token);
             authDao.save(auth);
@@ -155,7 +155,7 @@ public class UserService extends AbstractService<User> {
         return user;
     }
 
-    public User login(String telephone, String password, DeviceEnum device, String versionStr, String deviceToken) {
+    public User login(String telephone, String password, DeviceEnum device, String versionStr) {
         User user = userDao.findByPhone(telephone);
 
         if (user == null) {
@@ -172,7 +172,7 @@ public class UserService extends AbstractService<User> {
         }
 
 
-        AuthToken loginToken = new AuthToken(user, device,deviceToken);//重新生成
+        AuthToken loginToken = new AuthToken(user, device);//重新生成
         List<AuthToken> tokens = auth.getEffectiveTokens();
         Iterator<AuthToken> itr = tokens.iterator();
         while (itr.hasNext()) {
@@ -202,4 +202,21 @@ public class UserService extends AbstractService<User> {
         user.setSignToken(signService.getQSign());
     }
 
+    /**
+     * 更新设备编号
+     * @param uid
+     * @param deviceToken
+     */
+    public void updateDeviceToken(String uid, String deviceToken) {
+        Auth auth = authDao.findByOwner(uid);
+        if(auth != null){
+            List<AuthToken> tokens = auth.getEffectiveTokens();
+            Iterator<AuthToken> itr = tokens.iterator();
+            while (itr.hasNext()) {
+                AuthToken t = itr.next();
+                t.setDeviceToken(deviceToken);
+            }
+            authDao.save(auth);
+        }
+    }
 }
