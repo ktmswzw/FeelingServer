@@ -80,7 +80,7 @@ public class MessagesService extends AbstractService<Messages> {
      * @return
      */
     public List<Messages> search(int page, int size,GeoJsonPoint point) {
-        Criteria criteria = Criteria.where("to").exists(false);
+        Criteria criteria = Criteria.where("to").is("").and("state").is(1);
         Query query = makeQuery(criteria);
         query.skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
@@ -112,7 +112,7 @@ public class MessagesService extends AbstractService<Messages> {
      */
     public List<Messages> searchByNameAndPhone(User user,Point point) {
         DBObject queryObject = new BasicDBObject();
-
+        queryObject.put("toId","$eq:null");
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("to", user.getPhone()));
         values.add(new BasicDBObject("to", user.getNickname()));
