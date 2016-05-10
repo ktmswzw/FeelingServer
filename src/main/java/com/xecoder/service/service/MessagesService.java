@@ -112,14 +112,21 @@ public class MessagesService extends AbstractService<Messages> {
      */
     public List<Messages> searchByNameAndPhone(User user,Point point) {
         DBObject queryObject = new BasicDBObject();
-        queryObject.put("toId","$eq:null");
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("to", user.getPhone()));
         values.add(new BasicDBObject("to", user.getNickname()));
         values.add(new BasicDBObject("to", user.getRealname()));
+
+        BasicDBList values2 = new BasicDBList();
+        Criteria criteria = Criteria.where("toId").exists(false).and("state").is(1);
+        Query query = makeQuery(criteria);
+        DBObject queryObject2 = query.getQueryObject();
+        values2.add(queryObject2);
+        queryObject.put("$and",values2);
         queryObject.put("$or", values);
-        Query query = new BasicQuery(queryObject);
-        List<Messages> list = doFind(query, Messages.class);
+
+        Query query2 = new BasicQuery(queryObject);
+        List<Messages> list = doFind(query2, Messages.class);
         for (Messages m : list) {
             User u = userService.findById(m.getFromId());
             if (u != null)
