@@ -80,13 +80,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
 
-        BaseController base = (BaseController)((HandlerMethod) handler).getBean();
-        base.setUserId(userId);
-        BaseBean baseBean = new BaseBean();
-        baseBean.setBaseCreator("系统用户");
-        baseBean.setBaseLastModifier("最后修");
-        base.setBaseBean(baseBean);
-        base.setDeviceVersion(request.getHeader(BaseController.VERSION_STR));
+        if(!((HandlerMethod) handler).getBean().getClass().getName().equals("org.springframework.boot.autoconfigure.web.BasicErrorController")) {
+            BaseController base = (BaseController) ((HandlerMethod) handler).getBean();
+            base.setUserId(userId);
+            BaseBean baseBean = new BaseBean();
+            baseBean.setBaseCreator("系统用户");
+            baseBean.setBaseLastModifier("最后修");
+            base.setBaseBean(baseBean);
+            base.setDeviceVersion(request.getHeader(BaseController.VERSION_STR));
+        }
         return true;
     }
 

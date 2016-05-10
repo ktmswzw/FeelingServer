@@ -74,6 +74,7 @@ public class MessagesController extends BaseController {
                                      @RequestParam int page,
                                      @RequestParam int size
     ) {
+        List<Messages> resultList = new ArrayList<>();
         List<Messages> list = null;
         User user = null;
         GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(x), Double.parseDouble(y));
@@ -84,16 +85,23 @@ public class MessagesController extends BaseController {
             list = server.searchByNameAndPhone(user, point);//附近个人相关的信息
         }
         if (list != null && list.size() != 0) {
-            return new ResponseEntity<>(list, HttpStatus.OK);
-        } else {
-            //如果没有搜到,则搜索周围的数据
-            list = server.search(page, size, point);//附近20公里无名消息
+            for(Messages messages:list){
+                messages.setType(1);
+                resultList.add(messages);
+            }
         }
-
-        if (list != null && list.size() != 0)
-            return new ResponseEntity<>(list, HttpStatus.OK);
+        //搜索周围的数据
+        list = server.search(page, size, point);//附近20公里无名消息
+        if (list != null && list.size() != 0) {
+            for(Messages messages:list){
+                messages.setType(0);
+                resultList.add(messages);
+            }
+        }
+        if (resultList != null && resultList.size() != 0)
+            return new ResponseEntity<>(resultList, HttpStatus.OK);
         else
-            return new ResponseEntity<>(list, NOT_FOUND);
+            return new ResponseEntity<>(resultList, NOT_FOUND);
     }
 
 

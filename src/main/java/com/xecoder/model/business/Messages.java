@@ -119,6 +119,12 @@ public class Messages extends BaseBean implements Serializable  {
 
 
     /**
+     * 颜色标示
+     */
+    @Transient
+    private int type;
+
+    /**
      * 答案提示
      */
     @JsonProperty(value = "answer_tip")
@@ -309,5 +315,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setTryCount(long tryCount) {
         this.tryCount = tryCount;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
