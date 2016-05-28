@@ -107,6 +107,15 @@ public abstract class AbstractService<T> implements IService<T> {
         return criteria;
     }
 
+    protected Criteria ne(Criteria criteria, String field, Object param) {
+        if (criteria == null) {
+            criteria = Criteria.where(field).ne(param);
+        } else {
+            criteria.and(field).ne(param);
+        }
+        return criteria;
+    }
+
     protected Criteria makeWhere(String name) {
         return Criteria.where(name);
     }

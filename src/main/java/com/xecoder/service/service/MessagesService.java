@@ -148,6 +148,9 @@ public class MessagesService extends AbstractService<Messages> {
         if (StringUtils.isNotEmpty(model.getToId())) {
             criteria = makeCriteria(criteria, "toId",model.getToId());
         }
+
+            criteria = ne(criteria, "state",Messages.DELETED);
+
         return criteria;
     }
 

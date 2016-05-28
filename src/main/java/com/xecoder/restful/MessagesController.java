@@ -330,6 +330,11 @@ public class MessagesController extends BaseController {
         List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
         TryHistory tryBean = new TryHistory();
         for (Messages bean : list) {
+            MessagesSecret messagesSecret = secretService.findByMsgId(bean.getId());
+            if(messagesSecret!=null)
+            {
+                bean.setContent(messagesSecret.getContent());
+            }
             if(self) {//自己发出被破解的次数,破解者的头像
                 tryBean.setMessageId(bean.getId());
                 bean.setTryCount(tryService.count(tryBean));

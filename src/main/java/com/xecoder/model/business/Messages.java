@@ -117,6 +117,11 @@ public class Messages extends BaseBean implements Serializable  {
      */
     private String question;
 
+    /**
+     * 内容
+     */
+    @Transient
+    private String content;
 
     /**
      * 颜色标示
@@ -143,6 +148,10 @@ public class Messages extends BaseBean implements Serializable  {
 
     private String avatar;
 
+
+    /**
+     * 尝试次数
+     */
     private long tryCount;
 
     public void setId(String id) {
@@ -323,5 +332,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
