@@ -18,18 +18,21 @@ public class ImageSignService  {
     private RedisService redisService;
 
     private final static String KEY = "QCloud_Sign";
+    private final static String FILE = "QCloud_file_Sign";
 
-    public static long EXPIRED_TIME = 24 * 3600 ; //24小时
+    public static long EXPIRED_TIME = 24 * 3600 * 30 ; //24小时
 
     public String getQSign()
     {
-        String sign = "";
+        String sign = "",sign_file="";
         try {
             sign = redisService.getValue(KEY);
             if (sign == null || sign.equals("")) {
                 sign = ImageUtil.getAppSign();
-                redisService.setValue(KEY, sign);
+                sign_file = ImageUtil.getFileSign();
+                redisService.setValue(KEY, sign+","+sign_file);
                 redisService.expire(KEY, EXPIRED_TIME);
+                sign += ","+sign_file;
             }
         } catch (Exception e) {
             e.printStackTrace();

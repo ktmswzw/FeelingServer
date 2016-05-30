@@ -1,5 +1,6 @@
 package com.xecoder.common.util;
 
+import com.qcloud.cosapi.sign.Sign;
 import com.xecoder.common.qcloud.HabitPicKey;
 import com.xecoder.common.qcloud.PicCloud;
 import com.xecoder.common.qcloud.UploadResult;
@@ -22,6 +23,12 @@ public class ImageUtil {
     public static final String SECRET_ID_V2 = QCloudPicKey.M_SECRET_ID;
     public static final String SECRET_KEY_V2 = QCloudPicKey.M_SECRET_KEY;
     public static final String BUCKET = QCloudPicKey.BUCKET;        //空间名
+
+
+    public static final int APP_ID_FILE = QCloudPicKey.APP_ID_FILE;
+    public static final String SECRET_ID_FILE = QCloudPicKey.U_SECRET_ID;
+    public static final String SECRET_KEY_FILE = QCloudPicKey.U_SECRET_KEY;
+    public static final String BUCKET_FILE = QCloudPicKey.BUCKET_FILE;        //空间名
 
 
     /**
@@ -120,6 +127,17 @@ public class ImageUtil {
     {
         PicCloud pc = new PicCloud(APP_ID_V2, SECRET_ID_V2, SECRET_KEY_V2, BUCKET);
         return pc.getAppSign();
+    }
+
+    /**
+     * 获取文件上传签名
+     * @return
+     */
+    public static String getFileSign()
+    {
+        long expired = System.currentTimeMillis() / 1000 + 2592000;
+        String sign = Sign.appSignature(APP_ID_FILE, SECRET_ID_FILE, SECRET_KEY_FILE, expired, BUCKET_FILE);
+        return sign;
     }
 
 
