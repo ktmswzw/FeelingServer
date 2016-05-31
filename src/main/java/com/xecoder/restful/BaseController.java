@@ -1,7 +1,7 @@
 package com.xecoder.restful;
 
-import com.xecoder.common.qcloud.HabitPicKey;
 import com.xecoder.common.util.JWTCode;
+import com.xecoder.common.util.QCloudPicKey;
 import com.xecoder.model.core.BaseBean;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +88,7 @@ public class BaseController {
      */
     public String getQcloudUrl(String id)
     {
-        return HabitPicKey.DOMAIN + "/" + id;
+        return QCloudPicKey.DOMAIN + "/" + id;
     }
 
 

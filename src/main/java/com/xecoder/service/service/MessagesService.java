@@ -171,10 +171,18 @@ public class MessagesService extends AbstractService<Messages> {
         if (StringUtils.isNotBlank(id)) {
             Messages msg = findById(id);
             MessagesSecret m = secretDao.findByMsgId(id);
-            if (StringUtils.isBlank(msg.getQuestion()))
+            if (StringUtils.isBlank(msg.getQuestion())) {
+                msg.setState(Messages.LOCKED);
+                msg.setToId(uid);
+                this.save(msg);
                 return m.getId();
-            else if (StringUtils.isBlank(m.getAnswer()))
+            }
+            else if (StringUtils.isBlank(m.getAnswer())) {
+                msg.setState(Messages.LOCKED);
+                msg.setToId(uid);
+                this.save(msg);
                 return m.getId();
+            }
             else if (StringUtils.equals(m.getAnswer(), answer.trim())) {
                 msg.setState(Messages.LOCKED);
                 msg.setToId(uid);

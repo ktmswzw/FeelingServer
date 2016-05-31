@@ -1,7 +1,6 @@
 package com.xecoder.common.util;
 
 import com.qcloud.cosapi.sign.Sign;
-import com.xecoder.common.qcloud.HabitPicKey;
 import com.xecoder.common.qcloud.PicCloud;
 import com.xecoder.common.qcloud.UploadResult;
 import com.xecoder.model.business.ImageBackup;
@@ -146,7 +145,7 @@ public class ImageUtil {
      * @return
      */
     public static String getPath(String url){
-        return "http://"+HabitPicKey.DOMAIN + "/" + url;
+        return "http://"+QCloudPicKey.DOMAIN + "/" + url;
     }
 
     /**
