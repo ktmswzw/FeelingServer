@@ -334,6 +334,7 @@ public class MessagesController extends BaseController {
             if(messagesSecret!=null)
             {
                 bean.setContent(messagesSecret.getContent());
+                bean.setAnswer(messagesSecret.getAnswer());
             }
             if(self) {//自己发出被破解的次数,破解者的头像
                 tryBean.setMessageId(bean.getId());

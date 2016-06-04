@@ -123,6 +123,9 @@ public class Messages extends BaseBean implements Serializable  {
     @Transient
     private String content;
 
+    @Transient
+    private String answer;
+
     /**
      * 颜色标示
      */
@@ -340,5 +343,13 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }
