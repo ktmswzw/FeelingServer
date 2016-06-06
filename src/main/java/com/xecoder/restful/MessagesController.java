@@ -327,7 +327,7 @@ public class MessagesController extends BaseController {
             } else
                 msg.setToId(this.getUserId());
         }
-        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateAsc"), msg);
+        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateDesc"), msg);
         TryHistory tryBean = new TryHistory();
         for (Messages bean : list) {
             MessagesSecret messagesSecret = secretService.findByMsgId(bean.getId());
