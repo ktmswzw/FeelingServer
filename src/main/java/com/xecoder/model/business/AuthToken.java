@@ -28,7 +28,7 @@ public class AuthToken  extends BaseBean implements Serializable {
     /**
      * 令牌有效期
      */
-    public static long EXPIRED_TIME = 24 * 3600 * 1000;
+    public static long EXPIRED_TIME = 30 * 24 * 3600 * 1000L;
     /**
      * 通过验证的设备
      */
