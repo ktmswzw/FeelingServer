@@ -279,11 +279,10 @@ public class MessagesController extends BaseController {
                 messagesSecret.setPhotos(photos.toArray(new String[photos.size()]));
 
             //阅后即焚
-            if(messagesSecret.isBurnAfterReading()) {
-                Messages m = server.findById(messagesSecret.getMsgId());
-                m.setState(Messages.CLOSE);
-                server.save(m);
-            }
+            Messages m = server.findById(messagesSecret.getMsgId());
+                m.setState(messagesSecret.isBurnAfterReading()?Messages.DELETED:Messages.OPEN);
+
+            server.save(m);
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ReturnMessage(getLocalException("error.destince.is.error"), HttpStatus.NOT_FOUND), NOT_FOUND);
