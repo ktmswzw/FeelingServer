@@ -47,7 +47,7 @@ public class TryHistoryService extends AbstractService<TryHistory> {
     protected Criteria makeCriteria(TryHistory model) {
         Criteria criteria = null;
         if (StringUtils.isNotEmpty(model.getMessageId())) {
-            criteria = makeCriteria(criteria, "message_id",model.getMessageId());
+            criteria = makeCriteria(criteria, "messageId",model.getMessageId());
         }
         if (StringUtils.isNotEmpty(model.getTryId())) {
             criteria = makeCriteria(criteria, "try_id",model.getTryId());

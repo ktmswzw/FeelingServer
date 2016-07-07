@@ -155,6 +155,7 @@ public class Messages extends BaseBean implements Serializable  {
     /**
      * 尝试次数
      */
+    @Transient
     private long tryCount;
 
     public void setId(String id) {
