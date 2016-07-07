@@ -281,7 +281,6 @@ public class MessagesController extends BaseController {
             //阅后即焚
             Messages m = server.findById(messagesSecret.getMsgId());
                 m.setState(messagesSecret.isBurnAfterReading()?Messages.DELETED:Messages.OPEN);
-
             server.save(m);
             return new ResponseEntity<>(messagesSecret, HttpStatus.OK);
         } else
