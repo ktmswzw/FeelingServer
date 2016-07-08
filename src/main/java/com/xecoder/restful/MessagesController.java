@@ -165,7 +165,7 @@ public class MessagesController extends BaseController {
         secret.setMsgId(msg.getId());
         secretService.save(secret);
         if(StringUtils.isNotBlank(to)){
-            sendMsg(to);
+            sendMsg(to,msg);
         }
         return new ResponseEntity<>(new ReturnMessage(msg.getId(), HttpStatus.OK), HttpStatus.OK);
     }
@@ -174,7 +174,7 @@ public class MessagesController extends BaseController {
      * 发送推送
      * @param to
      */
-    private void sendMsg(String to){
+    private void sendMsg(String to,Messages msg){
         MobileProviderFactory mobileProviderFactory = new MobileProviderFactory();
         try {
             long phone = Long.parseLong(to);
@@ -182,6 +182,8 @@ public class MessagesController extends BaseController {
                 User user = userServer.findByPhone(to);
                 if(user!=null) {
                     run(user.getId());
+                    msg.setToId(user.getId());
+                    server.save(msg);
                 }
             }
         }
