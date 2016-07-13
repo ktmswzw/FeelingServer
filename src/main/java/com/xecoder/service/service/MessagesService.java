@@ -118,7 +118,7 @@ public class MessagesService extends AbstractService<Messages> {
         values.add(new BasicDBObject("to", user.getRealname()));
 
         BasicDBList values2 = new BasicDBList();
-        Criteria criteria = Criteria.where("toId").exists(false).and("state").is(1);
+        Criteria criteria = Criteria.where("toId").exists(true).and("state").is(1);
         Query query = makeQuery(criteria);
         DBObject queryObject2 = query.getQueryObject();
         values2.add(queryObject2);
