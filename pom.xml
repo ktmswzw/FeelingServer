@@ -161,6 +161,11 @@
 						<version>1.2.5.RELEASE</version>
 					</dependency>
 				</dependencies>
+				<configuration>
+					<jvmArguments>
+						-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=55555
+					</jvmArguments>
+				</configuration>
 			</plugin>
 			<!-- tag::plugin[] -->
 			<plugin>

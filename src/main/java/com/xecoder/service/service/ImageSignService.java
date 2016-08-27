@@ -21,7 +21,6 @@ public class ImageSignService  {
     private final static String FILE = "QCloud_file_Sign";
 
     public static long EXPIRED_TIME = 24 * 3600 * 30 ; //24小时
-
     public String getQSign()
     {
         String sign = "",sign_file="";
