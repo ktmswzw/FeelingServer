@@ -65,8 +65,12 @@ public class MessagesService extends AbstractService<Messages> {
 
     @Override
     public List<Messages> search(int page, int size, Sort sort, Messages searchCondition) {
+        return null;
+    }
+
+    public List<Messages> search(int page, int size, Messages searchCondition) {
         Criteria criteria = makeCriteria(searchCondition);
-        Query query = makeQuery(criteria);
+        Query query = makeQuery(criteria).with(new Sort(Sort.Direction.DESC,"create_date"));
         query.skip(calcSkipNum(page, size)).limit(size);
         return doFind(query, Messages.class);
     }
@@ -82,7 +86,7 @@ public class MessagesService extends AbstractService<Messages> {
     public List<Messages> search(int page, int size,GeoJsonPoint point) {
         Criteria criteria = Criteria.where("to").is("").and("state").is(1);
         Query query = makeQuery(criteria);
-        query.skip(calcSkipNum(page, size)).limit(size);
+        query.with(new Sort(Sort.Direction.DESC,"create_date")).skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
         //按经纬度搜索
             NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(200)).query(query);//单位: 20千米
@@ -116,7 +120,6 @@ public class MessagesService extends AbstractService<Messages> {
         values.add(new BasicDBObject("to", user.getPhone()));
         values.add(new BasicDBObject("to", user.getNickname()));
         values.add(new BasicDBObject("to", user.getRealname()));
-
         BasicDBList values2 = new BasicDBList();
         Criteria criteria = Criteria.where("toId").exists(true).and("state").is(1);
         Query query = makeQuery(criteria);
@@ -125,7 +128,7 @@ public class MessagesService extends AbstractService<Messages> {
         queryObject.put("$and",values2);
         queryObject.put("$or", values);
 
-        Query query2 = new BasicQuery(queryObject);
+        Query query2 = new BasicQuery(queryObject).with(new Sort(Sort.Direction.DESC,"create_date"));
         List<Messages> list = doFind(query2, Messages.class);
         for (Messages m : list) {
             User u = userService.findById(m.getFromId());
@@ -170,10 +173,11 @@ public class MessagesService extends AbstractService<Messages> {
     public String validate(String id, String answer,String uid) {
         if (StringUtils.isNotBlank(id)) {
             Messages msg = findById(id);
+            msg.setToId(uid);
+            msg.setUpdateDate(new Date());
             MessagesSecret m = secretDao.findByMsgId(id);
             if (StringUtils.isBlank(msg.getQuestion())) {
                 msg.setState(Messages.LOCKED);
-                msg.setToId(uid);
                 this.save(msg);
                 return m.getId();
             }

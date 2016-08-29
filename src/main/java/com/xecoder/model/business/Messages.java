@@ -94,13 +94,19 @@ public class Messages extends BaseBean implements Serializable  {
      */
     private String toId;
 
+
+    /**
+     * 目标对象
+     */
+    private String aimId;
+
     /**
      * 创建时间
      */
     @Field(value = "create_date")
     @JsonProperty(value = "create_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
     private Date createDate = new Date();
 
     /**
@@ -108,8 +114,8 @@ public class Messages extends BaseBean implements Serializable  {
      */
     @Field(value = "update_date")
     @JsonProperty(value = "update_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
     private Date updateDate;
 
     /**
@@ -157,6 +163,12 @@ public class Messages extends BaseBean implements Serializable  {
      */
     @Transient
     private long tryCount;
+
+
+
+    @Transient
+    @JsonProperty(value = "messagess_secret_id")
+    private String messagesSecretId;
 
     public void setId(String id) {
         this.id = id;
@@ -352,5 +364,21 @@ public class Messages extends BaseBean implements Serializable  {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public String getMessagesSecretId() {
+        return messagesSecretId;
+    }
+
+    public void setMessagesSecretId(String messagesSecretId) {
+        this.messagesSecretId = messagesSecretId;
+    }
+
+    public String getAimId() {
+        return aimId;
+    }
+
+    public void setAimId(String aimId) {
+        this.aimId = aimId;
     }
 }

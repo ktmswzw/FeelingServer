@@ -122,7 +122,7 @@ public class FriendService extends AbstractService<Friend>{
             criteria = makeCriteria(criteria, "key_user_id", model.getKeyUserId());
         }
         if (StringUtils.isNotEmpty(model.getRemark())) {
-            criteria = makeCriteria(criteria, "remark", model.getRemark());
+            criteria = makeCriteriaRegex(criteria, "remark", "^.*" + model.getRemark() + ".*$");//模糊查询
         }
         if (StringUtils.isNotEmpty(model.getUser())) {
             criteria = makeCriteria(criteria, "user", model.getUser());

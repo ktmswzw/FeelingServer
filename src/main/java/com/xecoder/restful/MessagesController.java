@@ -11,6 +11,7 @@ import com.xecoder.model.business.*;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
 import com.xecoder.model.embedded.MessagesSecret;
+import com.xecoder.model.rongcloud.Message;
 import com.xecoder.service.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,8 +183,7 @@ public class MessagesController extends BaseController {
                 User user = userServer.findByPhone(to);
                 if(user!=null) {
                     run(user.getId());
-                    msg.setToId(user.getId());
-                    server.save(msg);
+                    updateSelf(user.getId(),msg);
                 }
             }
         }
@@ -191,11 +191,19 @@ public class MessagesController extends BaseController {
         {
             List<User> users = userServer.findByName(to);
             if(users!=null){
-                for(User u:users){
-                    run(u.getId());
+                for(User user:users){
+                    run(user.getId());
+                    updateSelf(user.getId(),msg);
                 }
             }
         }
+    }
+
+    private void updateSelf(String userId, Messages msg){
+        msg.setAimId(userId);
+        msg.setState(Messages.LOCKED);
+        msg.setToId(userId);
+        server.save(msg);
     }
 
     private void run(String id)
@@ -334,7 +342,7 @@ public class MessagesController extends BaseController {
             } else
                 msg.setToId(this.getUserId());
         }
-        List<Messages> list = server.search(page, size, new Sort("OrderByCreateDateDesc"), msg);
+        List<Messages> list = server.search(page, size, msg);
         TryHistory tryBean = new TryHistory();
         for (Messages bean : list) {
             MessagesSecret messagesSecret = secretService.findByMsgId(bean.getId());
@@ -342,7 +350,10 @@ public class MessagesController extends BaseController {
             {
                 bean.setContent(messagesSecret.getContent());
                 bean.setAnswer(messagesSecret.getAnswer());
+                bean.setMessagesSecretId(messagesSecret.getId());
             }
+            bean.setX(bean.getPoint().getX());
+            bean.setY(bean.getPoint().getY());
             if(self) {//自己发出被破解的次数,破解者的头像
                 tryBean.setMessageId(bean.getId());
                 bean.setTryCount(tryService.count(tryBean));

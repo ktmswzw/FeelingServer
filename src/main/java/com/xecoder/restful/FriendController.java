@@ -101,9 +101,9 @@ public class FriendController extends BaseController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/remark/{id}/{name}", method = RequestMethod.POST)
+    @RequestMapping(value = "/remark/{id}", method = RequestMethod.POST)
     @ResponseBody
-    private ResponseEntity<?> remark(@PathVariable String id, @PathVariable String name) {
+    private ResponseEntity<?> remark(@PathVariable String id, @RequestParam String name) {
         Friend friend = friendService.findById(id);
         if (friend != null) {
             friend.setRemark(name);
