@@ -201,7 +201,7 @@ public class MessagesController extends BaseController {
 
     private void updateSelf(String userId, Messages msg){
         msg.setAimId(userId);
-        msg.setState(Messages.LOCKED);
+//        msg.setState(Messages.LOCKED);
         msg.setToId(userId);
         server.save(msg);
     }

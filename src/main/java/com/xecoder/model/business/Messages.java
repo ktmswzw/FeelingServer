@@ -30,7 +30,7 @@ public class Messages extends BaseBean implements Serializable  {
 
     public static int CLOSE = 1; //未拆封  默认
     public static int LOCKED = 2; //答案正确 锁定，待经纬度差额为100米，解锁
-    public static int OPEN = 3;  // 已被拆开
+    public static int OPEN = 3;  // 距离到达,已被拆开
     public static int DELETED = 9;  // 已删除
 
     @Id
