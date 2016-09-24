@@ -80,7 +80,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
 
-        if(!((HandlerMethod) handler).getBean().getClass().getName().equals("org.springframework.boot.autoconfigure.web.BasicErrorController")) {
+        if(!((HandlerMethod) handler).getBean().getClass().getName().equals("org.springframework.boot.autoconfigure.static.BasicErrorController")) {
             BaseController base = (BaseController) ((HandlerMethod) handler).getBean();
             base.setUserId(userId);
             BaseBean baseBean = new BaseBean();

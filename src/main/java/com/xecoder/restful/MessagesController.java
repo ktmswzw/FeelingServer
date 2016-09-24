@@ -1,12 +1,12 @@
 package com.xecoder.restful;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xecoder.common.exception.HttpServiceException;
 import com.xecoder.common.exception.ReturnMessage;
-import com.xecoder.common.util.DateTools;
-import com.xecoder.common.util.ImageUtil;
-import com.xecoder.common.util.StringUtilsSelf;
+import com.xecoder.common.util.*;
 import com.xecoder.common.util.mobile.MobileProviderFactory;
 import com.xecoder.dao.AuthDao;
+import com.xecoder.dao.LogRecordDao;
 import com.xecoder.model.business.*;
 import com.xecoder.model.core.NonAuthoritative;
 import com.xecoder.model.embedded.MessagesPhoto;
@@ -14,6 +14,7 @@ import com.xecoder.model.embedded.MessagesSecret;
 import com.xecoder.model.rongcloud.Message;
 import com.xecoder.service.service.*;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
@@ -21,8 +22,11 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -55,6 +59,70 @@ public class MessagesController extends BaseController {
 
     @Autowired
     private TryHistoryService tryService;
+
+    @Autowired
+    public LogRecordDao dao;
+
+
+
+    /**
+     * 查找附近的1年内有效的消息
+     * 不需要登陆
+     *
+     * @param to   接受人
+     * @param lat    经度
+     * @param lng    维度
+     * @return
+     */
+    @RequestMapping(value = "/searchWeb", method = RequestMethod.GET)
+    @ResponseBody
+    @NonAuthoritative
+    private void searchWeb(@RequestParam(required = false) String to,
+                                     @RequestParam(required = false) String lat,
+                                     @RequestParam(required = false) String lng,
+                                     @RequestParam String callback
+    ) throws IOException {
+        String action = request.getRequestURI();
+        String ip = IPUtils.getRealIpAddr(request);
+
+        LogRecord record = new LogRecord(new Date(), "", action, ip, to, "", request.getParameterMap());
+        dao.save(record);
+
+
+        List<Messages> resultList = new ArrayList<>();
+        GeoJsonPoint point = new GeoJsonPoint(Double.parseDouble(lng), Double.parseDouble(lat));
+        User user = new User();
+        user.setNickname(to);
+        user.setRealname(to);
+        user.setPhone(to);
+        List<Messages> list = server.searchByNameAndPhone(user, point);
+        if (list != null && list.size() != 0) {
+            for(Messages messages:list){
+                messages.setType(1);
+                resultList.add(messages);
+            }
+        }
+        //搜索周围的数据
+        list = server.search(1, 20, point);
+        if (list != null && list.size() != 0) {
+            for(Messages messages:list){
+                messages.setType(0);
+                resultList.add(messages);
+            }
+        }
+        if (resultList != null && resultList.size() != 0){
+            ObjectMapper mapper = JacksonMapper.getInstance();
+            String json =mapper.writeValueAsString(resultList);
+            response.setCharacterEncoding("utf8");
+            response.getWriter().write(callback + "({ pointList:" + json + "})");
+        }
+        else
+        {
+            response.getWriter().write(callback + "([{ pointList:\"\"}])");
+        }
+    }
+
+
 
     /**
      * 查找附近的1年内有效的消息

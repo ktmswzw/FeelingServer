@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
@@ -30,10 +32,10 @@ import java.util.List;
  * 2016/1/28-10:02
  * Feeling.com.xecoder
  */
-
+@EnableAutoConfiguration
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = FeelingApplication.class)
+@SpringBootApplication
 public class GeoJSONTests {
 
     @Autowired

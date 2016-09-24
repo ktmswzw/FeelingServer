@@ -33,7 +33,7 @@ import java.io.IOException;
 //        }
 //        catch (Exception e)
 //        {
-//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.web.HttpRequestMethodNotSupportedException.error",null, Locale.getDefault()));
+//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.static.HttpRequestMethodNotSupportedException.error",null, Locale.getDefault()));
 //        }
 //    }
 //
@@ -61,7 +61,7 @@ public class CORSFilter  implements Filter {
 //        }
 //        catch (Exception e)
 //        {
-//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.web.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
+//            throw new FeelingCommonException(messageSource.getMessage("org.springframework.static.servlet.NoHandlerFoundException.error",null, Locale.getDefault()));
 //        }
     }
 

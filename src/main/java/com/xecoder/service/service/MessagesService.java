@@ -89,7 +89,7 @@ public class MessagesService extends AbstractService<Messages> {
         query.with(new Sort(Sort.Direction.DESC,"create_date")).skip(calcSkipNum(page, size)).limit(size);
         List<Messages> list = new ArrayList<>();
         //按经纬度搜索
-            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(200)).query(query);//单位: 20千米
+            NearQuery nq = NearQuery.near(point.getX(), point.getY(), Metrics.KILOMETERS).maxDistance(new Double(20038)).query(query);//单位: 20千米
             GeoResults<Messages> empGeoResults = mongoTemplate.geoNear(nq, Messages.class);
             if (empGeoResults != null) {
                 for (GeoResult<Messages> e : empGeoResults) {
@@ -150,6 +150,10 @@ public class MessagesService extends AbstractService<Messages> {
         }
         if (StringUtils.isNotEmpty(model.getToId())) {
             criteria = makeCriteria(criteria, "toId",model.getToId());
+        }
+
+        if (StringUtils.isNotEmpty(model.getTo())) {
+            criteria = makeCriteria(criteria, "to",model.getTo());
         }
 
             criteria = ne(criteria, "state",Messages.DELETED);

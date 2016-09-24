@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>回音</title>
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="css/weui.min.css" rel="stylesheet">
+    <link href="css/map.css" rel="stylesheet">
+    <style type="text/css">
+        #allmap {
+            width: 100%;
+            height: 83%;
+            overflow: hidden;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="container">
+    <div id="toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <p id="msgType"></p>
+            <p class="weui_toast_content" id="error_dialog"></p>
+        </div>
+    </div>
+    <div id="loadingToast" class="weui_loading_toast" style="display:none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <div class="weui_loading">
+                <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+            </div>
+            <p class="weui_toast_content">数据加载中</p>
+        </div>
+    </div>
+
+    <div class="searchbar">
+        <div class="hd">
+            <h1 class="page_title">人生只若初见</h1>
+        </div>
+        <div class="bd">
+            <div class="weui_search_bar" id="search_bar">
+                <form class="weui_search_outer">
+                    <input type="hidden" name="lat" id="lat">
+                    <input type="hidden" name="lng" id="lng">
+                    <div class="weui_search_inner">
+                        <i class="weui_icon_search"></i>
+                        <input type="text" class="weui_search_input" id="to" placeholder="输入的你的名字或者昵称"
+                               required="">
+                        <a href="javascript:" class="weui_icon_clear" id="search_clear"></a>
+                    </div>
+                    <label for="to" class="weui_search_text" id="search_text">
+                        <i class="weui_icon_search"></i>
+                        <span>搜索</span>
+                    </label>
+                </form>
+                <a href="javascript:" class="weui_search_cancel" id="submit" name="submit">查找</a>
+            </div>
+        </div>
+    </div>
+    <div id="allmap"></div>
+</div>
+</body>
+<script src="js/require.js"></script>
+<script src="js/config.js"></script>
+
+
+<script src="js/map.js"></script>
+</html>

@@ -1,7 +1,0 @@
-FROM anapsix/alpine-java:jdk8
-MAINTAINER Vincent Mo <ktmswzw@gmail.com>
-VOLUME /tmp
-ADD /target/app.jar app.jar
-RUN bash -c 'touch /app.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
-EXPOSE 80:80
